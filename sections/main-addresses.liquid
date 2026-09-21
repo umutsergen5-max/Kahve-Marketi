@@ -2,7 +2,7 @@
   Addresses page (customers/addresses template) — classic customer accounts.
   Lists the customer's addresses with edit (native <details>) and delete, plus an "add address"
   form. All forms are Shopify customer_address forms; the delete form overrides the HTTP method
-  with a hidden _method field, the way Shopify's own address links do (untested against a real
+  with a hidden _method field, the way Shopify's own address links do (to be verified on a real
   store). Country/province behaviour: assets/auth.js.
 {%- endcomment -%}
 {%- liquid
@@ -18,10 +18,11 @@
       <a class="button button--secondary button--small" href="{{ routes.account_url }}">{{ 'customer.back_to_account' | t }}</a>
     </header>
 
-    <details class="address-new" {% if form.errors %}open{% endif %}>
+    <details class="address-new">
       <summary class="button address-new__summary">{{ 'customer.add_address' | t }}</summary>
       {%- form 'customer_address', customer.new_address, id: 'address-new', novalidate: 'novalidate' -%}
         {% render 'form-errors', errors: form.errors, id: 'address-new-errors' %}
+        {%- if form.errors -%}<span data-form-has-errors hidden></span>{%- endif -%}
         {% render 'address-fields', values: form, uid: 'new', is_default: false %}
         <button class="button" type="submit">{{ 'customer.save' | t }}</button>
       {%- endform -%}
@@ -36,6 +37,7 @@
               assign address_is_default = true
             endif
             assign delete_form_id = 'address-delete-' | append: address.id
+            assign edit_errors_id = 'address-errors-' | append: address.id
           -%}
           <li class="address-card">
             <div class="address-card__head">
@@ -46,6 +48,8 @@
             <details class="address-card__edit">
               <summary class="button button--secondary button--small">{{ 'customer.edit' | t }}<span class="visually-hidden"> {{ 'customer.address_n' | t: number: forloop.index }}</span></summary>
               {%- form 'customer_address', address, id: address.id, novalidate: 'novalidate' -%}
+                {% render 'form-errors', errors: form.errors, id: edit_errors_id %}
+                {%- if form.errors -%}<span data-form-has-errors hidden></span>{%- endif -%}
                 {% render 'address-fields', values: form, uid: address.id, is_default: address_is_default %}
                 <button class="button" type="submit">{{ 'customer.save' | t }}</button>
               {%- endform -%}

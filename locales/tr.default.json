@@ -262,7 +262,7 @@
     "recover_success": "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.",
     "back_to_login": "Girişe dön",
     "reset_title": "Şifreyi sıfırla",
-    "reset_text": "{{ email }} hesabı için yeni bir şifre belirleyin.",
+    "reset_text": "Hesabınız için yeni bir şifre belirleyin.",
     "new_password": "Yeni şifre",
     "confirm_password": "Şifre (tekrar)",
     "reset_submit": "Şifreyi kaydet",

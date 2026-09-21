@@ -15,10 +15,7 @@
   - active_count: number of applied filters
   - clear_url: URL that removes every filter
 {%- endcomment -%}
-{%- liquid
-  assign uid = section_id
-  assign any_group_open = false
--%}
+{%- assign uid = section_id -%}
 <aside
   class="drawer filter-drawer"
   id="drawer-filter"

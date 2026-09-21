@@ -12,7 +12,6 @@
     "settings": [
       {
         "type": "header",
-        "id": "header__accents",
         "content": "t:settings_schema.colors.settings.header__accents.content"
       },
       {
@@ -35,7 +34,6 @@
       },
       {
         "type": "header",
-        "id": "header__surfaces",
         "content": "t:settings_schema.colors.settings.header__surfaces.content"
       },
       {
@@ -70,7 +68,6 @@
       },
       {
         "type": "header",
-        "id": "header__buttons",
         "content": "t:settings_schema.colors.settings.header__buttons.content"
       },
       {
@@ -87,7 +84,6 @@
       },
       {
         "type": "header",
-        "id": "header__status",
         "content": "t:settings_schema.colors.settings.header__status.content"
       },
       {
@@ -109,7 +105,6 @@
     "settings": [
       {
         "type": "header",
-        "id": "header__fonts",
         "content": "t:settings_schema.typography.settings.header__fonts.content"
       },
       {
@@ -154,7 +149,6 @@
       },
       {
         "type": "header",
-        "id": "header__sizes",
         "content": "t:settings_schema.typography.settings.header__sizes.content"
       },
       {
@@ -293,7 +287,6 @@
     "settings": [
       {
         "type": "header",
-        "id": "header__brand",
         "content": "t:settings_schema.logo.settings.header__brand.content"
       },
       {
@@ -305,7 +298,6 @@
       },
       {
         "type": "header",
-        "id": "header__logo",
         "content": "t:settings_schema.logo.settings.header__logo.content"
       },
       {

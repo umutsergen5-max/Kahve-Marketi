@@ -50,7 +50,7 @@
                   assign rule_step = rule.increment | default: 1
                 -%}
                 <li class="cart-item main-cart__item" data-key="{{ item.key }}" data-title="{{ item.product.title | escape }}">
-                  <a class="cart-item__media" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+                  <a class="main-cart__media" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
                     <span class="media media--portrait">
                       {% render 'image', image: item.image, widths: '160, 240, 360', sizes: '(min-width: 768px) 120px, 96px', alt: '' %}
                     </span>
@@ -142,7 +142,7 @@
   .main-cart__layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-32); align-items: start; }
   .main-cart__items { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--scheme-border); }
   .main-cart__item { display: grid; grid-template-columns: 96px minmax(0, 1fr); grid-template-areas: "media info" "media qty" "media total"; gap: var(--space-8) var(--space-16); padding: var(--space-16) 0; border-bottom: 1px solid var(--scheme-border); }
-  .main-cart__item .cart-item__media { grid-area: media; }
+  .main-cart__media { grid-area: media; }
   .main-cart__item .cart-item__info { grid-area: info; min-width: 0; }
   .main-cart__qty { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-8) var(--space-16); grid-area: qty; }
   .main-cart__line-total { grid-area: total; margin: 0; }

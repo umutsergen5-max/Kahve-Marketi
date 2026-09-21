@@ -6,6 +6,7 @@
      opens the recovery panel (Shopify redirects there after a recovery request).
    - Address forms: country select fills the province select from data-provinces.
    - Delete address confirmation: form[data-confirm].
+   - Opens a <details> that contains a form with errors ([data-form-has-errors]).
    Everything works without JavaScript (both login panels stay visible, province select is
    hidden and the browser's own validation applies).
    ========================================================================== */
@@ -88,6 +89,12 @@
       if (province) province.setAttribute('data-default', '');
       fillProvinces(e.target);
     }
+  });
+
+  /* ---- forms with errors inside a collapsed <details> are opened ---- */
+  Array.prototype.forEach.call(doc.querySelectorAll('[data-form-has-errors]'), function (marker) {
+    var details = marker.closest('details');
+    if (details) details.open = true;
   });
 
   /* ---- delete confirmation ---- */

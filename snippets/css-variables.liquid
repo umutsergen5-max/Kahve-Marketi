@@ -28,8 +28,8 @@
   endif
 -%}
 
-<link rel="preload" as="font" type="font/woff2" href="{{ font_heading | font_url }}" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="{{ font_body | font_url }}" crossorigin>
+{{ font_heading | font_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: '' }}
+{{ font_body | font_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: '' }}
 
 <style data-theme-variables>
   {{ font_heading | font_face: font_display: 'swap' }}
