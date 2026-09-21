@@ -1,38 +1,38 @@
 {
-  "sections": {
-    "header": {
-      "type": "collection-header",
-      "settings": {}
+    "sections": {
+        "header": {
+            "type": "collection-header",
+            "settings": {}
+        },
+        "nav": {
+            "type": "collection-nav",
+            "settings": {}
+        },
+        "main": {
+            "type": "main-collection",
+            "settings": {}
+        },
+        "recently-viewed": {
+            "type": "recently-viewed",
+            "settings": {}
+        },
+        "editorial": {
+            "type": "image-with-text",
+            "settings": {
+                "layout": "overlay",
+                "overline": "Üst başlık",
+                "heading": "Başlık",
+                "text": "<p>Bu alanı tema düzenleyicisinden değiştirin.</p>",
+                "spacing_top": "none",
+                "spacing_bottom": "none"
+            }
+        }
     },
-    "nav": {
-      "type": "collection-nav",
-      "settings": {}
-    },
-    "main": {
-      "type": "main-collection",
-      "settings": {}
-    },
-    "recently-viewed": {
-      "type": "recently-viewed",
-      "settings": {}
-    },
-    "editorial": {
-      "type": "image-with-text",
-      "settings": {
-        "layout": "overlay",
-        "overline": "Üst başlık",
-        "heading": "Başlık",
-        "text": "<p>Bu alanı tema düzenleyicisinden değiştirin.</p>",
-        "spacing_top": "none",
-        "spacing_bottom": "none"
-      }
-    }
-  },
-  "order": [
-    "header",
-    "nav",
-    "main",
-    "recently-viewed",
-    "editorial"
-  ]
+    "order": [
+        "header",
+        "nav",
+        "main",
+        "recently-viewed",
+        "editorial"
+    ]
 }

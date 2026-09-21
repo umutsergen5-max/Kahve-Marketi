@@ -1,13 +1,13 @@
 {
-  "sections": {
-    "main": {
-      "type": "collection-list",
-      "settings": {
-        "heading": "Koleksiyonlar"
-      }
-    }
-  },
-  "order": [
-    "main"
-  ]
+    "sections": {
+        "main": {
+            "type": "collection-list",
+            "settings": {
+                "heading": "Koleksiyonlar"
+            }
+        }
+    },
+    "order": [
+        "main"
+    ]
 }
