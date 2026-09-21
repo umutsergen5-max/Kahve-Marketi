@@ -309,20 +309,20 @@
       {
         "type": "range",
         "id": "logo_width",
-        "default": 259,
+        "default": 260,
         "min": 60,
         "max": 400,
-        "step": 1,
+        "step": 5,
         "unit": "px",
         "label": "t:settings_schema.logo.settings.logo_width.label"
       },
       {
         "type": "range",
         "id": "logo_width_mobile",
-        "default": 211,
+        "default": 210,
         "min": 60,
         "max": 300,
-        "step": 1,
+        "step": 5,
         "unit": "px",
         "label": "t:settings_schema.logo.settings.logo_width_mobile.label"
       },
