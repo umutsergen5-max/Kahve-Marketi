@@ -1,0 +1,171 @@
+{%- comment -%}
+  Search drawer (top). The form always submits to Shopify's native search
+  route; when predictive search is enabled, assets/search.js additionally
+  queries /search/suggest (rendered by sections/predictive-search.liquid).
+{%- endcomment -%}
+{%- liquid
+  assign types = ''
+  if section.settings.show_suggestions
+    assign types = types | append: 'query,'
+  endif
+  if section.settings.show_products
+    assign types = types | append: 'product,'
+  endif
+  if section.settings.show_collections
+    assign types = types | append: 'collection,'
+  endif
+  if section.settings.show_articles
+    assign types = types | append: 'article,'
+  endif
+  if section.settings.show_pages
+    assign types = types | append: 'page,'
+  endif
+  assign types = types | remove_last: ','
+  if types == blank
+    assign types = 'product'
+  endif
+-%}
+
+<aside
+  class="drawer search-drawer"
+  id="drawer-search"
+  data-drawer="search"
+  data-editor-reveal
+  data-side="top"
+  data-component="predictive-search"
+  data-predictive="{{ settings.predictive_search }}"
+  data-types="{{ types }}"
+  data-limit="{{ section.settings.results_limit }}"
+  data-error="{{ 'search.error' | t | escape }}"
+  role="dialog"
+  aria-modal="true"
+  aria-label="{{ 'accessibility.search_form' | t }}"
+  tabindex="-1"
+>
+  <div class="search-drawer__inner">
+    <form class="search-drawer__form" action="{{ routes.search_url }}" method="get" role="search">
+      <label class="visually-hidden" for="search-drawer-input">{{ 'search.label' | t }}</label>
+      <span class="search-drawer__icon" aria-hidden="true">{% render 'icon', name: 'search', size: 22 %}</span>
+      <input
+        class="search-drawer__input"
+        id="search-drawer-input"
+        type="search"
+        name="q"
+        value=""
+        placeholder="{{ 'search.placeholder' | t }}"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        enterkeyhint="search"
+        aria-describedby="search-drawer-live"
+        data-search-input
+        data-drawer-focus
+      >
+      <input type="hidden" name="options[prefix]" value="last">
+      <button class="icon-button search-drawer__clear" type="button" data-search-clear hidden aria-label="{{ 'search.clear' | t }}">
+        {% render 'icon', name: 'close', size: 18 %}
+      </button>
+      <button class="icon-button" type="submit" aria-label="{{ 'search.submit' | t }}">
+        {% render 'icon', name: 'arrow-right', size: 22 %}
+      </button>
+      <button class="icon-button" type="button" data-drawer-close aria-label="{{ 'general.close' | t }}">
+        {% render 'icon', name: 'close', size: 22 %}
+      </button>
+    </form>
+
+    <div class="search-drawer__results" data-search-results aria-busy="false"></div>
+    <p class="visually-hidden" id="search-drawer-live" role="status" aria-live="polite" data-search-live></p>
+  </div>
+</aside>
+
+{% stylesheet %}
+  .search-drawer { max-height: 90vh; max-height: 90dvh; }
+  .search-drawer__inner { display: flex; flex-direction: column; min-height: 0; padding: var(--space-8) var(--section-x) var(--space-16); max-width: var(--container-max); margin-inline: auto; width: 100%; }
+  .search-drawer__form { display: flex; align-items: center; gap: var(--space-4); border-bottom: 1px solid var(--color-border-strong); }
+  .search-drawer__icon { display: inline-flex; padding-inline: var(--space-4); color: var(--color-text-muted); }
+  .search-drawer__input {
+    flex: 1;
+    min-width: 0;
+    height: 56px;
+    padding: 0 var(--space-8);
+    border: 0;
+    background: transparent;
+    color: var(--color-text);
+    font-family: var(--font-body-family);
+    font-size: max(16px, var(--fs-featured));
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .search-drawer__input::placeholder { color: var(--color-text-muted); opacity: 1; }
+  .search-drawer__input:focus-visible { outline: none; }
+  .search-drawer__form:focus-within { border-bottom-color: var(--color-background-dark); }
+  .search-drawer__input::-webkit-search-cancel-button { display: none; }
+
+  .search-drawer__results { position: relative; overflow-y: auto; min-height: 0; margin-top: var(--space-16); }
+  .search-drawer__results:empty { margin-top: 0; }
+  .search-drawer__results[aria-busy="true"] { opacity: 0.5; }
+  .search-drawer__results[aria-busy="true"]::after {
+    content: "";
+    position: absolute;
+    top: var(--space-16);
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin-left: -10px;
+    border: 2px solid var(--color-text);
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: theme-spin 0.7s linear infinite;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.search-drawer.name",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:sections.search-drawer.settings.paragraph__1.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_suggestions",
+      "label": "t:sections.search-drawer.settings.show_suggestions.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_products",
+      "label": "t:sections.search-drawer.settings.show_products.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collections",
+      "label": "t:sections.search-drawer.settings.show_collections.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_articles",
+      "label": "t:sections.search-drawer.settings.show_articles.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pages",
+      "label": "t:sections.search-drawer.settings.show_pages.label",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "results_limit",
+      "label": "t:sections.search-drawer.settings.results_limit.label",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    }
+  ]
+}
+{% endschema %}

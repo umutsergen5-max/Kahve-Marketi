@@ -1,0 +1,49 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": { "type": "vendor" },
+        "title": { "type": "title" },
+        "price": { "type": "price" },
+        "variant-picker": { "type": "variant_picker" },
+        "quantity": { "type": "quantity" },
+        "buy-buttons": { "type": "buy_buttons" },
+        "description": { "type": "description" }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "price",
+        "variant-picker",
+        "quantity",
+        "buy-buttons",
+        "description"
+      ],
+      "settings": {}
+    },
+    "recommendations": {
+      "type": "product-recommendations",
+      "settings": {}
+    },
+    "recently-viewed": {
+      "type": "recently-viewed",
+      "settings": {}
+    },
+    "editorial": {
+      "type": "image-with-text",
+      "disabled": true,
+      "settings": {
+        "layout": "image-left",
+        "heading": "Başlık",
+        "text": "<p>Bu alanı ürün hakkında ek bilgi, hikaye veya bakım önerileri için kullanabilirsiniz.</p>"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "recommendations",
+    "recently-viewed",
+    "editorial"
+  ]
+}

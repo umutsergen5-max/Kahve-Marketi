@@ -1,0 +1,63 @@
+{%- comment -%}
+  The product <form> (Shopify's native product form): variant id, add to cart button and,
+  optionally, the dynamic checkout button ("Buy it now" / accelerated checkout).
+  Option pickers and the quantity field may live outside this element; they are tied to
+  it through the HTML `form` attribute (see product-options / product-quantity).
+
+  Accepts:
+  - product: product object (required)
+  - form_id: id for the <form> (required)
+  - show_dynamic_checkout: render {{ form | payment_button }} (default false)
+  - fallback_quantity: when the page has no quantity field, a hidden quantity is posted
+    so products with a minimum order quantity still validate. Optional.
+
+  Add to cart works without JavaScript (plain form post to the cart route). With JS,
+  assets/cart-drawer.js turns the submit into an Ajax add and opens the cart drawer
+  (form[data-cart-add]); assets/product.js keeps the variant id, button state and
+  payment button in sync with the selected variant.
+{%- endcomment -%}
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign id_disabled = false
+  unless product.has_only_default_variant
+    assign id_disabled = true
+  endunless
+-%}
+{%- form 'product', product, id: form_id, class: 'product-form', novalidate: 'novalidate', data-cart-add: '' -%}
+  {%- comment -%}With options, JS enables this input; without JS the <noscript> variant select posts the id.{%- endcomment -%}
+  <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id{% if id_disabled %} disabled{% endif %}>
+  {%- if fallback_quantity != blank -%}
+    <input type="hidden" name="quantity" value="{{ fallback_quantity }}" data-product-qty>
+  {%- endif -%}
+
+  <button
+    class="button button--full product-form__submit"
+    type="submit"
+    name="add"
+    data-add-button
+    data-label-add="{{ 'products.add_to_cart' | t }}"
+    data-label-sold-out="{{ 'products.sold_out' | t }}"
+    data-label-unavailable="{{ 'products.unavailable' | t }}"
+    {% unless current_variant.available %}disabled{% endunless %}
+  >
+    <span data-add-label>{% if current_variant.available %}{{ 'products.add_to_cart' | t }}{% else %}{{ 'products.sold_out' | t }}{% endif %}</span>
+  </button>
+
+  {%- if show_dynamic_checkout -%}
+    <div class="product-form__payment" data-payment-button{% unless current_variant.available %} hidden{% endunless %}>
+      {{ form | payment_button }}
+    </div>
+  {%- endif -%}
+
+  <p class="field__error" role="alert" data-cart-add-error hidden></p>
+  <p class="visually-hidden" role="status" aria-live="polite" data-variant-live></p>
+{%- endform -%}
+
+{% stylesheet %}
+  .product-form { display: flex; flex-direction: column; gap: var(--space-12); margin: 0; }
+  .product-form__submit[disabled] { cursor: not-allowed; }
+  .product-form__submit[aria-busy="true"] { opacity: 0.7; cursor: progress; }
+  .product-form__payment[hidden] { display: none; }
+  .product-form__payment .shopify-payment-button__button { min-height: var(--control-height); border-radius: var(--radius-button); }
+  .product-form__payment .shopify-payment-button__button--unbranded { font-family: var(--font-body-family); font-size: var(--fs-button); letter-spacing: 1px; text-transform: var(--tt-ui); }
+{% endstylesheet %}

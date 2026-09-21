@@ -1,0 +1,25 @@
+{%- comment -%}
+  Breadcrumb trail: Home > (parent) > current page.
+
+  Accepts:
+  - current_title: title of the current page (required)
+  - parent_title / parent_url: optional middle step
+  - class: extra CSS classes
+{%- endcomment -%}
+<nav class="breadcrumbs text-small{% if class != blank %} {{ class }}{% endif %}" aria-label="{{ 'collections.breadcrumb' | t }}">
+  <ol class="breadcrumbs__list" role="list">
+    <li><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a></li>
+    {%- if parent_title != blank and parent_url != blank -%}
+      <li><a href="{{ parent_url }}">{{ parent_title | escape }}</a></li>
+    {%- endif -%}
+    <li><span aria-current="page">{{ current_title | escape }}</span></li>
+  </ol>
+</nav>
+
+{% stylesheet %}
+  .breadcrumbs__list { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-8); margin: 0; padding: 0; list-style: none; color: var(--scheme-text-muted); }
+  .breadcrumbs__list li + li::before { content: "/"; margin-right: var(--space-8); opacity: 0.6; }
+  .breadcrumbs__list a { text-decoration: none; }
+  .breadcrumbs__list a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+  .breadcrumbs__list [aria-current="page"] { color: var(--scheme-text); }
+{% endstylesheet %}

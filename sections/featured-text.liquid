@@ -1,0 +1,242 @@
+{%- comment -%}
+  Featured text: an eyebrow, heading, rich text and an optional button, aligned left or
+  centre in a reading-width column. Used as an intro block on content pages (FAQ, wholesale,
+  locations…) and anywhere a short editorial statement is needed. The button link can be
+  any URL, including an external application form the merchant chooses.
+{%- endcomment -%}
+{%- liquid
+  assign heading_tag = section.settings.heading_level | default: 'h2'
+  assign button_class = 'button'
+  if section.settings.button_style == 'secondary'
+    assign button_class = 'button button--secondary'
+  endif
+-%}
+<section
+  class="featured-text section scheme-{{ section.settings.color_scheme }}"
+  data-spacing-top="{{ section.settings.spacing_top }}"
+  data-spacing-bottom="{{ section.settings.spacing_bottom }}"
+>
+  <div class="featured-text__inner featured-text__inner--{{ section.settings.text_align }}" style="--text-width: var(--width-{{ section.settings.content_width }});">
+    {%- if section.settings.overline != blank -%}<p class="overline featured-text__overline">{{ section.settings.overline | escape }}</p>{%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <{{ heading_tag }} class="featured-text__heading heading heading--featured">{{ section.settings.heading | escape }}</{{ heading_tag }}>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}<div class="featured-text__text rte">{{ section.settings.text }}</div>{%- endif -%}
+    {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+      <a class="{{ button_class }} featured-text__button" href="{{ section.settings.button_link }}"{% if section.settings.open_new_tab %} target="_blank" rel="noopener noreferrer"{% endif %}>
+        <span>{{ section.settings.button_label | escape }}</span>
+        {%- if section.settings.open_new_tab -%}<span class="visually-hidden">{{ 'accessibility.opens_new_window' | t }}</span>{%- endif -%}
+      </a>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .featured-text__inner { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-16); max-width: var(--text-width, var(--width-sm)); margin-inline: auto; }
+  .featured-text__inner--center { align-items: center; text-align: center; }
+  .featured-text__overline, .featured-text__heading { margin: 0; }
+  .featured-text__overline { color: var(--scheme-text-muted); }
+  .featured-text__button { margin-top: var(--space-8); }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.featured-text.name",
+  "settings": [
+    {
+      "type": "text",
+      "id": "overline",
+      "label": "t:sections.featured-text.settings.overline.label"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:sections.featured-text.settings.heading.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_level",
+      "label": "t:sections.featured-text.settings.heading_level.label",
+      "info": "t:sections.featured-text.settings.heading_level.info",
+      "options": [
+        {
+          "value": "h1",
+          "label": "t:sections.featured-text.settings.heading_level.options__1.label"
+        },
+        {
+          "value": "h2",
+          "label": "t:sections.featured-text.settings.heading_level.options__2.label"
+        },
+        {
+          "value": "h3",
+          "label": "t:sections.featured-text.settings.heading_level.options__3.label"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:sections.featured-text.settings.text.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.featured-text.settings.header__button.content"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:sections.featured-text.settings.button_label.label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:sections.featured-text.settings.button_link.label",
+      "info": "t:sections.featured-text.settings.button_link.info"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "t:sections.featured-text.settings.button_style.label",
+      "options": [
+        {
+          "value": "primary",
+          "label": "t:sections.featured-text.settings.button_style.options__1.label"
+        },
+        {
+          "value": "secondary",
+          "label": "t:sections.featured-text.settings.button_style.options__2.label"
+        }
+      ],
+      "default": "primary"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_new_tab",
+      "label": "t:sections.featured-text.settings.open_new_tab.label",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.featured-text.settings.header__align.content"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "t:sections.featured-text.settings.text_align.label",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.featured-text.settings.text_align.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.featured-text.settings.text_align.options__2.label"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "t:sections.featured-text.settings.content_width.label",
+      "options": [
+        {
+          "value": "xs",
+          "label": "t:sections.featured-text.settings.content_width.options__1.label"
+        },
+        {
+          "value": "sm",
+          "label": "t:sections.featured-text.settings.content_width.options__2.label"
+        },
+        {
+          "value": "md",
+          "label": "t:sections.featured-text.settings.content_width.options__3.label"
+        }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.featured-text.settings.header__layout.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.featured-text.settings.color_scheme.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.featured-text.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.featured-text.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "dark",
+          "label": "t:sections.featured-text.settings.color_scheme.options__3.label"
+        },
+        {
+          "value": "accent-1",
+          "label": "t:sections.featured-text.settings.color_scheme.options__4.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.featured-text.settings.color_scheme.options__5.label"
+        },
+        {
+          "value": "accent-3",
+          "label": "t:sections.featured-text.settings.color_scheme.options__6.label"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "t:sections.featured-text.settings.spacing_top.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.featured-text.settings.spacing_top.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.featured-text.settings.spacing_top.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.featured-text.settings.spacing_top.options__3.label"
+        }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "t:sections.featured-text.settings.spacing_bottom.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.featured-text.settings.spacing_bottom.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.featured-text.settings.spacing_bottom.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.featured-text.settings.spacing_bottom.options__3.label"
+        }
+      ],
+      "default": "full"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.featured-text.presets.name"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,373 @@
+{%- comment -%}
+  Locations: any number of places a customer can visit or use — a showroom, retail store,
+  pickup point, service centre, café, office. Neutral by design: every location is a block
+  with an optional image, type label, name, address, opening hours, description, phone, email,
+  website, map link and call-to-action; empty fields are simply not shown.
+  Layouts: cards (grid) or list (image and text side by side, alternating).
+  Contact details are real links (tel:, mailto:), the address uses the <address> element and
+  external links announce that they open a new window.
+{%- endcomment -%}
+{%- liquid
+  assign as_list = false
+  if section.settings.layout == 'list'
+    assign as_list = true
+  endif
+  assign col_count = section.settings.columns
+  assign tablet_count = col_count | at_most: 2
+  assign card_tag = 'h3'
+  if section.settings.heading == blank
+    assign card_tag = 'h2'
+  endif
+-%}
+<section
+  class="locations section scheme-{{ section.settings.color_scheme }}"
+  data-spacing-top="{{ section.settings.spacing_top }}"
+  data-spacing-bottom="{{ section.settings.spacing_bottom }}"
+>
+  {%- if section.settings.heading != blank or section.settings.text != blank -%}
+    <header class="locations__header text-{{ section.settings.header_align }}">
+      {%- if section.settings.heading != blank -%}<h2 class="locations__heading heading heading--featured">{{ section.settings.heading | escape }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<div class="locations__text rte">{{ section.settings.text }}</div>{%- endif -%}
+    </header>
+  {%- endif -%}
+
+  {%- if section.blocks.size > 0 -%}
+    <ul class="locations__list{% if as_list %} locations__list--list{% endif %}" role="list" style="--cols: {{ col_count }}; --cols-tablet: {{ tablet_count }};">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign loc_name = block.settings.name
+          assign phone_link = block.settings.phone | replace: ' ', '' | replace: '-', '' | replace: '(', '' | replace: ')', ''
+          assign loc_image = block.settings.image
+          assign loc_loading = 'lazy'
+          if section.index <= 1 and forloop.first
+            assign loc_loading = 'eager'
+          endif
+          assign map_label = 'locations.open_map' | t
+        -%}
+        <li class="location{% if as_list %} location--list{% endif %}" {{ block.shopify_attributes }}>
+          {%- if loc_image -%}
+            <div class="location__media media media--{{ section.settings.image_ratio }}">
+              {{- loc_image | image_url: width: 1000 | image_tag: loading: loc_loading, widths: '400, 600, 800, 1000', sizes: '(min-width: 1024px) 40vw, (min-width: 768px) 50vw, 100vw', alt: loc_image.alt -}}
+            </div>
+          {%- endif -%}
+          <div class="location__body">
+            {%- if block.settings.type_label != blank -%}<p class="overline location__type">{{ block.settings.type_label | escape }}</p>{%- endif -%}
+            {%- if loc_name != blank -%}<{{ card_tag }} class="location__name heading heading--section">{{ loc_name | escape }}</{{ card_tag }}>{%- endif -%}
+
+            {%- if block.settings.description != blank -%}<div class="location__description rte">{{ block.settings.description }}</div>{%- endif -%}
+
+            {%- if block.settings.address != blank -%}
+              <address class="location__address">{{ block.settings.address | escape | newline_to_br }}</address>
+            {%- endif -%}
+
+            {%- if block.settings.phone != blank or block.settings.email != blank -%}
+              <ul class="location__contact" role="list">
+                {%- if block.settings.phone != blank -%}
+                  <li><a class="location__contact-link" href="tel:{{ phone_link }}"><span class="visually-hidden">{{ 'locations.phone' | t }}: </span>{{ block.settings.phone | escape }}</a></li>
+                {%- endif -%}
+                {%- if block.settings.email != blank -%}
+                  <li><a class="location__contact-link" href="mailto:{{ block.settings.email }}"><span class="visually-hidden">{{ 'locations.email' | t }}: </span>{{ block.settings.email | escape }}</a></li>
+                {%- endif -%}
+              </ul>
+            {%- endif -%}
+
+            {%- if block.settings.hours != blank -%}
+              <div class="location__hours">
+                <p class="location__label text-nav">{{ 'locations.hours' | t }}</p>
+                <p>{{ block.settings.hours | escape | newline_to_br }}</p>
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.map_link != blank or block.settings.website != blank or block.settings.cta_link != blank -%}
+              <div class="location__actions">
+                {%- if block.settings.map_link != blank -%}
+                  <a class="button button--secondary button--small" href="{{ block.settings.map_link }}" target="_blank" rel="noopener noreferrer">
+                    {% render 'icon', name: 'pin', size: 16 %}
+                    <span>{{ map_label }}</span>
+                    <span class="visually-hidden">{% if loc_name != blank %}({{ loc_name | escape }}) {% endif %}{{ 'accessibility.opens_new_window' | t }}</span>
+                  </a>
+                {%- endif -%}
+                {%- if block.settings.website != blank -%}
+                  <a class="button button--secondary button--small" href="{{ block.settings.website }}" target="_blank" rel="noopener noreferrer">
+                    {% render 'icon', name: 'external', size: 16 %}
+                    <span>{{ 'locations.website' | t }}</span>
+                    <span class="visually-hidden">{% if loc_name != blank %}({{ loc_name | escape }}) {% endif %}{{ 'accessibility.opens_new_window' | t }}</span>
+                  </a>
+                {%- endif -%}
+                {%- if block.settings.cta_link != blank and block.settings.cta_label != blank -%}
+                  <a class="button button--small" href="{{ block.settings.cta_link }}">{{ block.settings.cta_label | escape }}</a>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .locations__header { margin-bottom: var(--space-32); }
+  .locations__heading { margin: 0; }
+  .locations__text { margin-top: var(--space-12); max-width: 40rem; }
+  .locations__header.text-center .locations__text { margin-inline: auto; }
+  .locations__list { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-48) var(--space-32); margin: 0; padding: 0; list-style: none; align-items: start; }
+  @media (min-width: 768px) { .locations__list:not(.locations__list--list) { grid-template-columns: repeat(var(--cols-tablet, 2), minmax(0, 1fr)); } }
+  @media (min-width: 1024px) { .locations__list:not(.locations__list--list) { grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); } }
+  .location { display: flex; flex-direction: column; gap: var(--space-16); min-width: 0; }
+  .location__body { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-12); min-width: 0; }
+  .location__type, .location__name { margin: 0; }
+  .location__type { color: var(--scheme-text-muted); }
+  .location__address { font-style: normal; overflow-wrap: anywhere; }
+  .location__contact { display: flex; flex-direction: column; gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
+  .location__contact-link { display: inline-flex; align-items: center; min-height: 44px; overflow-wrap: anywhere; }
+  .location__hours p { margin: 0; overflow-wrap: anywhere; }
+  .location__label { margin: 0 0 var(--space-4); color: var(--scheme-text-muted); text-transform: uppercase; }
+  .location__actions { display: flex; flex-wrap: wrap; gap: var(--space-8); margin-top: var(--space-4); }
+  .location__actions .button--small { min-height: 44px; }
+  @media (min-width: 768px) {
+    .location--list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-48); align-items: center; }
+    .locations__list--list { gap: var(--space-72); }
+    .locations__list--list > .location--list:nth-child(even) .location__media { order: 2; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.locations.name",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:sections.locations.settings.heading.label"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:sections.locations.settings.text.label"
+    },
+    {
+      "type": "select",
+      "id": "header_align",
+      "label": "t:sections.locations.settings.header_align.label",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.locations.settings.header_align.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.locations.settings.header_align.options__2.label"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.locations.settings.header__layout2.content"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "t:sections.locations.settings.layout.label",
+      "options": [
+        {
+          "value": "cards",
+          "label": "t:sections.locations.settings.layout.options__1.label"
+        },
+        {
+          "value": "list",
+          "label": "t:sections.locations.settings.layout.options__2.label"
+        }
+      ],
+      "default": "cards"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "t:sections.locations.settings.columns.label",
+      "default": 2,
+      "min": 1,
+      "max": 3,
+      "step": 1
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "t:sections.locations.settings.image_ratio.label",
+      "options": [
+        {
+          "value": "landscape",
+          "label": "t:sections.locations.settings.image_ratio.options__1.label"
+        },
+        {
+          "value": "square",
+          "label": "t:sections.locations.settings.image_ratio.options__2.label"
+        },
+        {
+          "value": "portrait",
+          "label": "t:sections.locations.settings.image_ratio.options__3.label"
+        },
+        {
+          "value": "wide",
+          "label": "t:sections.locations.settings.image_ratio.options__4.label"
+        }
+      ],
+      "default": "landscape"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.locations.settings.header__layout.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.locations.settings.color_scheme.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.locations.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.locations.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "dark",
+          "label": "t:sections.locations.settings.color_scheme.options__3.label"
+        },
+        {
+          "value": "accent-1",
+          "label": "t:sections.locations.settings.color_scheme.options__4.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.locations.settings.color_scheme.options__5.label"
+        },
+        {
+          "value": "accent-3",
+          "label": "t:sections.locations.settings.color_scheme.options__6.label"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "t:sections.locations.settings.spacing_top.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.locations.settings.spacing_top.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.locations.settings.spacing_top.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.locations.settings.spacing_top.options__3.label"
+        }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "t:sections.locations.settings.spacing_bottom.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.locations.settings.spacing_bottom.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.locations.settings.spacing_bottom.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.locations.settings.spacing_bottom.options__3.label"
+        }
+      ],
+      "default": "full"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "location",
+      "name": "t:sections.locations.blocks.location.name",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.locations.blocks.location.settings.image.label"
+        },
+        {
+          "type": "text",
+          "id": "type_label",
+          "label": "t:sections.locations.blocks.location.settings.type_label.label",
+          "info": "t:sections.locations.blocks.location.settings.type_label.info"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "t:sections.locations.blocks.location.settings.name.label",
+          "default": "Konum adı"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "t:sections.locations.blocks.location.settings.description.label"
+        },
+        {
+          "type": "textarea",
+          "id": "address",
+          "label": "t:sections.locations.blocks.location.settings.address.label",
+          "info": "t:sections.locations.blocks.location.settings.address.info"
+        },
+        {
+          "type": "text",
+          "id": "phone",
+          "label": "t:sections.locations.blocks.location.settings.phone.label"
+        },
+        {
+          "type": "text",
+          "id": "email",
+          "label": "t:sections.locations.blocks.location.settings.email.label"
+        },
+        {
+          "type": "textarea",
+          "id": "hours",
+          "label": "t:sections.locations.blocks.location.settings.hours.label",
+          "info": "t:sections.locations.blocks.location.settings.hours.info"
+        },
+        {
+          "type": "url",
+          "id": "map_link",
+          "label": "t:sections.locations.blocks.location.settings.map_link.label"
+        },
+        {
+          "type": "url",
+          "id": "website",
+          "label": "t:sections.locations.blocks.location.settings.website.label"
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "t:sections.locations.blocks.location.settings.cta_label.label"
+        },
+        {
+          "type": "url",
+          "id": "cta_link",
+          "label": "t:sections.locations.blocks.location.settings.cta_link.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.locations.presets.name"
+    }
+  ]
+}
+{% endschema %}

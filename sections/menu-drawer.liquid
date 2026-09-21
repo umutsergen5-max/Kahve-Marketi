@@ -1,0 +1,172 @@
+{%- comment -%}
+  Mobile navigation drawer (left). Rendered as a static section from
+  layout/theme.liquid so it sits outside the sticky header's stacking context.
+  It reuses the global drawer module (data-drawer) and the accordion module
+  (data-disclosure) — no bespoke JavaScript except closing on resize.
+
+  Supports the full three levels a Shopify menu can have.
+{%- endcomment -%}
+{%- assign menu = section.settings.menu -%}
+
+<aside
+  class="drawer menu-drawer"
+  id="drawer-menu"
+  data-drawer="menu"
+  data-editor-reveal
+  data-side="left"
+  data-component="menu-drawer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="{{ 'general.menu' | t }}"
+  tabindex="-1"
+>
+  <div class="drawer__header">
+    <span class="drawer__title heading">{{ 'general.menu' | t }}</span>
+    <button class="icon-button" type="button" data-drawer-close data-drawer-focus aria-label="{{ 'accessibility.close_menu' | t }}">
+      {% render 'icon', name: 'close', size: 22 %}
+    </button>
+  </div>
+
+  <div class="drawer__body menu-drawer__body">
+    {%- if menu != blank and menu.links.size > 0 -%}
+      <nav aria-label="{{ 'accessibility.mobile_menu' | t }}">
+        <ul class="menu-list" role="list">
+          {%- for link in menu.links -%}
+            {%- assign id_1 = 'menu-sub-' | append: forloop.index -%}
+            <li class="menu-list__item">
+              {%- if link.links.size > 0 -%}
+                <div class="menu-list__group" data-disclosure data-component="disclosure" data-open="false">
+                  <div class="menu-list__row">
+                    <a class="menu-list__link text-nav" href="{{ link.url }}"{% if link.current or link.child_current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+                    <button class="menu-list__toggle" type="button" data-disclosure-trigger aria-expanded="false" aria-controls="{{ id_1 }}" aria-label="{{ 'accessibility.open_submenu' | t: title: link.title }}">
+                      {% render 'icon', name: 'chevron-down', size: 18 %}
+                    </button>
+                  </div>
+                  <div class="disclosure__panel" id="{{ id_1 }}">
+                    <div class="disclosure__content">
+                      <ul class="menu-list menu-list--nested" role="list">
+                        {%- for child in link.links -%}
+                          {%- assign id_2 = id_1 | append: '-' | append: forloop.index -%}
+                          <li class="menu-list__item">
+                            {%- if child.links.size > 0 -%}
+                              <div class="menu-list__group" data-disclosure data-component="disclosure" data-open="false">
+                                <div class="menu-list__row">
+                                  <a class="menu-list__link text-nav" href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a>
+                                  <button class="menu-list__toggle" type="button" data-disclosure-trigger aria-expanded="false" aria-controls="{{ id_2 }}" aria-label="{{ 'accessibility.open_submenu' | t: title: child.title }}">
+                                    {% render 'icon', name: 'chevron-down', size: 18 %}
+                                  </button>
+                                </div>
+                                <div class="disclosure__panel" id="{{ id_2 }}">
+                                  <div class="disclosure__content">
+                                    <ul class="menu-list menu-list--nested" role="list">
+                                      {%- for grandchild in child.links -%}
+                                        <li class="menu-list__item">
+                                          <a class="menu-list__link text-subnav" href="{{ grandchild.url }}"{% if grandchild.current %} aria-current="page"{% endif %}>{{ grandchild.title | escape }}</a>
+                                        </li>
+                                      {%- endfor -%}
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            {%- else -%}
+                              <a class="menu-list__link text-subnav" href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a>
+                            {%- endif -%}
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              {%- else -%}
+                <a class="menu-list__link text-nav" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+  </div>
+
+  <div class="drawer__footer menu-drawer__footer">
+    <ul class="menu-drawer__utility" role="list" aria-label="{{ 'accessibility.account_menu' | t }}">
+      <li>
+        <a class="menu-drawer__utility-link text-nav" href="{{ routes.search_url }}" data-drawer-open="search" aria-controls="drawer-search" aria-haspopup="dialog" aria-expanded="false">
+          {% render 'icon', name: 'search', size: 18 %}
+          <span>{{ 'general.search' | t }}</span>
+        </a>
+      </li>
+      {%- if shop.customer_accounts_enabled -%}
+        {%- if customer -%}
+          <li>
+            <a class="menu-drawer__utility-link text-nav" href="{{ routes.account_url }}">
+              {% render 'icon', name: 'user', size: 18 %}
+              <span>{{ 'general.account' | t }}</span>
+            </a>
+          </li>
+          <li>
+            <a class="menu-drawer__utility-link text-nav" href="{{ routes.account_logout_url }}">
+              <span>{{ 'general.logout' | t }}</span>
+            </a>
+          </li>
+        {%- else -%}
+          <li>
+            <a class="menu-drawer__utility-link text-nav" href="{{ routes.account_login_url }}">
+              {% render 'icon', name: 'user', size: 18 %}
+              <span>{{ 'general.login' | t }}</span>
+            </a>
+          </li>
+          <li>
+            <a class="menu-drawer__utility-link text-nav" href="{{ routes.account_register_url }}">
+              <span>{{ 'general.register' | t }}</span>
+            </a>
+          </li>
+        {%- endif -%}
+      {%- endif -%}
+    </ul>
+  </div>
+</aside>
+
+{% stylesheet %}
+  .menu-drawer__body { padding: var(--space-8) var(--space-16); }
+  .menu-list { margin: 0; padding: 0; list-style: none; }
+  .menu-list__item { border-bottom: 1px solid var(--color-border); }
+  .menu-list--nested { padding-left: var(--space-16); }
+  .menu-list--nested > .menu-list__item:last-child { border-bottom: 0; }
+  .menu-list__row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-8); }
+  .menu-list__link { display: block; flex: 1; padding: var(--space-16) 0; text-decoration: none; }
+  .menu-list--nested .menu-list__link { padding-block: var(--space-12); }
+  .menu-list__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+  }
+  .menu-list__toggle .icon { transition: transform 0.3s var(--ease-out); }
+  .menu-list__toggle[aria-expanded="true"] .icon { transform: rotate(180deg); }
+  .menu-list__group .disclosure__content { padding-bottom: var(--space-8); }
+  .menu-list [aria-current="page"] { text-decoration: underline; text-underline-offset: 0.3em; }
+
+  .menu-drawer__footer { padding-block: var(--space-8); }
+  .menu-drawer__utility { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-16); margin: 0; padding: 0; list-style: none; }
+  .menu-drawer__utility-link { display: inline-flex; align-items: center; gap: var(--space-8); min-height: 44px; text-decoration: none; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.menu-drawer.name",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:sections.menu-drawer.settings.menu.label",
+      "info": "t:sections.menu-drawer.settings.menu.info",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

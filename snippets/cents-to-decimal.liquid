@@ -1,0 +1,19 @@
+{%- comment -%}
+  Converts an amount in minor units (e.g. 102050) to a plain decimal for URL parameters and
+  number inputs (1020.5). Independent of the store's money format, so it is safe for the
+  filter.v.price.gte / lte parameters. Whole amounts print without decimals.
+
+  Accepts:
+  - cents: integer amount in minor units
+{%- endcomment -%}
+{%- liquid
+  assign whole = cents | divided_by: 100
+  assign fraction = cents | modulo: 100
+  if fraction == 0
+    echo whole
+  elsif fraction < 10
+    echo whole | append: '.0' | append: fraction
+  else
+    echo whole | append: '.' | append: fraction
+  endif
+-%}

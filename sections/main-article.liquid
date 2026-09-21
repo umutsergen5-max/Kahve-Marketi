@@ -1,0 +1,351 @@
+{%- comment -%}
+  Article page (article template): breadcrumb (Home > blog > article), title, date and author,
+  featured image, the article body in the shared rich-text system (.rte.rte--article), tags,
+  share and previous / next navigation. Everything is read from Shopify's `article` and
+  `blog` objects.
+{%- endcomment -%}
+{%- liquid
+  comment
+    Shopify does not document which of blog.previous_article / blog.next_article is older,
+    so the direction is decided by comparing publication dates with the current article.
+  endcomment
+  assign current_ts = article.published_at | date: '%s' | plus: 0
+  assign older_article = nil
+  assign newer_article = nil
+  if blog.previous_article
+    assign neighbour_ts = blog.previous_article.published_at | date: '%s' | plus: 0
+    if neighbour_ts < current_ts
+      assign older_article = blog.previous_article
+    else
+      assign newer_article = blog.previous_article
+    endif
+  endif
+  if blog.next_article
+    assign neighbour_ts = blog.next_article.published_at | date: '%s' | plus: 0
+    if neighbour_ts < current_ts
+      assign older_article = blog.next_article
+    else
+      assign newer_article = blog.next_article
+    endif
+  endif
+  assign has_neighbours = false
+  if section.settings.show_navigation
+    if older_article or newer_article
+      assign has_neighbours = true
+    endif
+  endif
+  assign hero_alt = article.image.alt | default: article.title
+  assign image_loading = 'lazy'
+  assign image_priority = 'auto'
+  if section.index <= 2
+    assign image_loading = 'eager'
+    assign image_priority = 'high'
+  endif
+-%}
+
+<article
+  class="main-article section scheme-{{ section.settings.color_scheme }}"
+  style="--article-width: var(--width-{{ section.settings.content_width }});"
+  data-spacing-top="{{ section.settings.spacing_top }}"
+  data-spacing-bottom="{{ section.settings.spacing_bottom }}"
+>
+  {%- if section.settings.show_breadcrumb -%}
+    <div class="main-article__crumbs">{% render 'breadcrumbs', current_title: article.title, parent_title: blog.title, parent_url: blog.url %}</div>
+  {%- endif -%}
+
+  <header class="main-article__header text-{{ section.settings.header_align }}">
+    {%- if section.settings.show_tags and article.tags.size > 0 -%}
+      <ul class="main-article__tags text-subnav" role="list">
+        {%- for tag in article.tags -%}
+          <li><a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag | escape }}</a></li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+    <h1 class="main-article__title heading heading--banner">{{ article.title | escape }}</h1>
+    {%- if section.settings.show_date or section.settings.show_author -%}
+      <p class="main-article__meta text-small">
+        {%- if section.settings.show_date and article.published_at -%}
+          {{ article.published_at | time_tag: format: 'date' }}
+        {%- endif -%}
+        {%- if section.settings.show_author and article.author != blank -%}
+          <span>{{ 'blog.by_author' | t: author: article.author }}</span>
+        {%- endif -%}
+      </p>
+    {%- endif -%}
+  </header>
+
+  {%- if section.settings.show_image and article.image -%}
+    <figure class="main-article__figure main-article__figure--{{ section.settings.image_width }}">
+      <div class="media media--{{ section.settings.image_ratio }}">
+        {{- article.image | image_url: width: 1800 | image_tag: loading: image_loading, fetchpriority: image_priority, widths: '600, 900, 1200, 1500, 1800', sizes: '(min-width: 1024px) 1000px, 100vw', alt: hero_alt -}}
+      </div>
+    </figure>
+  {%- endif -%}
+
+  <div class="main-article__body rte rte--article">{{ article.content }}</div>
+
+  {%- if section.settings.show_share -%}
+    <div class="main-article__share">{% render 'share-button', title: article.title, url: canonical_url %}</div>
+  {%- endif -%}
+
+  {%- if has_neighbours -%}
+    <nav class="main-article__nav" aria-label="{{ 'blog.article_navigation' | t }}">
+      {%- if older_article -%}
+        <a class="main-article__nav-link main-article__nav-link--prev" href="{{ older_article.url }}" rel="prev">
+          <span class="main-article__nav-label text-subnav">{% render 'icon', name: 'chevron-left', size: 14 %} {{ 'blog.previous_post' | t }}</span>
+          <span class="main-article__nav-title">{{ older_article.title | escape }}</span>
+        </a>
+      {%- endif -%}
+      {%- if newer_article -%}
+        <a class="main-article__nav-link main-article__nav-link--next" href="{{ newer_article.url }}" rel="next">
+          <span class="main-article__nav-label text-subnav">{{ 'blog.next_post' | t }} {% render 'icon', name: 'chevron-right', size: 14 %}</span>
+          <span class="main-article__nav-title">{{ newer_article.title | escape }}</span>
+        </a>
+      {%- endif -%}
+    </nav>
+  {%- endif -%}
+</article>
+
+{% stylesheet %}
+  .main-article__crumbs { margin-bottom: var(--space-32); }
+  .main-article__header { max-width: var(--article-width, var(--width-sm)); margin: 0 auto var(--space-32); }
+  .main-article__header.text-left { margin-left: auto; margin-right: auto; }
+  .main-article__tags { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-16); margin: 0 0 var(--space-12); padding: 0; list-style: none; text-transform: uppercase; }
+  .main-article__header.text-center .main-article__tags { justify-content: center; }
+  .main-article__tags a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
+  .main-article__tags a:hover { text-decoration: underline; text-underline-offset: 0.25em; }
+  .main-article__title { margin: 0; overflow-wrap: anywhere; }
+  .main-article__meta { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-16); margin: var(--space-16) 0 0; color: var(--scheme-text-muted); }
+  .main-article__header.text-center .main-article__meta { justify-content: center; }
+  .main-article__figure { margin: 0 auto var(--space-32); }
+  .main-article__figure--contained { max-width: var(--width-md); }
+  .main-article__figure--wide { max-width: var(--width-xl); }
+  .main-article__body, .main-article__share, .main-article__nav { max-width: var(--article-width, var(--width-sm)); margin-inline: auto; }
+  .main-article__share { margin-top: var(--space-32); }
+  .main-article__nav { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-16); margin-top: var(--space-48); padding-top: var(--space-32); border-top: 1px solid var(--scheme-border); }
+  .main-article__nav-link { display: flex; flex-direction: column; gap: var(--space-4); min-height: 44px; text-decoration: none; }
+  .main-article__nav-link--next { text-align: right; align-items: flex-end; }
+  .main-article__nav-label { display: inline-flex; align-items: center; gap: var(--space-4); text-transform: uppercase; color: var(--scheme-text-muted); }
+  .main-article__nav-title { font-family: var(--font-heading-family); font-size: var(--fs-block); overflow-wrap: anywhere; }
+  .main-article__nav-link:hover .main-article__nav-title { text-decoration: underline; text-underline-offset: 0.25em; }
+  @media (min-width: 768px) {
+    .main-article__nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-32); }
+    .main-article__nav-link--prev:only-child { grid-column: 1; }
+    .main-article__nav-link--next:only-child { grid-column: 2; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main-article.name",
+  "enabled_on": {
+    "templates": [
+      "article"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.main-article.settings.header__header.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "t:sections.main-article.settings.show_breadcrumb.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "header_align",
+      "label": "t:sections.main-article.settings.header_align.label",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.main-article.settings.header_align.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.main-article.settings.header_align.options__2.label"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "t:sections.main-article.settings.show_tags.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "t:sections.main-article.settings.show_date.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "t:sections.main-article.settings.show_author.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-article.settings.header__image.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "t:sections.main-article.settings.show_image.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "image_width",
+      "label": "t:sections.main-article.settings.image_width.label",
+      "options": [
+        {
+          "value": "contained",
+          "label": "t:sections.main-article.settings.image_width.options__1.label"
+        },
+        {
+          "value": "wide",
+          "label": "t:sections.main-article.settings.image_width.options__2.label"
+        }
+      ],
+      "default": "contained"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "t:sections.main-article.settings.image_ratio.label",
+      "options": [
+        {
+          "value": "landscape",
+          "label": "t:sections.main-article.settings.image_ratio.options__1.label"
+        },
+        {
+          "value": "wide",
+          "label": "t:sections.main-article.settings.image_ratio.options__2.label"
+        },
+        {
+          "value": "natural",
+          "label": "t:sections.main-article.settings.image_ratio.options__3.label"
+        }
+      ],
+      "default": "landscape"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-article.settings.header__body.content"
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "t:sections.main-article.settings.content_width.label",
+      "options": [
+        {
+          "value": "xs",
+          "label": "t:sections.main-article.settings.content_width.options__1.label"
+        },
+        {
+          "value": "sm",
+          "label": "t:sections.main-article.settings.content_width.options__2.label"
+        },
+        {
+          "value": "md",
+          "label": "t:sections.main-article.settings.content_width.options__3.label"
+        }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share",
+      "label": "t:sections.main-article.settings.show_share.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "t:sections.main-article.settings.show_navigation.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-article.settings.header__layout.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.main-article.settings.color_scheme.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.main-article.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.main-article.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "dark",
+          "label": "t:sections.main-article.settings.color_scheme.options__3.label"
+        },
+        {
+          "value": "accent-1",
+          "label": "t:sections.main-article.settings.color_scheme.options__4.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.main-article.settings.color_scheme.options__5.label"
+        },
+        {
+          "value": "accent-3",
+          "label": "t:sections.main-article.settings.color_scheme.options__6.label"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "t:sections.main-article.settings.spacing_top.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-article.settings.spacing_top.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-article.settings.spacing_top.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-article.settings.spacing_top.options__3.label"
+        }
+      ],
+      "default": "half"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "t:sections.main-article.settings.spacing_bottom.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-article.settings.spacing_bottom.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-article.settings.spacing_bottom.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-article.settings.spacing_bottom.options__3.label"
+        }
+      ],
+      "default": "full"
+    }
+  ]
+}
+{% endschema %}

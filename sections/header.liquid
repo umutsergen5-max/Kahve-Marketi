@@ -1,0 +1,463 @@
+{%- comment -%}
+  Site header.
+  - Wide (>= "nav_breakpoint", default 768px like the reference): logo | primary
+    navigation | search, account, cart.
+  - Narrow: menu button | centred logo | search, cart. The account link lives
+    in the menu drawer (sections/menu-drawer.liquid).
+  - Navigation comes from a Shopify menu. An item with children becomes a
+    dropdown; when any child has its own children (or the item has a promo
+    block) it becomes a mega menu.
+  - Search and cart links point at real routes and are upgraded to drawers by
+    JavaScript (data-drawer-open), so they work without JS too.
+{%- endcomment -%}
+{%- liquid
+  assign menu = section.settings.menu
+  assign scheme = section.settings.color_scheme
+  assign brand = settings.brand_name | default: shop.name
+  assign cart_is_drawer = false
+  if settings.cart_type == 'drawer'
+    assign cart_is_drawer = true
+  endif
+-%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    position: {% if section.settings.sticky %}sticky{% else %}relative{% endif %};
+    top: 0;
+    z-index: var(--z-header);
+  }
+
+  /* Full navigation from the chosen breakpoint (768px = reference behaviour); below it the burger + drawer pattern is used. */
+  @media (min-width: {{ section.settings.nav_breakpoint }}px) {
+    .site-header__inner {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-areas: "logo nav actions";
+      gap: var(--space-32);
+      min-height: 0;
+      padding: var(--space-16) var(--section-x);
+    }
+    .site-header__burger { display: none; }
+    .site-header__logo { justify-self: start; max-width: none; }
+    .site-header__logo-link img { width: var(--logo-width); }
+    .site-header__nav { display: block; grid-area: nav; min-width: 0; }
+    .site-header__account { display: inline-flex; }
+  }
+{% endstyle %}
+
+<header
+  class="site-header scheme-{{ scheme }}{% if section.settings.bottom_border %} site-header--border{% endif %}"
+  style="--logo-width: {{ settings.logo_width }}px; --logo-width-mobile: {{ settings.logo_width_mobile }}px;"
+>
+  <div class="site-header__inner">
+    <button
+      class="site-header__burger icon-button"
+      type="button"
+      data-drawer-open="menu"
+      aria-controls="drawer-menu"
+      aria-haspopup="dialog"
+      aria-expanded="false"
+      aria-label="{{ 'accessibility.open_menu' | t }}"
+    >
+      {% render 'icon', name: 'menu', size: 24 %}
+    </button>
+
+    <div class="site-header__logo">
+      <a class="site-header__logo-link" href="{{ routes.root_url }}">
+        {%- if settings.logo != blank -%}
+          {% render 'image', image: settings.logo, widths: '200, 400, 600, 800', sizes: '(min-width: 768px) 260px, 212px', loading: 'eager', fetchpriority: 'high', alt: brand %}
+        {%- else -%}
+          <span class="site-header__wordmark heading heading--featured">{{ brand | escape }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+
+    {%- if menu != blank and menu.links.size > 0 -%}
+      <nav class="site-header__nav" aria-label="{{ 'accessibility.main_navigation' | t }}" data-component="nav-menu">
+        <ul class="nav__list" role="list">
+          {%- for link in menu.links -%}
+            {%- liquid
+              assign is_mega = false
+              assign promo_count = 0
+              assign column_count = 0
+              assign has_flat = false
+              assign link_key = link.title | downcase
+
+              for block in section.blocks
+                assign promo_parent = block.settings.parent_menu_item | downcase
+                if promo_parent != blank and promo_parent == link_key
+                  assign promo_count = promo_count | plus: 1
+                endif
+              endfor
+
+              for child in link.links
+                if child.links.size > 0
+                  assign is_mega = true
+                  assign column_count = column_count | plus: 1
+                else
+                  assign has_flat = true
+                endif
+              endfor
+
+              if promo_count > 0
+                assign is_mega = true
+              endif
+              if has_flat and is_mega
+                assign column_count = column_count | plus: 1
+              endif
+              assign column_count = column_count | plus: promo_count | at_most: section.settings.mega_columns | at_least: 1
+              assign panel_id = 'nav-panel-' | append: section.id | append: '-' | append: forloop.index
+            -%}
+
+            <li class="nav__item" {% if link.links.size > 0 %}data-nav-item data-mega="{{ is_mega }}"{% endif %}>
+              <div class="nav__row">
+                <a class="nav__link text-nav" href="{{ link.url }}"{% if link.current or link.child_current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+                {%- if link.links.size > 0 -%}
+                  <button
+                    class="nav__toggle"
+                    type="button"
+                    data-nav-toggle
+                    aria-expanded="false"
+                    aria-controls="{{ panel_id }}"
+                    aria-label="{{ 'accessibility.open_submenu' | t: title: link.title }}"
+                  >
+                    {% render 'icon', name: 'chevron-down', size: 14 %}
+                  </button>
+                {%- endif -%}
+              </div>
+
+              {%- if link.links.size > 0 -%}
+                <div class="nav__panel{% if is_mega %} nav__panel--mega{% endif %}" id="{{ panel_id }}" data-nav-panel>
+                  {%- if is_mega -%}
+                    <div class="nav__mega" style="--mega-cols: {{ column_count }}">
+                      {%- if has_flat -%}
+                        <ul class="nav__column" role="list">
+                          {%- for child in link.links -%}
+                            {%- if child.links.size == 0 -%}
+                              <li><a class="nav__sublink text-nav" href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
+                            {%- endif -%}
+                          {%- endfor -%}
+                        </ul>
+                      {%- endif -%}
+
+                      {%- for child in link.links -%}
+                        {%- if child.links.size > 0 -%}
+                          <div class="nav__column">
+                            <a class="nav__column-title text-nav" href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a>
+                            <ul role="list">
+                              {%- for grandchild in child.links -%}
+                                <li><a class="nav__sublink text-subnav" href="{{ grandchild.url }}"{% if grandchild.current %} aria-current="page"{% endif %}>{{ grandchild.title | escape }}</a></li>
+                              {%- endfor -%}
+                            </ul>
+                          </div>
+                        {%- endif -%}
+                      {%- endfor -%}
+
+                      {%- for block in section.blocks -%}
+                        {%- assign promo_parent = block.settings.parent_menu_item | downcase -%}
+                        {%- if promo_parent != blank and promo_parent == link_key -%}
+                          <div class="nav__promo" {{ block.shopify_attributes }}>
+                            {%- if block.settings.link != blank -%}<a class="nav__promo-link" href="{{ block.settings.link }}">{%- endif -%}
+                              {%- if block.settings.image != blank -%}
+                                <div class="media media--{{ block.settings.image_ratio }}">
+                                  {% render 'image', image: block.settings.image, widths: '200, 400, 600, 800', sizes: '(min-width: 1024px) 25vw, 33vw' %}
+                                </div>
+                              {%- endif -%}
+                              {%- if block.settings.heading != blank -%}
+                                <span class="nav__promo-heading heading heading--block">{{ block.settings.heading | escape }}</span>
+                              {%- endif -%}
+                              {%- if block.settings.text != blank -%}
+                                <span class="nav__promo-text text-small">{{ block.settings.text | escape }}</span>
+                              {%- endif -%}
+                              {%- if block.settings.link != blank and block.settings.link_label != blank -%}
+                                <span class="nav__promo-cta text-nav link">{{ block.settings.link_label | escape }}</span>
+                              {%- endif -%}
+                            {%- if block.settings.link != blank -%}</a>{%- endif -%}
+                          </div>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                  {%- else -%}
+                    <ul class="nav__dropdown" role="list">
+                      {%- for child in link.links -%}
+                        <li><a class="nav__sublink text-subnav" href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    <div class="site-header__actions">
+      {%- if section.settings.show_search -%}
+        <a
+          class="icon-button"
+          href="{{ routes.search_url }}"
+          data-drawer-open="search"
+          aria-controls="drawer-search"
+          aria-haspopup="dialog"
+          aria-expanded="false"
+          aria-label="{{ 'accessibility.open_search' | t }}"
+        >
+          {% render 'icon', name: 'search', size: 22 %}
+        </a>
+      {%- endif -%}
+
+      {%- if section.settings.show_account and shop.customer_accounts_enabled -%}
+        <a class="icon-button site-header__account" href="{{ routes.account_url }}" aria-label="{{ 'general.account' | t }}">
+          {% render 'icon', name: 'user', size: 22 %}
+        </a>
+      {%- endif -%}
+
+      <a
+        class="icon-button site-header__cart"
+        href="{{ routes.cart_url }}"
+        {% if cart_is_drawer %}data-drawer-open="cart" aria-controls="drawer-cart" aria-haspopup="dialog" aria-expanded="false" aria-label="{{ 'accessibility.open_cart' | t }}"{% else %}aria-label="{{ 'general.cart' | t }}"{% endif %}
+      >
+        {% render 'icon', name: 'bag', size: 22 %}
+        <span class="site-header__count text-subnav" data-cart-count{% if cart.item_count == 0 %} hidden{% endif %}>{{ cart.item_count }}</span>
+        <span class="visually-hidden">{{ 'accessibility.cart_count' | t: count: cart.item_count }}</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+{% stylesheet %}
+  .site-header { position: relative; background: var(--scheme-bg); color: var(--scheme-text); }
+  .site-header--border { border-bottom: 1px solid var(--scheme-border); }
+
+  /* ----- Mobile: burger | logo | actions ----- */
+  .site-header__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-areas: "burger logo actions";
+    align-items: center;
+    gap: var(--space-8);
+    min-height: 64px;
+    padding: var(--space-4) var(--space-16);
+  }
+  .site-header__burger { grid-area: burger; justify-self: start; margin-left: calc(var(--space-12) * -1); }
+  .site-header__logo { grid-area: logo; justify-self: center; min-width: 0; max-width: calc(100vw - 190px); }
+  .site-header__actions { grid-area: actions; justify-self: end; display: flex; align-items: center; margin-right: calc(var(--space-12) * -1); }
+  .site-header__nav { display: none; }
+  .site-header__account { display: none; }
+
+  .site-header__logo-link { display: inline-flex; align-items: center; max-width: 100%; text-decoration: none; }
+  .site-header__logo-link img { width: var(--logo-width-mobile); max-width: 100%; height: auto; }
+  .site-header__wordmark { display: block; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: clamp(15px, 5vw, var(--fs-featured)); }  /* shrinks on phones so a longer brand name is not truncated */
+
+  .site-header__cart { position: relative; }
+  .site-header__count {
+    position: absolute;
+    top: 6px;
+    right: 3px;
+    min-width: 16px;
+    padding: 2px 4px;
+    border-radius: 8px;
+    background: var(--color-accent-1);
+    color: #fff;
+    line-height: 1.2;
+    text-align: center;
+  }
+  .site-header__count[hidden] { display: none; }
+
+  /* ----- Navigation ----- */
+  .nav__list { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-32); margin: 0; padding: 0; list-style: none; }
+
+  /* Items are stretched to the header edge so the pointer never leaves the hover area
+     between the link and its panel. */
+  .nav__item { padding-block: var(--space-16); margin-block: calc(var(--space-16) * -1); }
+  .nav__item:not([data-mega="true"]) { position: relative; }
+
+  .nav__row { display: flex; align-items: center; gap: var(--space-4); }
+  .nav__link { text-decoration: none; padding: var(--space-4) 0; }
+  .nav__link:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.3em; }
+  .nav__link[aria-current="page"] { text-decoration: underline; text-underline-offset: 0.3em; }
+
+  .nav__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+  }
+  .nav__toggle .icon { transition: transform 0.3s var(--ease-out); }
+  .nav__toggle[aria-expanded="true"] .icon { transform: rotate(180deg); }
+
+  .nav__panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1;
+    min-width: 220px;
+    background: var(--color-background);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-bottom);
+    visibility: hidden;
+    opacity: 0;
+    transform: translate3d(0, -6px, 0);
+    transition: opacity 0.2s var(--ease-standard), transform 0.2s var(--ease-standard), visibility 0s linear 0.2s;
+  }
+  .nav__item[data-open="true"] > .nav__panel {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out), visibility 0s;
+  }
+
+  .nav__panel--mega { left: 0; right: 0; min-width: 0; padding: var(--space-32) var(--section-x); border-inline: 0; }
+  .nav__mega { display: grid; grid-template-columns: repeat(var(--mega-cols, 4), minmax(0, 1fr)); gap: var(--space-32); max-width: var(--container-max); margin-inline: auto; }
+  .nav__column { display: flex; flex-direction: column; gap: var(--space-12); margin: 0; padding: 0; list-style: none; }
+  .nav__column > ul { display: flex; flex-direction: column; gap: var(--space-8); margin: 0; padding: 0; list-style: none; }
+  .nav__column-title { text-decoration: none; }
+  .nav__dropdown { display: flex; flex-direction: column; gap: var(--space-12); margin: 0; padding: var(--space-16) var(--space-16); list-style: none; }
+
+  .nav__sublink { display: inline-block; text-decoration: none; padding: 2px 0; }
+  .nav__sublink:hover, .nav__column-title:hover { text-decoration: underline; text-underline-offset: 0.3em; }
+  .nav__sublink[aria-current="page"], .nav__column-title[aria-current="page"] { text-decoration: underline; text-underline-offset: 0.3em; }
+
+  .nav__promo-link { display: flex; flex-direction: column; gap: var(--space-8); text-decoration: none; }
+  .nav__promo { display: flex; flex-direction: column; gap: var(--space-8); min-width: 0; max-width: 280px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav__panel { transform: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.header.name",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:sections.header.settings.menu.label",
+      "default": "main-menu"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.header.settings.color_scheme.label",
+      "default": "light",
+      "options": [
+        { "value": "light", "label": "t:sections.header.settings.color_scheme.options__1.label" },
+        { "value": "default", "label": "t:sections.header.settings.color_scheme.options__2.label" },
+        { "value": "dark", "label": "t:sections.header.settings.color_scheme.options__3.label" },
+        { "value": "accent-1", "label": "t:sections.header.settings.color_scheme.options__4.label" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "nav_breakpoint",
+      "label": "t:sections.header.settings.nav_breakpoint.label",
+      "info": "t:sections.header.settings.nav_breakpoint.info",
+      "default": "1024",
+      "options": [
+        { "value": "768", "label": "t:sections.header.settings.nav_breakpoint.options__1.label" },
+        { "value": "1024", "label": "t:sections.header.settings.nav_breakpoint.options__2.label" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky",
+      "label": "t:sections.header.settings.sticky.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "bottom_border",
+      "label": "t:sections.header.settings.bottom_border.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "t:sections.header.settings.show_search.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "t:sections.header.settings.show_account.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.header.settings.header__mega.content"
+    },
+    {
+      "type": "range",
+      "id": "mega_columns",
+      "label": "t:sections.header.settings.mega_columns.label",
+      "info": "t:sections.header.settings.mega_columns.info",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "paragraph",
+      "content": "t:sections.header.settings.paragraph__1.content"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "promo",
+      "name": "t:sections.header.blocks.promo.name",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "parent_menu_item",
+          "label": "t:sections.header.blocks.promo.settings.parent_menu_item.label",
+          "info": "t:sections.header.blocks.promo.settings.parent_menu_item.info"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.header.blocks.promo.settings.image.label"
+        },
+        {
+          "type": "select",
+          "id": "image_ratio",
+          "label": "t:sections.header.blocks.promo.settings.image_ratio.label",
+          "default": "portrait",
+          "options": [
+            { "value": "portrait", "label": "t:sections.header.blocks.promo.settings.image_ratio.options__1.label" },
+            { "value": "square", "label": "t:sections.header.blocks.promo.settings.image_ratio.options__2.label" },
+            { "value": "landscape", "label": "t:sections.header.blocks.promo.settings.image_ratio.options__3.label" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:sections.header.blocks.promo.settings.heading.label"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:sections.header.blocks.promo.settings.text.label"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "t:sections.header.blocks.promo.settings.link_label.label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:sections.header.blocks.promo.settings.link.label"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,34 @@
+{%- comment -%}
+  Social links from theme settings. Renders nothing when no link is set.
+
+  Accepts:
+  - class: extra CSS classes for the <ul>
+
+  Usage: {% render 'social-links' %}
+{%- endcomment -%}
+{%- liquid
+  assign networks = 'instagram|facebook|x|youtube|tiktok|pinterest' | split: '|'
+  assign labels = 'Instagram|Facebook|X|YouTube|TikTok|Pinterest' | split: '|'
+  assign found = false
+  for network in networks
+    assign key = 'social_' | append: network
+    if settings[key] != blank
+      assign found = true
+    endif
+  endfor
+-%}
+{%- if found -%}
+  <ul class="social-links{% if class != blank %} {{ class }}{% endif %}" role="list">
+    {%- for network in networks -%}
+      {%- assign key = 'social_' | append: network -%}
+      {%- assign url = settings[key] -%}
+      {%- if url != blank -%}
+        <li>
+          <a class="social-links__link" href="{{ url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ 'accessibility.social_link' | t: platform: labels[forloop.index0] }}">
+            {% render 'icon', name: network, size: 22 %}
+          </a>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

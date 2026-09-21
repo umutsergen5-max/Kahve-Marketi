@@ -1,0 +1,291 @@
+{%- comment -%}
+  FAQ: questions and answers managed entirely as theme blocks (nothing hardcoded).
+  Blocks: "category" (a heading that starts a group) and "question" (question + rich-text
+  answer). Every question is a row of the shared accordion (snippets/info-accordion +
+  the disclosure module in assets/theme.js): a real <button> with aria-expanded and
+  aria-controls, keyboard operable, focus visible, reduced motion respected, and every
+  answer is open without JavaScript.
+  Structured data: an opt-in setting adds FAQPage JSON-LD. Search engines currently limit
+  FAQ rich results to a few kinds of sites, so it is off by default.
+{%- endcomment -%}
+{%- liquid
+  assign group_name = 'faq-' | append: section.id
+  assign has_heading = false
+  if section.settings.heading != blank
+    assign has_heading = true
+  endif
+  assign row_tag = 'h2'
+  if has_heading
+    assign row_tag = 'h3'
+  endif
+  assign question_count = 0
+-%}
+
+<section
+  class="faq section scheme-{{ section.settings.color_scheme }}"
+  style="--faq-width: var(--width-{{ section.settings.content_width }});"
+  data-spacing-top="{{ section.settings.spacing_top }}"
+  data-spacing-bottom="{{ section.settings.spacing_bottom }}"
+>
+  <div class="faq__inner">
+    {%- if has_heading or section.settings.text != blank -%}
+      <header class="faq__header text-{{ section.settings.header_align }}">
+        {%- if has_heading -%}<h2 class="faq__heading heading heading--featured">{{ section.settings.heading | escape }}</h2>{%- endif -%}
+        {%- if section.settings.text != blank -%}<div class="faq__text rte">{{ section.settings.text }}</div>{%- endif -%}
+      </header>
+    {%- endif -%}
+
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'category' -%}
+          {%- if block.settings.heading != blank -%}
+            {%- assign row_tag = 'h3' -%}
+            <h2 class="faq__category heading heading--section" {{ block.shopify_attributes }}>{{ block.settings.heading | escape }}</h2>
+          {%- endif -%}
+        {%- when 'question' -%}
+          {%- if block.settings.question != blank -%}
+            {%- assign question_count = question_count | plus: 1 -%}
+            {%- capture answer -%}<div class="rte">{{ block.settings.answer }}</div>{%- endcapture -%}
+            {%- assign is_open = false -%}
+            {%- if section.settings.open_first and question_count == 1 -%}{%- assign is_open = true -%}{%- endif -%}
+            {% render 'info-accordion',
+              id: block.id,
+              heading: block.settings.question,
+              content: answer,
+              open: is_open,
+              heading_tag: row_tag,
+              group: group_name,
+              single: section.settings.single_open,
+              attributes: block.shopify_attributes
+            %}
+          {%- endif -%}
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+
+  {%- if section.settings.enable_schema and question_count > 0 -%}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {%- assign schema_separator = '' -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'question' and block.settings.question != blank and block.settings.answer != blank -%}
+              {{ schema_separator }}{
+                "@type": "Question",
+                "name": {{ block.settings.question | json }},
+                "acceptedAnswer": { "@type": "Answer", "text": {{ block.settings.answer | json }} }
+              }
+              {%- assign schema_separator = ',' -%}
+            {%- endif -%}
+          {%- endfor -%}
+        ]
+      }
+    </script>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .faq__inner { max-width: var(--faq-width, var(--width-sm)); margin-inline: auto; }
+  .faq__header { margin-bottom: var(--space-32); }
+  .faq__heading { margin: 0; }
+  .faq__text { margin-top: var(--space-12); }
+  .faq__category { margin: var(--space-48) 0 var(--space-8); }
+  .faq__category:first-child, .faq__header + .faq__category { margin-top: 0; }
+  .faq .info-accordion:first-of-type { border-top: 1px solid var(--scheme-border); }
+  .faq__category + .info-accordion { border-top: 1px solid var(--scheme-border); }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.faq.name",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.faq.settings.header__header.content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:sections.faq.settings.heading.label"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:sections.faq.settings.text.label"
+    },
+    {
+      "type": "select",
+      "id": "header_align",
+      "label": "t:sections.faq.settings.header_align.label",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.faq.settings.header_align.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.faq.settings.header_align.options__2.label"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.faq.settings.header__behaviour.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first",
+      "label": "t:sections.faq.settings.open_first.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "single_open",
+      "label": "t:sections.faq.settings.single_open.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_schema",
+      "label": "t:sections.faq.settings.enable_schema.label",
+      "info": "t:sections.faq.settings.enable_schema.info",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "t:sections.faq.settings.content_width.label",
+      "options": [
+        {
+          "value": "xs",
+          "label": "t:sections.faq.settings.content_width.options__1.label"
+        },
+        {
+          "value": "sm",
+          "label": "t:sections.faq.settings.content_width.options__2.label"
+        },
+        {
+          "value": "md",
+          "label": "t:sections.faq.settings.content_width.options__3.label"
+        }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.faq.settings.header__layout.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.faq.settings.color_scheme.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.faq.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.faq.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "dark",
+          "label": "t:sections.faq.settings.color_scheme.options__3.label"
+        },
+        {
+          "value": "accent-1",
+          "label": "t:sections.faq.settings.color_scheme.options__4.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.faq.settings.color_scheme.options__5.label"
+        },
+        {
+          "value": "accent-3",
+          "label": "t:sections.faq.settings.color_scheme.options__6.label"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "t:sections.faq.settings.spacing_top.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.faq.settings.spacing_top.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.faq.settings.spacing_top.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.faq.settings.spacing_top.options__3.label"
+        }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "t:sections.faq.settings.spacing_bottom.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.faq.settings.spacing_bottom.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.faq.settings.spacing_bottom.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.faq.settings.spacing_bottom.options__3.label"
+        }
+      ],
+      "default": "full"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "t:sections.faq.blocks.category.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:sections.faq.blocks.category.settings.heading.label",
+          "default": "Kategori"
+        }
+      ]
+    },
+    {
+      "type": "question",
+      "name": "t:sections.faq.blocks.question.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "t:sections.faq.blocks.question.settings.question.label",
+          "default": "Soru başlığı"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "t:sections.faq.blocks.question.settings.answer.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.faq.presets.name"
+    }
+  ]
+}
+{% endschema %}

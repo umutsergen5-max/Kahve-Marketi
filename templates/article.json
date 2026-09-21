@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-article",
+      "settings": {}
+    },
+    "related": {
+      "type": "featured-blog",
+      "settings": {
+        "color_scheme": "light"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "related"
+  ]
+}

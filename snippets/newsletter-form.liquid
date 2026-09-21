@@ -1,0 +1,63 @@
+{%- comment -%}
+  Newsletter sign-up using Shopify's native customer form (the form tag),
+  which tags the new customer "newsletter" and applies Shopify's own spam
+  protection. Heading and text come from theme settings (Newsletter group),
+  falling back to Turkish defaults from the locale file.
+
+  Accepts:
+  - form_id: unique id for the form (required when the snippet is used twice)
+
+  Usage: {% render 'newsletter-form', form_id: 'footer-newsletter' %}
+{%- endcomment -%}
+{%- liquid
+  assign nl_id = form_id | default: 'newsletter'
+  if settings.newsletter_heading != blank
+    assign nl_heading = settings.newsletter_heading
+  else
+    assign nl_heading = 'newsletter.heading' | t
+  endif
+  if settings.newsletter_text != blank
+    assign nl_text = settings.newsletter_text
+  else
+    assign nl_text = 'newsletter.text' | t
+  endif
+-%}
+
+<div class="newsletter">
+  <h2 class="newsletter__heading heading heading--block" id="{{ nl_id }}-heading">{{ nl_heading | escape }}</h2>
+  <p class="newsletter__text">{{ nl_text | escape }}</p>
+
+  {%- form 'customer', id: nl_id, class: 'newsletter__form', novalidate: 'novalidate' -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+
+    {%- if form.posted_successfully? -%}
+      <p class="message message--success" role="status" tabindex="-1" id="{{ nl_id }}-status">{{ 'newsletter.success' | t }}</p>
+    {%- else -%}
+      <div class="newsletter__field">
+        <label class="visually-hidden" for="{{ nl_id }}-email">{{ 'newsletter.email_label' | t }}</label>
+        <input
+          class="input newsletter__input"
+          type="email"
+          name="contact[email]"
+          id="{{ nl_id }}-email"
+          value="{{ form.email }}"
+          placeholder="{{ 'newsletter.placeholder' | t }}"
+          autocomplete="email"
+          autocapitalize="off"
+          spellcheck="false"
+          required
+          aria-required="true"
+          {% if form.errors %}aria-invalid="true" aria-describedby="{{ nl_id }}-error"{% else %}aria-describedby="{{ nl_id }}-disclaimer"{% endif %}
+        >
+        <button class="button newsletter__submit" type="submit">
+          <span>{{ 'newsletter.submit' | t }}</span>
+        </button>
+      </div>
+
+      {%- if form.errors -%}
+        <p class="field__error newsletter__error" id="{{ nl_id }}-error" role="alert">{{ 'newsletter.error' | t }}</p>
+      {%- endif -%}
+      <p class="newsletter__disclaimer text-small" id="{{ nl_id }}-disclaimer">{{ 'newsletter.disclaimer' | t }}</p>
+    {%- endif -%}
+  {%- endform -%}
+</div>

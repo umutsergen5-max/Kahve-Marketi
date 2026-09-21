@@ -1,0 +1,188 @@
+{%- comment -%}
+  Order detail (customers/order template) — classic customer accounts.
+  Order name and date, payment / fulfilment status, line items (options, SKU, quantity,
+  prices, discounts, tracking links), totals and the billing / shipping addresses.
+  All data comes from the Shopify `order` object.
+{%- endcomment -%}
+{%- assign account_title = 'customer.account' | t -%}
+<section class="account section scheme-{{ section.settings.color_scheme }}" data-spacing-top="{{ section.settings.spacing_top }}" data-spacing-bottom="{{ section.settings.spacing_bottom }}">
+  {%- if section.settings.show_breadcrumb -%}<div class="account__crumbs">{% render 'breadcrumbs', current_title: order.name, parent_title: account_title, parent_url: routes.account_url %}</div>{%- endif -%}
+
+  <header class="account__header">
+    <div>
+      <h1 class="account__title heading heading--section">{{ 'customer.order_title' | t: name: order.name }}</h1>
+      <p class="account__welcome text-muted">{{ 'customer.placed_on' | t }} {{ order.created_at | time_tag: format: 'date' }}</p>
+      {%- if order.cancelled -%}<p class="message message--error" role="status">{{ 'customer.order_cancelled' | t }} {{ order.cancelled_at | time_tag: format: 'date' }}{% if order.cancel_reason_label != blank %} ({{ order.cancel_reason_label | escape }}){% endif %}</p>{%- endif -%}
+    </div>
+    <a class="button button--secondary button--small" href="{{ routes.account_url }}">{{ 'customer.back_to_account' | t }}</a>
+  </header>
+
+  <dl class="order-status">
+    <div><dt class="text-nav">{{ 'customer.payment_status' | t }}</dt><dd>{{ order.financial_status_label | escape }}</dd></div>
+    <div><dt class="text-nav">{{ 'customer.fulfillment_status' | t }}</dt><dd>{{ order.fulfillment_status_label | escape }}</dd></div>
+  </dl>
+
+  <div class="account__layout">
+    <section class="account__orders" aria-labelledby="order-items-title">
+      <h2 class="account__subtitle heading heading--block" id="order-items-title">{{ 'customer.items' | t }}</h2>
+      <table class="orders">
+        <caption class="visually-hidden">{{ 'customer.items' | t }}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{{ 'customer.product' | t }}</th>
+            <th scope="col" class="orders__num">{{ 'customer.price' | t }}</th>
+            <th scope="col" class="orders__num">{{ 'customer.quantity' | t }}</th>
+            <th scope="col" class="orders__num">{{ 'customer.total' | t }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- for line_item in order.line_items -%}
+            <tr>
+              <th scope="row" data-label="{{ 'customer.product' | t }}">
+                <span class="orders__product">
+                  {%- if line_item.url != blank -%}<a class="orders__link" href="{{ line_item.url }}">{{ line_item.title | escape }}</a>{%- else -%}{{ line_item.title | escape }}{%- endif -%}
+                </span>
+                {%- unless line_item.product.has_only_default_variant -%}
+                  <ul class="cart-item__meta text-small text-muted" role="list">
+                    {%- for option in line_item.options_with_values -%}<li>{{ option.name | escape }}: {{ option.value | escape }}</li>{%- endfor -%}
+                  </ul>
+                {%- endunless -%}
+                {%- if line_item.sku != blank -%}<p class="text-small text-muted">{{ 'products.sku' | t }}: {{ line_item.sku | escape }}</p>{%- endif -%}
+                {%- for discount_allocation in line_item.line_level_discount_allocations -%}
+                  <p class="badge badge--accent">{{ discount_allocation.discount_application.title | escape }}</p>
+                {%- endfor -%}
+                {%- if line_item.fulfillment -%}
+                  <p class="text-small text-muted">
+                    {{ 'customer.fulfilled_on' | t }} {{ line_item.fulfillment.created_at | time_tag: format: 'date' }}
+                    {%- if line_item.fulfillment.tracking_url != blank %} · <a class="link" href="{{ line_item.fulfillment.tracking_url }}" target="_blank" rel="noopener noreferrer">{{ 'customer.tracking' | t }}{% if line_item.fulfillment.tracking_number != blank %} {{ line_item.fulfillment.tracking_number | escape }}{% endif %}<span class="visually-hidden"> {{ 'accessibility.opens_new_window' | t }}</span></a>{% endif -%}
+                  </p>
+                {%- endif -%}
+              </th>
+              <td class="orders__num" data-label="{{ 'customer.price' | t }}">{{ line_item.original_price | money }}</td>
+              <td class="orders__num" data-label="{{ 'customer.quantity' | t }}">{{ line_item.quantity }}</td>
+              <td class="orders__num" data-label="{{ 'customer.total' | t }}">{{ line_item.final_line_price | money }}</td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+        <tfoot>
+          <tr><th scope="row" colspan="3">{{ 'cart.subtotal' | t }}</th><td class="orders__num">{{ order.line_items_subtotal_price | money }}</td></tr>
+          {%- for discount_application in order.cart_level_discount_applications -%}
+            <tr><th scope="row" colspan="3">{{ discount_application.title | escape }}</th><td class="orders__num">-{{ discount_application.total_allocated_amount | money }}</td></tr>
+          {%- endfor -%}
+          {%- for shipping_method in order.shipping_methods -%}
+            <tr><th scope="row" colspan="3">{{ 'customer.shipping' | t }} ({{ shipping_method.title | escape }})</th><td class="orders__num">{{ shipping_method.price | money }}</td></tr>
+          {%- endfor -%}
+          {%- for tax_line in order.tax_lines -%}
+            <tr><th scope="row" colspan="3">{{ tax_line.title | escape }} ({{ tax_line.rate | times: 100 }}%)</th><td class="orders__num">{{ tax_line.price | money }}</td></tr>
+          {%- endfor -%}
+          <tr class="orders__grand"><th scope="row" colspan="3">{{ 'customer.total' | t }}</th><td class="orders__num">{{ order.total_price | money }} {{ order.currency }}</td></tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <aside class="account__details" aria-labelledby="order-addresses-title">
+      <h2 class="account__subtitle heading heading--block" id="order-addresses-title">{{ 'customer.addresses' | t }}</h2>
+      {%- if order.billing_address != blank -%}
+        <div class="account__address"><p class="account__label text-nav">{{ 'customer.billing_address' | t }}</p><address>{{ order.billing_address | format_address }}</address></div>
+      {%- endif -%}
+      {%- if order.shipping_address != blank -%}
+        <div class="account__address"><p class="account__label text-nav">{{ 'customer.shipping_address' | t }}</p><address>{{ order.shipping_address | format_address }}</address></div>
+      {%- endif -%}
+    </aside>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.main-order.name",
+  "enabled_on": {
+    "templates": [
+      "customers/order"
+    ]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "t:sections.main-order.settings.show_breadcrumb.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-order.settings.header__layout.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.main-order.settings.color_scheme.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.main-order.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.main-order.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "dark",
+          "label": "t:sections.main-order.settings.color_scheme.options__3.label"
+        },
+        {
+          "value": "accent-1",
+          "label": "t:sections.main-order.settings.color_scheme.options__4.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.main-order.settings.color_scheme.options__5.label"
+        },
+        {
+          "value": "accent-3",
+          "label": "t:sections.main-order.settings.color_scheme.options__6.label"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "t:sections.main-order.settings.spacing_top.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-order.settings.spacing_top.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-order.settings.spacing_top.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-order.settings.spacing_top.options__3.label"
+        }
+      ],
+      "default": "half"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "t:sections.main-order.settings.spacing_bottom.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-order.settings.spacing_bottom.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-order.settings.spacing_bottom.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-order.settings.spacing_bottom.options__3.label"
+        }
+      ],
+      "default": "full"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,44 @@
+# OS / editor metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Dependencies, logs and temporary files
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+logs/
+*.tmp
+*.temp
+*.bak
+.cache/
+
+# Local test artifacts and tooling output (the theme itself is never ignored)
+__pycache__/
+*.pyc
+.pytest_cache/
+coverage/
+test-results/
+playwright-report/
+screenshots/
+scratch/
+mock-*.log
+
+# Secrets and local Shopify config (never commit credentials or store details)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.shopify/
+shopify.theme.toml

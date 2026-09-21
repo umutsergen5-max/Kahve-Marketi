@@ -1,0 +1,177 @@
+{%- comment -%}
+  Customer account page (customers/account template) — classic customer accounts.
+  Greeting, logout, account details (name, email, default address, link to all addresses) and
+  the order history (paginated). Everything comes from the Shopify `customer` object; nothing
+  is hardcoded. With Shopify's new customer accounts the account area is hosted by Shopify and
+  this template is not used.
+{%- endcomment -%}
+{%- assign account_title = 'customer.account' | t -%}
+{%- paginate customer.orders by section.settings.orders_per_page -%}
+  <section class="account section scheme-{{ section.settings.color_scheme }}" data-spacing-top="{{ section.settings.spacing_top }}" data-spacing-bottom="{{ section.settings.spacing_bottom }}">
+    {%- if section.settings.show_breadcrumb -%}<div class="account__crumbs">{% render 'breadcrumbs', current_title: account_title %}</div>{%- endif -%}
+
+    <header class="account__header">
+      <div>
+        <h1 class="account__title heading heading--section">{{ account_title }}</h1>
+        {%- if customer.first_name != blank -%}<p class="account__welcome text-muted">{{ 'customer.welcome' | t: name: customer.first_name }}</p>{%- endif -%}
+      </div>
+      <a class="button button--secondary button--small account__logout" href="{{ routes.account_logout_url }}">{{ 'customer.logout' | t }}</a>
+    </header>
+
+    <div class="account__layout">
+      <section class="account__orders" aria-labelledby="account-orders-title">
+        <h2 class="account__subtitle heading heading--block" id="account-orders-title">{{ 'customer.order_history' | t }}</h2>
+        {%- if customer.orders.size > 0 -%}
+          <table class="orders">
+            <caption class="visually-hidden">{{ 'customer.orders_table' | t }}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{{ 'customer.order' | t }}</th>
+                <th scope="col">{{ 'customer.date' | t }}</th>
+                <th scope="col">{{ 'customer.payment_status' | t }}</th>
+                <th scope="col">{{ 'customer.fulfillment_status' | t }}</th>
+                <th scope="col" class="orders__num">{{ 'customer.total' | t }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {%- for order in customer.orders -%}
+                <tr>
+                  <th scope="row" data-label="{{ 'customer.order' | t }}"><a class="orders__link" href="{{ order.customer_url }}">{{ order.name | escape }}<span class="visually-hidden"> {{ 'customer.view_order' | t }}</span></a></th>
+                  <td data-label="{{ 'customer.date' | t }}">{{ order.created_at | time_tag: format: 'date' }}</td>
+                  <td data-label="{{ 'customer.payment_status' | t }}">{{ order.financial_status_label | escape }}</td>
+                  <td data-label="{{ 'customer.fulfillment_status' | t }}">{{ order.fulfillment_status_label | escape }}</td>
+                  <td class="orders__num" data-label="{{ 'customer.total' | t }}">{{ order.total_price | money }}</td>
+                </tr>
+              {%- endfor -%}
+            </tbody>
+          </table>
+          {% render 'pagination', paginate: paginate, class: 'account__pagination' %}
+        {%- else -%}
+          <div class="account__empty">
+            <p>{{ 'customer.no_orders' | t }}</p>
+            <a class="button" href="{{ routes.all_products_collection_url }}">{{ 'cart.continue_shopping' | t }}</a>
+          </div>
+        {%- endif -%}
+      </section>
+
+      <aside class="account__details" aria-labelledby="account-details-title">
+        <h2 class="account__subtitle heading heading--block" id="account-details-title">{{ 'customer.account_details' | t }}</h2>
+        <p class="account__name">{{ customer.name | escape }}</p>
+        <p class="account__email text-muted">{{ customer.email | escape }}</p>
+        {%- if customer.default_address != nil -%}
+          <div class="account__address">
+            <p class="account__label text-nav">{{ 'customer.default_address' | t }}</p>
+            <address>{{ customer.default_address | format_address }}</address>
+          </div>
+        {%- else -%}
+          <p class="text-small text-muted">{{ 'customer.no_default_address' | t }}</p>
+        {%- endif -%}
+        <a class="link" href="{{ routes.account_addresses_url }}">{{ 'customer.view_addresses' | t: count: customer.addresses_count }}</a>
+      </aside>
+    </div>
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "t:sections.main-account.name",
+  "enabled_on": {
+    "templates": [
+      "customers/account"
+    ]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "t:sections.main-account.settings.show_breadcrumb.label",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "orders_per_page",
+      "label": "t:sections.main-account.settings.orders_per_page.label",
+      "default": 10,
+      "min": 5,
+      "max": 30,
+      "step": 5
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-account.settings.header__layout.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.main-account.settings.color_scheme.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.main-account.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.main-account.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "dark",
+          "label": "t:sections.main-account.settings.color_scheme.options__3.label"
+        },
+        {
+          "value": "accent-1",
+          "label": "t:sections.main-account.settings.color_scheme.options__4.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.main-account.settings.color_scheme.options__5.label"
+        },
+        {
+          "value": "accent-3",
+          "label": "t:sections.main-account.settings.color_scheme.options__6.label"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "t:sections.main-account.settings.spacing_top.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-account.settings.spacing_top.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-account.settings.spacing_top.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-account.settings.spacing_top.options__3.label"
+        }
+      ],
+      "default": "half"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "t:sections.main-account.settings.spacing_bottom.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-account.settings.spacing_bottom.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-account.settings.spacing_bottom.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-account.settings.spacing_bottom.options__3.label"
+        }
+      ],
+      "default": "full"
+    }
+  ]
+}
+{% endschema %}

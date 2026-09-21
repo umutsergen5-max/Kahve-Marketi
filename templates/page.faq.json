@@ -1,0 +1,57 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "content_width": "sm",
+        "title_align": "center",
+        "spacing_bottom": "none"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "category-1": {
+          "type": "category",
+          "settings": {
+            "heading": "Kategori başlığı"
+          }
+        },
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Örnek soru 1",
+            "answer": "<p>Bu bir örnek cevaptır. Metni tema düzenleyicide değiştirin veya bloğu silin.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Örnek soru 2",
+            "answer": "<p>Bu bir örnek cevaptır. Metni tema düzenleyicide değiştirin veya bloğu silin.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Örnek soru 3",
+            "answer": "<p>Bu bir örnek cevaptır. Metni tema düzenleyicide değiştirin veya bloğu silin.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "category-1",
+        "q1",
+        "q2",
+        "q3"
+      ],
+      "settings": {
+        "spacing_top": "half"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "faq"
+  ]
+}

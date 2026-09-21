@@ -1,0 +1,6 @@
+# Files that live in the repository but must not be uploaded to a Shopify theme
+README.md
+docs/
+.gitignore
+.gitattributes
+.shopifyignore

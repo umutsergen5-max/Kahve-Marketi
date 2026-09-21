@@ -1,0 +1,160 @@
+{%- comment -%}
+  Addresses page (customers/addresses template) — classic customer accounts.
+  Lists the customer's addresses with edit (native <details>) and delete, plus an "add address"
+  form. All forms are Shopify customer_address forms; the delete form overrides the HTTP method
+  with a hidden _method field, the way Shopify's own address links do (untested against a real
+  store). Country/province behaviour: assets/auth.js.
+{%- endcomment -%}
+{%- liquid
+  assign addresses_title = 'customer.addresses' | t
+  assign account_title = 'customer.account' | t
+  assign delete_confirm = 'customer.delete_confirm' | t
+-%}
+{%- paginate customer.addresses by 6 -%}
+  <section class="account section scheme-{{ section.settings.color_scheme }}" data-component="address-forms" data-spacing-top="{{ section.settings.spacing_top }}" data-spacing-bottom="{{ section.settings.spacing_bottom }}">
+    {%- if section.settings.show_breadcrumb -%}<div class="account__crumbs">{% render 'breadcrumbs', current_title: addresses_title, parent_title: account_title, parent_url: routes.account_url %}</div>{%- endif -%}
+    <header class="account__header">
+      <h1 class="account__title heading heading--section">{{ addresses_title }}</h1>
+      <a class="button button--secondary button--small" href="{{ routes.account_url }}">{{ 'customer.back_to_account' | t }}</a>
+    </header>
+
+    <details class="address-new" {% if form.errors %}open{% endif %}>
+      <summary class="button address-new__summary">{{ 'customer.add_address' | t }}</summary>
+      {%- form 'customer_address', customer.new_address, id: 'address-new', novalidate: 'novalidate' -%}
+        {% render 'form-errors', errors: form.errors, id: 'address-new-errors' %}
+        {% render 'address-fields', values: form, uid: 'new', is_default: false %}
+        <button class="button" type="submit">{{ 'customer.save' | t }}</button>
+      {%- endform -%}
+    </details>
+
+    {%- if customer.addresses.size > 0 -%}
+      <ul class="address-list" role="list">
+        {%- for address in customer.addresses -%}
+          {%- liquid
+            assign address_is_default = false
+            if address == customer.default_address
+              assign address_is_default = true
+            endif
+            assign delete_form_id = 'address-delete-' | append: address.id
+          -%}
+          <li class="address-card">
+            <div class="address-card__head">
+              <h2 class="address-card__title heading heading--block">{{ 'customer.address_n' | t: number: forloop.index }}</h2>
+              {%- if address_is_default -%}<span class="badge badge--accent">{{ 'customer.default_badge' | t }}</span>{%- endif -%}
+            </div>
+            <address>{{ address | format_address }}</address>
+            <details class="address-card__edit">
+              <summary class="button button--secondary button--small">{{ 'customer.edit' | t }}<span class="visually-hidden"> {{ 'customer.address_n' | t: number: forloop.index }}</span></summary>
+              {%- form 'customer_address', address, id: address.id, novalidate: 'novalidate' -%}
+                {% render 'address-fields', values: form, uid: address.id, is_default: address_is_default %}
+                <button class="button" type="submit">{{ 'customer.save' | t }}</button>
+              {%- endform -%}
+            </details>
+            {%- form 'customer_address', address, id: delete_form_id, class: 'address-card__delete', data-confirm: delete_confirm -%}
+              <input type="hidden" name="_method" value="delete">
+              <button class="button button--text" type="submit">{{ 'customer.delete' | t }}<span class="visually-hidden"> {{ 'customer.address_n' | t: number: forloop.index }}</span></button>
+            {%- endform -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+      {% render 'pagination', paginate: paginate, class: 'account__pagination' %}
+    {%- else -%}
+      <p class="account__empty">{{ 'customer.no_addresses' | t }}</p>
+    {%- endif -%}
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "t:sections.main-addresses.name",
+  "enabled_on": {
+    "templates": [
+      "customers/addresses"
+    ]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "t:sections.main-addresses.settings.show_breadcrumb.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-addresses.settings.header__layout.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.main-addresses.settings.color_scheme.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.main-addresses.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.main-addresses.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "dark",
+          "label": "t:sections.main-addresses.settings.color_scheme.options__3.label"
+        },
+        {
+          "value": "accent-1",
+          "label": "t:sections.main-addresses.settings.color_scheme.options__4.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.main-addresses.settings.color_scheme.options__5.label"
+        },
+        {
+          "value": "accent-3",
+          "label": "t:sections.main-addresses.settings.color_scheme.options__6.label"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "t:sections.main-addresses.settings.spacing_top.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-addresses.settings.spacing_top.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-addresses.settings.spacing_top.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-addresses.settings.spacing_top.options__3.label"
+        }
+      ],
+      "default": "half"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "t:sections.main-addresses.settings.spacing_bottom.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-addresses.settings.spacing_bottom.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-addresses.settings.spacing_bottom.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-addresses.settings.spacing_bottom.options__3.label"
+        }
+      ],
+      "default": "full"
+    }
+  ]
+}
+{% endschema %}

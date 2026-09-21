@@ -1,0 +1,161 @@
+{%- comment -%}
+  Design tokens. Fonts, colours, sizes and radii come from theme settings;
+  spacing, easing, z-index and widths are fixed system tokens.
+  Fonts are served from Shopify's font library (font_picker) — no font files
+  are bundled with the theme.
+
+  Mobile type sizes are fixed system values; the desktop values are settings.
+{%- endcomment -%}
+
+{%- liquid
+  assign font_heading = settings.font_heading
+  assign font_body = settings.font_body
+  assign font_body_bold = font_body | font_modify: 'weight', 'bold'
+
+  assign container_max = 'none'
+  if settings.container_width != 'full'
+    assign container_max = settings.container_width | append: 'px'
+  endif
+
+  assign tt_heading = 'none'
+  if settings.heading_uppercase
+    assign tt_heading = 'uppercase'
+  endif
+
+  assign tt_ui = 'none'
+  if settings.ui_uppercase
+    assign tt_ui = 'uppercase'
+  endif
+-%}
+
+<link rel="preload" as="font" type="font/woff2" href="{{ font_heading | font_url }}" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="{{ font_body | font_url }}" crossorigin>
+
+<style data-theme-variables>
+  {{ font_heading | font_face: font_display: 'swap' }}
+  {{ font_body | font_face: font_display: 'swap' }}
+  {{ font_body_bold | font_face: font_display: 'swap' }}
+
+  :root {
+    /* Colour */
+    --color-accent-1: {{ settings.color_accent_1 }};
+    --color-accent-2: {{ settings.color_accent_2 }};
+    --color-accent-3: {{ settings.color_accent_3 }};
+    --color-text: {{ settings.color_text }};
+    --color-text-muted: {{ settings.color_text_muted }};
+    --color-background: {{ settings.color_background }};
+    --color-background-light: {{ settings.color_background_light }};
+    --color-background-dark: {{ settings.color_background_dark }};
+    --color-button: {{ settings.color_button }};
+    --color-button-text: {{ settings.color_button_text }};
+    --color-alert: {{ settings.color_alert }};
+    --color-success: {{ settings.color_success }};
+    --color-gray: #e6e6e6;
+    --color-border: rgba(68, 68, 68, 0.1);
+    --color-border: color-mix(in srgb, {{ settings.color_text }} 10%, transparent);
+    --color-border-strong: rgba(68, 68, 68, 0.35);
+    --color-border-strong: color-mix(in srgb, {{ settings.color_text }} 35%, transparent);
+    --color-overlay: rgba(0, 0, 0, 0.3);
+
+    /* Typography families */
+    --font-heading-family: {{ font_heading.family }}, {{ font_heading.fallback_families }};
+    --font-heading-weight: {{ font_heading.weight }};
+    --font-heading-style: {{ font_heading.style }};
+    --font-body-family: {{ font_body.family }}, {{ font_body.fallback_families }};
+    --font-body-weight: {{ font_body.weight }};
+    --font-body-style: {{ font_body.style }};
+    --font-nav-weight: {{ font_body_bold.weight }};
+
+    /* Typography sizes (mobile). Desktop values are applied at >= 768px. */
+    --fs-banner: min(var(--fs-banner-desktop), 44px);
+    --fs-featured: 24px;
+    --fs-section: 20px;
+    --fs-block: 14px;
+    --fs-body: {{ settings.size_body }}px;
+    --fs-featured-body: 14px;
+    --fs-nav: {{ settings.size_nav }}px;
+    --fs-subnav: 10px;
+    --fs-overline: 10px;
+    --fs-button: {{ settings.size_button }}px;
+
+    --fs-banner-desktop: {{ settings.size_banner }}px;
+    --fs-featured-desktop: {{ settings.size_featured }}px;
+    --fs-section-desktop: {{ settings.size_section }}px;
+    --fs-block-desktop: {{ settings.size_block }}px;
+
+    --lh-heading: 1.2;
+    --lh-body: 1.5;
+    --ls-heading: {{ settings.heading_letter_spacing }}px;
+    --tt-heading: {{ tt_heading }};
+    --tt-ui: {{ tt_ui }};
+
+    /* Spacing scale (px) */
+    --space-4: 4px;
+    --space-8: 8px;
+    --space-12: 12px;
+    --space-16: 16px;
+    --space-32: 32px;
+    --space-48: 48px;
+    --space-64: 64px;
+    --space-72: 72px;
+    --space-96: 96px;
+
+    /* Semantic spacing — mobile values, raised at >= 768px */
+    --gap-item: var(--space-12);
+    --gap-block: var(--space-16);
+    --gap-column: var(--gap-block);
+    --gap-row: var(--gap-block);
+    --section-x: var(--space-16);
+    --section-y: var(--space-32);
+
+    /* Layout */
+    --container-max: {{ container_max }};
+    --width-xs: 650px;
+    --width-sm: 800px;
+    --width-md: 1000px;
+    --width-lg: 1200px;
+    --width-xl: 1400px;
+    --drawer-max-width: 440px;
+    --control-height: 45px;
+
+    /* Shape */
+    --radius-button: {{ settings.radius_button }}px;
+    --radius-input: {{ settings.radius_input }}px;
+    --radius-image: {{ settings.radius_image }}px;
+
+    /* Elevation */
+    --shadow-center: 0 0 10px rgba(0, 0, 0, 0.08);
+    --shadow-bottom: 0 10px 10px -10px rgba(0, 0, 0, 0.2);
+    --shadow-left: -2px 0 10px -2px rgba(0, 0, 0, 0.2);
+    --shadow-right: 2px 0 10px -2px rgba(0, 0, 0, 0.2);
+
+    /* Motion */
+    --ease-standard: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+    --ease-out: cubic-bezier(0.19, 1, 0.22, 1);
+    --ease-button: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    /* Stacking */
+    --z-header: 4;
+    --z-overlay: 98;
+    --z-drawer: 99;
+    --z-skip: 100;
+
+    /* Breakpoints — documentation only; media queries use literal values */
+    --bp-small: 500px;
+    --bp-medium: 768px;
+    --bp-large: 1024px;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --fs-banner: var(--fs-banner-desktop);
+      --fs-featured: var(--fs-featured-desktop);
+      --fs-section: var(--fs-section-desktop);
+      --fs-block: var(--fs-block-desktop);
+      --gap-item: var(--space-16);
+      --gap-block: var(--space-32);
+      --section-x: var(--space-48);
+      --section-y: var(--space-72);
+    }
+  }
+</style>

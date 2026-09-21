@@ -1,0 +1,41 @@
+{%- comment -%}
+  Accordion row (heading button + collapsible panel) built on the shared disclosure
+  module in assets/theme.js. Every panel is open without JavaScript.
+
+  Accepts:
+  - id: unique suffix for element ids (required)
+  - heading: row title (required)
+  - content: panel HTML (required; capture it first)
+  - open: true to start expanded
+  - attributes: extra attributes for the wrapper, e.g. block.shopify_attributes
+  - heading_tag: h2 (default) | h3 | h4 — the heading level wrapping the button
+  - group: name of an accordion group; with single: true only one row of the group stays open
+  - class: extra classes
+{%- endcomment -%}
+{%- assign row_tag = heading_tag | default: 'h2' -%}
+<div class="disclosure info-accordion{% if class != blank %} {{ class }}{% endif %}" data-disclosure data-component="disclosure" data-open="{% if open %}true{% else %}false{% endif %}"{% if group != blank %} data-disclosure-group="{{ group }}"{% if single %} data-single{% endif %}{% endif %} {{ attributes }}>
+  <{{ row_tag }} class="info-accordion__heading">
+    <button
+      class="disclosure__trigger info-accordion__trigger text-nav"
+      type="button"
+      id="info-trigger-{{ id }}"
+      data-disclosure-trigger
+      aria-expanded="{% if open %}true{% else %}false{% endif %}"
+      aria-controls="info-panel-{{ id }}"
+    >
+      <span>{{ heading | escape }}</span>
+      {% render 'icon', name: 'chevron-down', size: 16, class: 'disclosure__icon' %}
+    </button>
+  </{{ row_tag }}>
+  <div class="disclosure__panel" id="info-panel-{{ id }}" role="region" aria-labelledby="info-trigger-{{ id }}">
+    <div class="disclosure__content">{{ content }}</div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .info-accordion__heading { margin: 0; font: inherit; }
+  .info-accordion__trigger { min-height: 44px; cursor: pointer; text-transform: var(--tt-ui); }
+  .info-accordion__trigger:focus-visible { outline: 2px solid var(--scheme-focus); outline-offset: 2px; }
+  .info-accordion .rte { font-size: var(--fs-body); }
+  .info-accordion .rte h1, .info-accordion .rte h2, .info-accordion .rte h3, .info-accordion .rte h4 { font-size: var(--fs-block); }
+{% endstylesheet %}

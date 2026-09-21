@@ -1,0 +1,151 @@
+{%- comment -%}
+  Option pickers for a product's variants: pill buttons (radio group), swatches or a
+  dropdown, chosen per option. Option names and values always come from the product
+  (options_with_values), nothing is assumed about what an option is called.
+
+  Accepts:
+  - product: product object (required)
+  - form_id: id of the product <form> these inputs belong to (required). Inputs use the
+    `form` attribute, so this snippet may sit outside the <form> element.
+  - option_style: pills (default) | dropdown | swatches
+  - swatch_options: comma separated option names (any language) that are drawn as colour
+    swatches when option_style is "swatches", e.g. "Renk, Color"
+  - swatch_colors: comma separated "Value:#hex" pairs, e.g. "Kırmızı:#c0392b, Mavi:#2980b9".
+    A value without a colour is drawn as a normal pill.
+
+  Behaviour (assets/product.js): selecting values picks the matching variant, keeps the
+  selection valid, marks sold-out / non-existing combinations and announces changes.
+  Without JavaScript a <noscript> variant <select> is provided instead.
+{%- endcomment -%}
+{%- liquid
+  assign options_as = option_style | default: 'pills'
+  assign swatch_names = swatch_options | downcase | split: ','
+  assign swatch_pairs = swatch_colors | split: ','
+-%}
+
+{%- unless product.has_only_default_variant -%}
+  <div class="product-options" data-product-options>
+    {%- for option in product.options_with_values -%}
+      {%- liquid
+        assign option_index = forloop.index0
+        assign name_key = option.name | downcase
+        assign as_swatch = false
+        if options_as == 'swatches'
+          for swatch_name in swatch_names
+            assign swatch_name_clean = swatch_name | strip
+            if swatch_name_clean == name_key
+              assign as_swatch = true
+            endif
+          endfor
+        endif
+        assign as_dropdown = false
+        if options_as == 'dropdown' or option.values.size > 6
+          assign as_dropdown = true
+        endif
+        if as_swatch
+          assign as_dropdown = false
+        endif
+      -%}
+
+      {%- if as_dropdown -%}
+        <div class="field option option--dropdown" data-option-index="{{ option_index }}">
+          <label class="field__label" for="option-{{ form_id }}-{{ option_index }}">{{ option.name | escape }}</label>
+          <select class="select" id="option-{{ form_id }}-{{ option_index }}" name="option-{{ form_id }}-{{ option_index }}" form="{{ form_id }}" data-option-input>
+            {%- for value in option.values -%}
+              <option value="{{ value | escape }}" data-value-label="{{ value | escape }}"{% if option.selected_value == value %} selected{% endif %}>{{ value | escape }}</option>
+            {%- endfor -%}
+          </select>
+        </div>
+      {%- else -%}
+        <fieldset class="option option--{% if as_swatch %}swatches{% else %}pills{% endif %}" data-option-index="{{ option_index }}">
+          <legend class="field__label">{{ option.name | escape }}<span class="option__selected" data-option-selected>{{ option.selected_value | escape }}</span></legend>
+          <div class="option__values">
+            {%- for value in option.values -%}
+              {%- liquid
+                assign value_key = value | downcase
+                assign swatch_color = ''
+                if as_swatch
+                  for pair in swatch_pairs
+                    assign kv = pair | split: ':'
+                    assign pair_key = kv[0] | strip | downcase
+                    if pair_key == value_key
+                      assign swatch_color = kv[1] | strip
+                    endif
+                  endfor
+                endif
+              -%}
+              <input
+                class="option__input visually-hidden"
+                type="radio"
+                id="option-{{ form_id }}-{{ option_index }}-{{ forloop.index }}"
+                name="option-{{ form_id }}-{{ option_index }}"
+                value="{{ value | escape }}"
+                form="{{ form_id }}"
+                data-option-input
+                {% if option.selected_value == value %}checked{% endif %}
+              >
+              {%- if swatch_color != blank -%}
+                <label class="option__pill option__pill--swatch" for="option-{{ form_id }}-{{ option_index }}-{{ forloop.index }}" title="{{ value | escape }}">
+                  <span class="option__swatch" style="--swatch: {{ swatch_color | escape }}" aria-hidden="true"></span>
+                  <span class="visually-hidden" data-option-label>{{ value | escape }}</span>
+                  <span class="visually-hidden" data-option-note></span>
+                </label>
+              {%- else -%}
+                <label class="option__pill text-nav" for="option-{{ form_id }}-{{ option_index }}-{{ forloop.index }}">
+                  <span data-option-label>{{ value | escape }}</span>
+                  <span class="visually-hidden" data-option-note></span>
+                </label>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </fieldset>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <noscript>
+      <div class="field option option--dropdown">
+        <label class="field__label" for="variant-fallback-{{ form_id }}">{{ 'products.variant' | t }}</label>
+        <select class="select" id="variant-fallback-{{ form_id }}" name="id" form="{{ form_id }}">
+          {%- for variant in product.variants -%}
+            <option value="{{ variant.id }}"{% if variant == product.selected_or_first_available_variant %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>{{ variant.title | escape }}{% unless variant.available %} – {{ 'products.sold_out' | t }}{% endunless %}</option>
+          {%- endfor -%}
+        </select>
+      </div>
+    </noscript>
+  </div>
+{%- endunless -%}
+
+{% stylesheet %}
+  .product-options { display: flex; flex-direction: column; gap: var(--space-16); }
+  .option { margin: 0; padding: 0; border: 0; min-width: 0; }
+  .option legend { display: block; width: 100%; padding: 0; margin-bottom: var(--space-8); }
+  .option__selected { color: var(--scheme-text-muted); }
+  .option__selected::before { content: ": "; }
+  .option__values { display: flex; flex-wrap: wrap; gap: var(--space-8); }
+  .option__pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 var(--space-16);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-button);
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease-button), color 0.2s var(--ease-button), border-color 0.2s var(--ease-button);
+  }
+  @media (hover: hover) { .option__pill:hover { border-color: var(--scheme-text); } }
+  .option__input:checked + .option__pill { background: var(--scheme-button-bg); border-color: var(--scheme-button-bg); color: var(--scheme-button-text); }
+  .option__input:focus-visible + .option__pill { outline: 2px solid var(--scheme-focus); outline-offset: 2px; }
+  /* Sold out: the variant exists but cannot be bought. Still selectable so the button can say so. */
+  .option__input[data-sold-out] + .option__pill { color: var(--scheme-text-muted); text-decoration: line-through; }
+  .option__input[data-sold-out]:checked + .option__pill { color: var(--scheme-button-text); }
+  /* Missing: no variant has this value together with the current choices. Selecting it re-picks the other options. */
+  .option__input[data-missing] + .option__pill { border-style: dashed; color: var(--scheme-text-muted); opacity: 0.6; }
+  .option__input[data-missing]:checked + .option__pill { opacity: 1; }
+
+  .option--swatches .option__pill { padding: 0; width: 44px; border-radius: 50%; }
+  .option__swatch { display: block; width: 28px; height: 28px; border-radius: 50%; background: var(--swatch, transparent); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2); }
+  .option--swatches .option__input:checked + .option__pill { background: transparent; border-color: var(--scheme-text); box-shadow: inset 0 0 0 2px var(--scheme-bg, #fff); }
+  .option--swatches .option__input[data-sold-out] + .option__pill .option__swatch { opacity: 0.4; background-image: linear-gradient(135deg, transparent 46%, currentColor 47%, currentColor 53%, transparent 54%); }
+{% endstylesheet %}

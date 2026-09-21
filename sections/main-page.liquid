@@ -1,0 +1,294 @@
+{%- comment -%}
+  Generic page (page template): breadcrumb, title, optional image and the page's rich text
+  content, with a configurable reading width, colour scheme and spacing. It also serves as
+  the presentation for legal pages: `page.content` is shown as written, and the merchant can
+  optionally append one of Shopify's own policies (privacy, refund, terms of service,
+  shipping, subscription) with the "Shopify policy" setting. Nothing is hardcoded — no legal
+  entity, address or tax number lives in the theme.
+  Used by the FAQ, wholesale and locations page templates as their opening section too.
+{%- endcomment -%}
+{%- liquid
+  assign policy_object = nil
+  case section.settings.policy
+    when 'privacy'
+      assign policy_object = shop.privacy_policy
+    when 'refund'
+      assign policy_object = shop.refund_policy
+    when 'terms'
+      assign policy_object = shop.terms_of_service
+    when 'shipping'
+      assign policy_object = shop.shipping_policy
+    when 'subscription'
+      assign policy_object = shop.subscription_policy
+  endcase
+  assign page_loading = 'lazy'
+  assign page_priority = 'auto'
+  if section.index <= 2
+    assign page_loading = 'eager'
+    assign page_priority = 'high'
+  endif
+  assign page_image = section.settings.image
+  assign page_alt = section.settings.image_alt | default: page_image.alt
+-%}
+
+<article
+  class="main-page section scheme-{{ section.settings.color_scheme }}"
+  style="--page-width: var(--width-{{ section.settings.content_width }});"
+  data-spacing-top="{{ section.settings.spacing_top }}"
+  data-spacing-bottom="{{ section.settings.spacing_bottom }}"
+>
+  {%- if section.settings.show_breadcrumb -%}
+    <div class="main-page__crumbs">{% render 'breadcrumbs', current_title: page.title %}</div>
+  {%- endif -%}
+
+  {%- if section.settings.show_title -%}
+    <header class="main-page__header text-{{ section.settings.title_align }}">
+      <h1 class="main-page__title heading heading--banner">{{ page.title | escape }}</h1>
+    </header>
+  {%- endif -%}
+
+  {%- if page_image -%}
+    <figure class="main-page__figure">
+      <div class="media media--{{ section.settings.image_ratio }}">
+        {{- page_image | image_url: width: 1600 | image_tag: loading: page_loading, fetchpriority: page_priority, widths: '600, 900, 1200, 1600', sizes: '(min-width: 1024px) 1000px, 100vw', alt: page_alt -}}
+      </div>
+    </figure>
+  {%- endif -%}
+
+  {%- if page.content != blank -%}
+    <div class="main-page__content rte">{{ page.content }}</div>
+  {%- endif -%}
+
+  {%- if policy_object and policy_object.body != blank -%}
+    <section class="main-page__policy rte" aria-labelledby="policy-title-{{ section.id }}">
+      <h2 id="policy-title-{{ section.id }}">{{ policy_object.title | escape }}</h2>
+      {{ policy_object.body }}
+    </section>
+  {%- endif -%}
+</article>
+
+{% stylesheet %}
+  .main-page__crumbs { margin-bottom: var(--space-32); }
+  .main-page__header { max-width: var(--page-width, var(--width-sm)); margin: 0 auto var(--space-32); }
+  .main-page__title { margin: 0; overflow-wrap: anywhere; }
+  .main-page__figure { max-width: var(--width-md); margin: 0 auto var(--space-32); }
+  .main-page__content, .main-page__policy { max-width: var(--page-width, var(--width-sm)); margin-inline: auto; }
+  .main-page__content + .main-page__policy { margin-top: var(--space-48); padding-top: var(--space-32); border-top: 1px solid var(--scheme-border); }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main-page.name",
+  "enabled_on": {
+    "templates": [
+      "page"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.main-page.settings.header__title.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "t:sections.main-page.settings.show_breadcrumb.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "t:sections.main-page.settings.show_title.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "title_align",
+      "label": "t:sections.main-page.settings.title_align.label",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.main-page.settings.title_align.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.main-page.settings.title_align.options__2.label"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-page.settings.header__image.content"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.main-page.settings.image.label"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "t:sections.main-page.settings.image_alt.label",
+      "info": "t:sections.main-page.settings.image_alt.info"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "t:sections.main-page.settings.image_ratio.label",
+      "options": [
+        {
+          "value": "landscape",
+          "label": "t:sections.main-page.settings.image_ratio.options__1.label"
+        },
+        {
+          "value": "wide",
+          "label": "t:sections.main-page.settings.image_ratio.options__2.label"
+        },
+        {
+          "value": "natural",
+          "label": "t:sections.main-page.settings.image_ratio.options__3.label"
+        }
+      ],
+      "default": "landscape"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-page.settings.header__content.content"
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "t:sections.main-page.settings.content_width.label",
+      "options": [
+        {
+          "value": "xs",
+          "label": "t:sections.main-page.settings.content_width.options__1.label"
+        },
+        {
+          "value": "sm",
+          "label": "t:sections.main-page.settings.content_width.options__2.label"
+        },
+        {
+          "value": "md",
+          "label": "t:sections.main-page.settings.content_width.options__3.label"
+        },
+        {
+          "value": "lg",
+          "label": "t:sections.main-page.settings.content_width.options__4.label"
+        }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "select",
+      "id": "policy",
+      "label": "t:sections.main-page.settings.policy.label",
+      "info": "t:sections.main-page.settings.policy.info",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-page.settings.policy.options__1.label"
+        },
+        {
+          "value": "privacy",
+          "label": "t:sections.main-page.settings.policy.options__2.label"
+        },
+        {
+          "value": "refund",
+          "label": "t:sections.main-page.settings.policy.options__3.label"
+        },
+        {
+          "value": "terms",
+          "label": "t:sections.main-page.settings.policy.options__4.label"
+        },
+        {
+          "value": "shipping",
+          "label": "t:sections.main-page.settings.policy.options__5.label"
+        },
+        {
+          "value": "subscription",
+          "label": "t:sections.main-page.settings.policy.options__6.label"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-page.settings.header__layout.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.main-page.settings.color_scheme.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.main-page.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.main-page.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "dark",
+          "label": "t:sections.main-page.settings.color_scheme.options__3.label"
+        },
+        {
+          "value": "accent-1",
+          "label": "t:sections.main-page.settings.color_scheme.options__4.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.main-page.settings.color_scheme.options__5.label"
+        },
+        {
+          "value": "accent-3",
+          "label": "t:sections.main-page.settings.color_scheme.options__6.label"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "t:sections.main-page.settings.spacing_top.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-page.settings.spacing_top.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-page.settings.spacing_top.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-page.settings.spacing_top.options__3.label"
+        }
+      ],
+      "default": "half"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "t:sections.main-page.settings.spacing_bottom.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-page.settings.spacing_bottom.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-page.settings.spacing_bottom.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-page.settings.spacing_bottom.options__3.label"
+        }
+      ],
+      "default": "full"
+    }
+  ]
+}
+{% endschema %}

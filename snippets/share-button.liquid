@@ -1,0 +1,27 @@
+{%- comment -%}
+  Share button: Web Share API where the browser has it, copy-link fallback otherwise.
+  No third-party scripts. Behaviour: assets/share.js (loaded on product and article pages).
+  Without JavaScript the button is hidden.
+
+  Accepts:
+  - title: title passed to the share sheet (required)
+  - url: address to share (required)
+  - label: button text (default: general.share)
+  - class: extra classes
+{%- endcomment -%}
+{%- assign share_label = 'general.share' | t -%}
+{%- if label != blank -%}{%- assign share_label = label -%}{%- endif -%}
+<div class="share{% if class != blank %} {{ class }}{% endif %}" data-share-wrap>
+  <button class="button button--secondary button--small share__button" type="button" data-share data-share-title="{{ title | escape }}" data-share-url="{{ url }}">
+    {% render 'icon', name: 'share', size: 16 %}
+    <span>{{ share_label | escape }}</span>
+  </button>
+  <p class="share__status text-small" role="status" aria-live="polite" data-share-status></p>
+</div>
+
+{% stylesheet %}
+  .share { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-12); }
+  .share .share__button { min-height: 44px; }
+  .share__status { margin: 0; color: var(--scheme-text-muted); }
+  .no-js .share { display: none; }
+{% endstylesheet %}

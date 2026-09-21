@@ -1,0 +1,262 @@
+{%- comment -%}
+  Cart page (cart template): the same Shopify cart as the cart drawer, laid out for a full page.
+  - Native form: quantity fields (updates[]), order note, "update" (hidden with JS) and checkout
+    all post to the cart route, so it works without JavaScript.
+  - With JS, assets/cart-page.js changes quantities through the shared cart layer
+    (Theme.cart -> /cart/change.js), re-renders this section through the Section Rendering API
+    and the cart drawer follows because both listen to the same "cart:updated" event.
+  Shared pieces: cart-item-details, cart-shipping-bar, quantity control CSS, price formatting
+  through Shopify's money filter.
+{%- endcomment -%}
+<section
+  class="main-cart section scheme-{{ section.settings.color_scheme }}"
+  data-component="cart-page"
+  data-section-id="{{ section.id }}"
+  data-spacing-top="{{ section.settings.spacing_top }}"
+  data-spacing-bottom="{{ section.settings.spacing_bottom }}"
+>
+  {%- if section.settings.show_breadcrumb -%}
+    {%- assign cart_title = 'cart.title' | t -%}
+    <div class="main-cart__crumbs">{% render 'breadcrumbs', current_title: cart_title %}</div>
+  {%- endif -%}
+
+  <header class="main-cart__header">
+    <h1 class="main-cart__title heading heading--section">{{ 'cart.title' | t }}</h1>
+    {%- if cart.item_count > 0 -%}
+      <p class="main-cart__count text-small text-muted">{{ 'cart.items_count' | t: count: cart.item_count }}</p>
+    {%- endif -%}
+  </header>
+
+  <div class="main-cart__content" data-cart-page-content aria-busy="false">
+    {%- if cart.item_count == 0 -%}
+      <div class="cart-empty main-cart__empty">
+        <h2 class="cart-empty__title heading heading--block">{{ 'cart.empty_title' | t }}</h2>
+        <p class="cart-empty__text">{{ 'cart.empty' | t }}</p>
+        <a class="button" href="{{ routes.all_products_collection_url }}">{{ 'cart.continue_shopping' | t }}</a>
+      </div>
+    {%- else -%}
+      <form class="main-cart__form" action="{{ routes.cart_url }}" method="post" id="cart-form" novalidate>
+        <div class="message message--error" role="alert" data-cart-error hidden></div>
+        {% render 'cart-shipping-bar' %}
+
+        <div class="main-cart__layout">
+          <div class="main-cart__lines">
+            <h2 class="visually-hidden">{{ 'cart.items_heading' | t }}</h2>
+            <ul class="cart-items main-cart__items" role="list">
+              {%- for item in cart.items -%}
+                {%- liquid
+                  assign rule = item.variant.quantity_rule
+                  assign rule_min = rule.min | default: 1
+                  assign rule_step = rule.increment | default: 1
+                -%}
+                <li class="cart-item main-cart__item" data-key="{{ item.key }}" data-title="{{ item.product.title | escape }}">
+                  <a class="cart-item__media" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+                    <span class="media media--portrait">
+                      {% render 'image', image: item.image, widths: '160, 240, 360', sizes: '(min-width: 768px) 120px, 96px', alt: '' %}
+                    </span>
+                  </a>
+
+                  <div class="cart-item__info">
+                    <a class="cart-item__title heading" href="{{ item.url }}">{{ item.product.title | escape }}</a>
+                    {% render 'cart-item-details', item: item %}
+                    <p class="cart-item__unit text-small text-muted">
+                      {%- if item.original_price != item.final_price -%}<s>{{ item.original_price | money }}</s> {% endif -%}
+                      {{ item.final_price | money }}
+                    </p>
+                    <p class="field__error" role="alert" data-line-error hidden></p>
+                  </div>
+
+                  <div class="main-cart__qty">
+                    <div class="quantity">
+                      <button class="quantity__button" type="button" data-qty-step="-1" aria-label="{{ 'products.decrease_quantity' | t }}">{% render 'icon', name: 'minus', size: 14 %}</button>
+                      <input
+                        class="quantity__input"
+                        type="number"
+                        name="updates[]"
+                        value="{{ item.quantity }}"
+                        min="0"
+                        {% if rule.max %}max="{{ rule.max }}"{% endif %}
+                        inputmode="numeric"
+                        data-qty-input
+                        data-rule-min="{{ rule_min }}"
+                        data-rule-step="{{ rule_step }}"
+                        aria-label="{{ 'cart.quantity_for' | t: title: item.product.title }}"
+                      >
+                      <button class="quantity__button" type="button" data-qty-step="1" aria-label="{{ 'products.increase_quantity' | t }}">{% render 'icon', name: 'plus', size: 14 %}</button>
+                    </div>
+                    <a class="cart-item__remove text-nav link" href="{{ item.url_to_remove }}" data-cart-remove aria-label="{{ 'cart.remove_item' | t: title: item.product.title }}">{{ 'cart.remove' | t }}</a>
+                  </div>
+
+                  <p class="main-cart__line-total cart-item__price">
+                    <span class="visually-hidden">{{ 'cart.line_total' | t }}</span>
+                    {%- if item.original_line_price != item.final_line_price -%}<s class="text-muted">{{ item.original_line_price | money }}</s> {% endif -%}
+                    <span>{{ item.final_line_price | money }}</span>
+                  </p>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+
+          <div class="main-cart__summary">
+            <h2 class="visually-hidden">{{ 'cart.summary' | t }}</h2>
+            {%- if section.settings.show_note -%}
+              <div class="field main-cart__note">
+                <label class="field__label" for="cart-page-note">{{ 'cart.note_label' | t }}</label>
+                <textarea class="textarea" id="cart-page-note" name="note" rows="3" data-cart-note>{{ cart.note }}</textarea>
+              </div>
+            {%- endif -%}
+            <p class="cart-totals">
+              <span class="cart-totals__label text-nav">{{ 'cart.subtotal' | t }}</span>
+              <span class="cart-totals__value">{{ cart.total_price | money }}</span>
+            </p>
+            {%- for discount in cart.cart_level_discount_applications -%}
+              <p class="cart-totals cart-totals--discount text-small">
+                <span>{{ discount.title | escape }}</span>
+                <span>-{{ discount.total_allocated_amount | money }}</span>
+              </p>
+            {%- endfor -%}
+            <p class="text-small text-muted">
+              {%- if cart.taxes_included %}{{ 'cart.taxes_included' | t }} {% endif -%}
+              {{- 'cart.shipping_at_checkout' | t -}}
+            </p>
+            <button class="button button--secondary button--full main-cart__update" type="submit" name="update" data-cart-update>{{ 'cart.update' | t }}</button>
+            <button class="button button--full" type="submit" name="checkout">{{ 'cart.checkout' | t }}</button>
+            <a class="button button--text button--full" href="{{ routes.all_products_collection_url }}">{{ 'cart.continue_shopping' | t }}</a>
+          </div>
+        </div>
+      </form>
+    {%- endif -%}
+  </div>
+
+  <p class="visually-hidden" role="status" aria-live="polite" data-cart-live></p>
+</section>
+
+{% stylesheet %}
+  .main-cart__crumbs { margin-bottom: var(--space-16); }
+  .main-cart__header { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-8) var(--space-16); margin-bottom: var(--space-32); }
+  .main-cart__title, .main-cart__count { margin: 0; }
+  .main-cart__content { position: relative; }
+  .main-cart__content[aria-busy="true"] .main-cart__form { opacity: 0.5; pointer-events: none; }
+  .main-cart__content[aria-busy="true"]::after { content: ""; position: absolute; top: var(--space-48); left: 50%; width: 24px; height: 24px; margin-left: -12px; border: 2px solid var(--scheme-text); border-right-color: transparent; border-radius: 50%; animation: theme-spin 0.7s linear infinite; }
+  .main-cart__form { display: flex; flex-direction: column; gap: var(--space-16); }
+  .main-cart__layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-32); align-items: start; }
+  .main-cart__items { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--scheme-border); }
+  .main-cart__item { display: grid; grid-template-columns: 96px minmax(0, 1fr); grid-template-areas: "media info" "media qty" "media total"; gap: var(--space-8) var(--space-16); padding: var(--space-16) 0; border-bottom: 1px solid var(--scheme-border); }
+  .main-cart__item .cart-item__media { grid-area: media; }
+  .main-cart__item .cart-item__info { grid-area: info; min-width: 0; }
+  .main-cart__qty { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-8) var(--space-16); grid-area: qty; }
+  .main-cart__line-total { grid-area: total; margin: 0; }
+  .main-cart__summary { display: flex; flex-direction: column; gap: var(--space-12); padding: var(--space-16); background: var(--color-background-light); border-radius: var(--radius-image); }
+  .main-cart__empty { display: flex; flex-direction: column; align-items: center; gap: var(--space-16); padding: var(--space-48) 0; text-align: center; }
+  .main-cart__empty .cart-empty__title, .main-cart__empty .cart-empty__text { margin: 0; }
+  .js .main-cart__update { display: none; }
+  @media (min-width: 768px) {
+    .main-cart__item { grid-template-columns: 120px minmax(0, 1fr) auto; grid-template-areas: "media info total" "media qty total"; gap: var(--space-8) var(--space-16); }
+    .main-cart__line-total { min-width: 6rem; text-align: right; }
+  }
+  @media (min-width: 1024px) {
+    .main-cart__layout { grid-template-columns: minmax(0, 1fr) 360px; gap: var(--space-48); }
+    .main-cart__summary { position: sticky; top: var(--space-32); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main-cart.name",
+  "enabled_on": {
+    "templates": [
+      "cart"
+    ]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "t:sections.main-cart.settings.show_breadcrumb.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_note",
+      "label": "t:sections.main-cart.settings.show_note.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-cart.settings.header__layout.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.main-cart.settings.color_scheme.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.main-cart.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.main-cart.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "dark",
+          "label": "t:sections.main-cart.settings.color_scheme.options__3.label"
+        },
+        {
+          "value": "accent-1",
+          "label": "t:sections.main-cart.settings.color_scheme.options__4.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.main-cart.settings.color_scheme.options__5.label"
+        },
+        {
+          "value": "accent-3",
+          "label": "t:sections.main-cart.settings.color_scheme.options__6.label"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "t:sections.main-cart.settings.spacing_top.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-cart.settings.spacing_top.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-cart.settings.spacing_top.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-cart.settings.spacing_top.options__3.label"
+        }
+      ],
+      "default": "half"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "t:sections.main-cart.settings.spacing_bottom.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-cart.settings.spacing_bottom.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-cart.settings.spacing_bottom.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-cart.settings.spacing_bottom.options__3.label"
+        }
+      ],
+      "default": "full"
+    }
+  ]
+}
+{% endschema %}

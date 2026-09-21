@@ -1,0 +1,47 @@
+{%- comment -%}
+  Compact product purchase form: options, quantity, add to cart, optional dynamic checkout.
+  Used by the featured product section and the quick-add drawer. The product page
+  (sections/main-product.liquid) composes the same three snippets as separate blocks.
+
+  Accepts:
+  - product: product object (required)
+  - section_id: unique suffix for element ids (required)
+  - option_style: pills (default) | dropdown. Options with more than 6 values always use a dropdown.
+  - show_quantity: true/false (default true)
+  - show_dynamic_checkout: true/false (default false)
+
+  Behaviour lives in assets/product.js (component "product-details" on an ancestor).
+{%- endcomment -%}
+{%- liquid
+  assign form_id = 'product-form-' | append: section_id
+  assign current_variant = product.selected_or_first_available_variant
+  assign with_quantity = true
+  if show_quantity == false
+    assign with_quantity = false
+  endif
+  assign fallback_qty = ''
+  unless with_quantity
+    assign fallback_qty = current_variant.quantity_rule.min | default: 1
+  endunless
+-%}
+
+{% render 'product-variants-json', product: product %}
+
+<div class="product-form-wrap">
+  {% render 'product-options', product: product, form_id: form_id, option_style: option_style %}
+
+  {%- if with_quantity -%}
+    {% render 'product-quantity', variant: current_variant, form_id: form_id %}
+  {%- endif -%}
+
+  {% render 'product-buy-buttons',
+    product: product,
+    form_id: form_id,
+    show_dynamic_checkout: show_dynamic_checkout,
+    fallback_quantity: fallback_qty
+  %}
+</div>
+
+{% stylesheet %}
+  .product-form-wrap { display: flex; flex-direction: column; gap: var(--space-16); }
+{% endstylesheet %}

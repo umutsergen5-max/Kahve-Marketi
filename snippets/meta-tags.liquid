@@ -1,0 +1,45 @@
+{%- comment -%}
+  Social / SEO meta tags. Everything is derived from Shopify objects — no
+  brand names, domains or handles are hardcoded.
+{%- endcomment -%}
+{%- liquid
+  assign og_type = 'website'
+  if template.name == 'product'
+    assign og_type = 'product'
+  elsif template.name == 'article'
+    assign og_type = 'article'
+  endif
+-%}
+{%- assign brand = settings.brand_name | default: shop.name -%}
+{%- comment -%}Utility pages that should not appear in search results: internal search, cart and every customer account page.{%- endcomment -%}
+{%- if template.name == 'search' or template.name == 'cart' or template.directory == 'customers' %}
+<meta name="robots" content="noindex, follow">
+{%- endif %}
+<meta property="og:site_name" content="{{ brand | escape }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:title" content="{{ page_title | escape }}">
+<meta property="og:type" content="{{ og_type }}">
+{%- if page_description != blank %}
+<meta property="og:description" content="{{ page_description | escape }}">
+{%- endif %}
+{%- if page_image %}
+<meta property="og:image" content="http:{{ page_image | image_url: width: 1200 }}">
+<meta property="og:image:secure_url" content="https:{{ page_image | image_url: width: 1200 }}">
+<meta property="og:image:width" content="{{ page_image.width }}">
+<meta property="og:image:height" content="{{ page_image.height }}">
+{%- endif %}
+{%- if template.name == 'article' and article %}
+<meta property="article:published_time" content="{{ article.published_at | date: '%Y-%m-%dT%H:%M:%S%:z' }}">
+{%- if article.author != blank %}
+<meta property="article:author" content="{{ article.author | escape }}">
+{%- endif %}
+{%- endif %}
+{%- if template.name == 'product' %}
+<meta property="product:price:amount" content="{{ product.price | money_without_currency | strip_html | escape }}">
+<meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+{%- endif %}
+<meta name="twitter:card" content="{% if page_image %}summary_large_image{% else %}summary{% endif %}">
+<meta name="twitter:title" content="{{ page_title | escape }}">
+{%- if page_description != blank %}
+<meta name="twitter:description" content="{{ page_description | escape }}">
+{%- endif %}

@@ -1,0 +1,203 @@
+{%- comment -%}
+  Product card — the single card used on the home page, collection pages,
+  search results and recommendations.
+
+  Accepts:
+  - product: product object. When blank a placeholder card is rendered (theme editor preview).
+  - image_ratio: portrait | square | landscape (default: theme setting card_image_ratio)
+  - show_secondary_image: show the 2nd image on hover (pointer devices only). Default true.
+  - show_quick_add: render the quick add control. Default false.
+  - sale_badge: percent | text | none. Default percent.
+  - heading_tag: h2 | h3 | h4 (default h3)
+  - loading: lazy (default) | eager
+  - sizes: image sizes attribute
+  - text_align: left | center (default center)
+  - class: extra CSS classes
+
+  Quick add behaviour:
+  - single-variant products: a product form (data-cart-add) adds directly through the cart drawer flow;
+  - multi-variant products: a link to the product that assets/product.js upgrades to the quick-add drawer;
+  - sold-out products: no quick add, a "sold out" badge.
+  Hover is progressive enhancement only — the control is always visible on touch devices.
+{%- endcomment -%}
+{%- liquid
+  assign ratio = image_ratio | default: settings.card_image_ratio | default: 'portrait'
+  assign card_heading = heading_tag | default: 'h3'
+  assign card_loading = loading | default: 'lazy'
+  assign card_sizes = sizes | default: '(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 80vw'
+  assign card_align = text_align | default: 'center'
+  assign badge_style = sale_badge | default: 'percent'
+  assign allow_secondary = true
+  if show_secondary_image == false
+    assign allow_secondary = false
+  endif
+-%}
+
+{%- if product == blank -%}
+  <article class="product-card product-card--placeholder product-card--{{ card_align }}{% if class != blank %} {{ class }}{% endif %}">
+    <div class="product-card__media">
+      <div class="media media--{{ ratio }}">{{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+    </div>
+    <div class="product-card__info">
+      <{{ card_heading }} class="product-card__title heading">{{ 'products.placeholder_title' | t }}</{{ card_heading }}>
+      <div class="price"><span class="price__current">{{ 0 | money }}</span></div>
+    </div>
+  </article>
+{%- else -%}
+  {%- liquid
+    assign primary = product.featured_media
+    assign secondary = nil
+    if allow_secondary and product.media.size > 1
+      assign secondary = product.media[1]
+      if secondary.media_type != 'image'
+        assign secondary = nil
+      endif
+    endif
+
+    assign on_sale = false
+    if product.compare_at_price > product.price
+      assign on_sale = true
+      assign sale_percent = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
+    endif
+
+    assign single_variant = false
+    if product.variants.size == 1
+      assign single_variant = true
+    endif
+    assign product_title = product.title | escape
+    assign primary_alt = primary.alt | default: product.title | escape
+  -%}
+
+  <article
+    class="product-card product-card--{{ card_align }}{% if class != blank %} {{ class }}{% endif %}"
+    data-product-card
+    data-handle="{{ product.handle }}"
+  >
+    <div class="product-card__media">
+      <a class="product-card__image-link" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+        <div class="media media--{{ ratio }}">
+          {%- if primary != blank -%}
+            {{- primary.preview_image | image_url: width: 900 | image_tag: loading: card_loading, widths: '240, 360, 480, 640, 900', sizes: card_sizes, class: 'product-card__image product-card__image--primary', alt: primary_alt -}}
+            {%- if secondary != nil -%}
+              {{- secondary.preview_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '240, 360, 480, 640, 900', sizes: card_sizes, class: 'product-card__image product-card__image--secondary', alt: '' -}}
+            {%- endif -%}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+        </div>
+      </a>
+
+      {%- liquid
+        assign badge_kind = ''
+        if product.available == false
+          assign badge_kind = 'sold_out'
+        elsif on_sale and badge_style == 'percent'
+          assign badge_kind = 'percent'
+        elsif on_sale and badge_style == 'text'
+          assign badge_kind = 'text'
+        endif
+      -%}
+      {%- if badge_kind != blank -%}
+        <div class="product-card__badges">
+          {%- if badge_kind == 'sold_out' -%}
+            <span class="badge badge--muted">{{ 'products.sold_out' | t }}</span>
+          {%- elsif badge_kind == 'percent' -%}
+            <span class="badge badge--sale">{{ 'products.sale_percent' | t: percent: sale_percent }}</span>
+          {%- else -%}
+            <span class="badge badge--sale">{{ 'products.sale' | t }}</span>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if show_quick_add and product.available -%}
+        <div class="product-card__quick" data-component="quick-add-control">
+          {%- if single_variant -%}
+            {%- assign only_variant = product.variants.first -%}
+            {%- form 'product', product, class: 'product-card__quick-form', data-cart-add: '' -%}
+              <input type="hidden" name="id" value="{{ only_variant.id }}">
+              <input type="hidden" name="quantity" value="1">
+              <button class="product-card__quick-button" type="submit" aria-label="{{ 'products.quick_add_label' | t: title: product.title }}">
+                {% render 'icon', name: 'plus', size: 18 %}
+                <span class="product-card__quick-text text-nav">{{ 'products.quick_add' | t }}</span>
+              </button>
+            {%- endform -%}
+          {%- else -%}
+            <a
+              class="product-card__quick-button"
+              href="{{ product.url }}"
+              data-quick-add="{{ product.url }}"
+              aria-label="{{ 'products.quick_add_options' | t: title: product.title }}"
+            >
+              {% render 'icon', name: 'plus', size: 18 %}
+              <span class="product-card__quick-text text-nav">{{ 'products.choose_options' | t }}</span>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="product-card__info">
+      <{{ card_heading }} class="product-card__title heading">
+        <a class="product-card__link" href="{{ product.url }}">{{ product_title }}</a>
+      </{{ card_heading }}>
+      {%- render 'price', product: product -%}
+      {%- if show_quick_add and product.available and single_variant -%}
+        <p class="product-card__error field__error" role="alert" data-cart-add-error hidden></p>
+      {%- endif -%}
+    </div>
+  </article>
+{%- endif -%}
+
+{% stylesheet %}
+  .product-card { position: relative; display: flex; flex-direction: column; gap: var(--space-12); min-width: 0; }
+  .product-card--center .product-card__info { align-items: center; text-align: center; }
+
+  .product-card__media { position: relative; }
+  .product-card__image-link { display: block; }
+  .product-card__image { transition: opacity 0.4s var(--ease-standard), transform 0.6s var(--ease-out); }
+  .product-card__image--secondary { position: absolute; inset: 0; opacity: 0; }
+  .product-card__info { display: flex; flex-direction: column; gap: var(--space-4); }
+  .product-card__title { font-size: var(--fs-block); }
+  .product-card__link { text-decoration: none; }
+  .product-card__link:hover { text-decoration: underline; text-underline-offset: 0.25em; }
+  /* The whole card acts as one target: the title link stretches over the image. */
+  .product-card__link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+
+  .product-card__badges { position: absolute; top: var(--space-8); left: var(--space-8); z-index: 2; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); pointer-events: none; }
+
+  /* Quick add: touch = always visible icon button; pointer = revealed on hover / focus. */
+  .product-card__quick { position: absolute; right: var(--space-8); bottom: var(--space-8); z-index: 2; }
+  .product-card__quick-form { margin: 0; }
+  .product-card__quick-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-8);
+    min-width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 22px;
+    background: var(--color-background);
+    color: var(--color-text);
+    box-shadow: var(--shadow-center);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease-standard), color 0.2s var(--ease-standard);
+  }
+  .product-card__quick-button:hover { background: var(--color-button); color: var(--color-button-text); }
+  .product-card__quick-button[aria-busy="true"] { opacity: 0.6; pointer-events: none; }
+  .product-card__quick-text { display: none; }
+
+  @media (hover: hover) and (min-width: 768px) {
+    .product-card__quick { opacity: 0; transform: translateY(6px); transition: opacity 0.25s var(--ease-standard), transform 0.25s var(--ease-standard); }
+    .product-card:hover .product-card__quick,
+    .product-card:focus-within .product-card__quick { opacity: 1; transform: none; }
+    .product-card__quick-button { padding: 0 var(--space-16) 0 var(--space-12); }
+    .product-card__quick-text { display: inline; }
+    .product-card__image--secondary { transition: opacity 0.4s var(--ease-standard); }
+    .product-card:hover .product-card__image--secondary { opacity: 1; }
+    .product-card:hover .product-card__image--primary:not(:only-child) { opacity: 0; }
+    .product-card:hover .product-card__image--primary:only-child { transform: scale(1.03); }
+  }
+{% endstylesheet %}

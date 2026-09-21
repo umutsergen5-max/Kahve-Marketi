@@ -1,0 +1,171 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_accent_1 }}">
+
+    {%- liquid
+      assign tags_string = current_tags | join: ', '
+      assign brand = settings.brand_name | default: shop.name
+    -%}
+    <title>
+      {{- page_title -}}
+      {%- if current_tags %} – {{ 'meta.tagged' | t: tags: tags_string }}{% endif -%}
+      {%- if current_page != 1 %} – {{ 'meta.page' | t: page: current_page }}{% endif -%}
+      {%- unless page_title contains brand %} – {{ brand }}{% endunless -%}
+    </title>
+
+    {%- if page_description != blank %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif %}
+
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank %}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+      <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+    {%- endif %}
+
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+
+    {% render 'css-variables' %}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'components.css' | asset_url | stylesheet_tag }}
+
+    {% render 'meta-tags' %}
+    {% render 'structured-data' %}
+
+    {{ content_for_header }}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    </script>
+    <script type="application/json" id="theme-config">
+      {
+        "routes": {
+          "root_url": {{ routes.root_url | json }},
+          "cart_url": {{ routes.cart_url | json }},
+          "cart_add_url": {{ routes.cart_add_url | json }},
+          "cart_change_url": {{ routes.cart_change_url | json }},
+          "cart_update_url": {{ routes.cart_update_url | json }},
+          "cart_clear_url": {{ routes.cart_clear_url | json }},
+          "search_url": {{ routes.search_url | json }},
+          "predictive_search_url": {{ routes.predictive_search_url | json }},
+          "account_url": {{ routes.account_url | json }},
+          "account_login_url": {{ routes.account_login_url | json }},
+          "account_register_url": {{ routes.account_register_url | json }},
+          "all_products_url": {{ routes.all_products_collection_url | json }}
+        },
+        "currency": {
+          "code": {{ cart.currency.iso_code | json }},
+          "locale": {{ request.locale.iso_code | json }}
+        },
+        "settings": {
+          "animations": {{ settings.enable_animations | json }},
+          "cartType": {{ settings.cart_type | json }},
+          "predictiveSearch": {{ settings.predictive_search | json }},
+          "freeShippingThreshold": {{ settings.free_shipping_threshold | default: 0 | times: 100 | json }}
+        },
+        "strings": {
+          "general": {
+            "loading": {{ 'general.loading' | t | json }},
+            "close": {{ 'general.close' | t | json }}
+          },
+          "accessibility": {
+            "cart_updated": {{ 'accessibility.cart_updated' | t: count: '[[count]]' | json }},
+            "item_removed": {{ 'accessibility.item_removed' | t: title: '[[title]]' | json }}
+          },
+          "carousel": {
+            "go_to_slide": {{ 'carousel.go_to_slide' | t: number: '[[number]]' | json }},
+            "slide_of": {{ 'carousel.slide_of' | t: current: '[[current]]', total: '[[total]]' | json }}
+          },
+          "products": {
+            "variant_updated": {{ 'products.variant_updated' | t: price: '[[price]]', availability: '[[availability]]' | json }},
+            "in_stock": {{ 'products.in_stock' | t | json }},
+            "in_stock_count": {{ 'products.in_stock_count' | t: count: '[[count]]' | json }},
+            "low_stock": {{ 'products.low_stock' | t: count: '[[count]]' | json }},
+            "out_of_stock": {{ 'products.out_of_stock' | t | json }},
+            "sold_out": {{ 'products.sold_out' | t | json }},
+            "unavailable": {{ 'products.unavailable' | t | json }},
+            "sale": {{ 'products.sale' | t | json }},
+            "sale_percent": {{ 'products.sale_percent' | t: percent: '[[percent]]' | json }},
+            "option_unavailable": {{ 'products.option_unavailable' | t: value: '[[value]]' | json }},
+            "option_sold_out": {{ 'products.option_sold_out' | t: value: '[[value]]' | json }},
+            "note_sold_out": {{ 'products.note_sold_out' | t | json }},
+            "note_missing": {{ 'products.note_missing' | t | json }},
+            "quantity_min": {{ 'products.quantity_min' | t: count: '[[count]]' | json }},
+            "quantity_max": {{ 'products.quantity_max' | t: count: '[[count]]' | json }},
+            "quantity_step": {{ 'products.quantity_step' | t: count: '[[count]]' | json }},
+            "share_copied": {{ 'products.share_copied' | t | json }},
+            "share_failed": {{ 'products.share_failed' | t | json }}
+          },
+          "cart": {
+            "error": {{ 'cart.error' | t | json }},
+            "quantity_error": {{ 'cart.quantity_error' | t: quantity: '[[quantity]]' | json }},
+            "free_shipping_remaining": {{ 'cart.free_shipping_remaining' | t: amount: '[[amount]]' | json }},
+            "free_shipping_reached": {{ 'cart.free_shipping_reached' | t | json }}
+          }
+        }
+      }
+    </script>
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'header.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'carousel.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'video.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'product.js' | asset_url }}" defer="defer"></script>
+    {%- if template.name == 'product' %}
+      <script src="{{ 'product-page.js' | asset_url }}" defer="defer"></script>
+    {%- endif %}
+    {%- if template.name == 'product' or template.name == 'article' %}
+      <script src="{{ 'share.js' | asset_url }}" defer="defer"></script>
+    {%- endif %}
+    {%- if template.name == 'cart' %}
+      <script src="{{ 'cart-page.js' | asset_url }}" defer="defer"></script>
+    {%- endif %}
+    {%- if template.directory == 'customers' %}
+      <script src="{{ 'auth.js' | asset_url }}" defer="defer"></script>
+    {%- endif %}
+    {%- if template.name == 'blog' %}
+      <script src="{{ 'masonry.js' | asset_url }}" defer="defer"></script>
+    {%- endif %}
+    {%- if template.name == 'collection' %}
+      <script src="{{ 'collection.js' | asset_url }}" defer="defer"></script>
+    {%- endif %}
+    <script src="{{ 'recently-viewed.js' | asset_url }}" defer="defer"></script>
+    {%- if settings.predictive_search %}
+      <script src="{{ 'search.js' | asset_url }}" defer="defer"></script>
+    {%- endif %}
+    {%- if settings.cart_type == 'drawer' %}
+      <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
+    {%- endif %}
+  </head>
+
+  <body
+    class="template-{{ template.name | handleize }}{% if template.suffix != blank %} template-suffix-{{ template.suffix | handleize }}{% endif %}"
+    data-template="{{ template.name }}"
+    {%- if template.name == 'product' and product.handle != blank %}
+    data-product-handle="{{ product.handle }}"
+    {%- endif %}
+    data-animations="{{ settings.enable_animations }}"
+  >
+    <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {% section 'menu-drawer' %}
+    {% section 'search-drawer' %}
+    {% section 'cart-drawer' %}
+    {% section 'quick-add' %}
+
+    <div class="overlay" data-overlay data-visible="false" aria-hidden="true"></div>
+  </body>
+</html>

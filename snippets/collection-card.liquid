@@ -1,0 +1,76 @@
+{%- comment -%}
+  Collection card — reused by the featured collection grids, the collections
+  list page and any other grid of collections.
+
+  Accepts:
+  - collection: collection object. When blank a placeholder card is rendered.
+  - style: below (title under the image) | overlay (title over the image). Default below.
+  - image_ratio: portrait | square | landscape | wide (default: landscape)
+  - show_description: true/false (default false)
+  - overlay_opacity: 0-80 for the overlay style (default 30)
+  - heading_tag: h2 | h3 | h4 (default h3)
+  - loading: lazy (default) | eager
+  - sizes: image sizes attribute
+  - class: extra CSS classes
+
+  Image fallback order: collection image, first product's image, placeholder.
+{%- endcomment -%}
+{%- liquid
+  assign card_style = style | default: 'below'
+  assign ratio = image_ratio | default: 'landscape'
+  assign card_heading = heading_tag | default: 'h3'
+  assign card_loading = loading | default: 'lazy'
+  assign card_sizes = sizes | default: '(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 90vw'
+  assign overlay = overlay_opacity | default: 30
+  assign card_image = collection.featured_image
+  if card_image == blank
+    assign card_image = collection.products.first.featured_image
+  endif
+-%}
+
+<article class="collection-card collection-card--{{ card_style }}{% if class != blank %} {{ class }}{% endif %}">
+  <div class="collection-card__media media media--{{ ratio }}">
+    {%- if card_image != blank -%}
+      {{- card_image | image_url: width: 1200 | image_tag: loading: card_loading, widths: '320, 480, 640, 800, 1000, 1200', sizes: card_sizes, class: 'collection-card__image', alt: '' -}}
+    {%- else -%}
+      {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+    {%- if card_style == 'overlay' -%}
+      <span class="collection-card__overlay" style="opacity: {{ overlay | divided_by: 100.0 }}" aria-hidden="true"></span>
+    {%- endif -%}
+  </div>
+
+  <div class="collection-card__body">
+    <{{ card_heading }} class="collection-card__title heading heading--block">
+      {%- if collection != blank -%}
+        <a class="collection-card__link" href="{{ collection.url }}">{{ collection.title | escape }}</a>
+      {%- else -%}
+        {{ 'collections.placeholder_title' | t }}
+      {%- endif -%}
+    </{{ card_heading }}>
+    {%- if show_description and collection.description != blank -%}
+      <p class="collection-card__description text-small">{{ collection.description | strip_html | truncatewords: 20 }}</p>
+    {%- endif -%}
+  </div>
+</article>
+
+{% stylesheet %}
+  .collection-card { position: relative; display: flex; flex-direction: column; gap: var(--space-12); min-width: 0; }
+  .collection-card__image { transition: transform 0.6s var(--ease-out); }
+  .collection-card__link { text-decoration: none; }
+  .collection-card__link::after { content: ""; position: absolute; inset: 0; z-index: 2; }
+  .collection-card__body { display: flex; flex-direction: column; gap: var(--space-4); }
+  .collection-card__description { margin: 0; color: var(--scheme-text-muted); }
+  @media (hover: hover) {
+    .collection-card:hover .collection-card__image { transform: scale(1.04); }
+    .collection-card__link:hover { text-decoration: underline; text-underline-offset: 0.25em; }
+  }
+
+  .collection-card--overlay { gap: 0; }
+  .collection-card--overlay .collection-card__overlay { position: absolute; inset: 0; background: #000; transition: opacity 0.3s var(--ease-standard); }
+  .collection-card--overlay .collection-card__body { position: absolute; inset: auto 0 0 0; z-index: 1; padding: var(--space-16); color: #fff; }
+  .collection-card--overlay .collection-card__description { color: rgba(255, 255, 255, 0.85); }
+  @media (hover: hover) {
+    .collection-card--overlay:hover .collection-card__overlay { opacity: 0.5 !important; }
+  }
+{% endstylesheet %}

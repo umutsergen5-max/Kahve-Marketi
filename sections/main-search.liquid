@@ -1,0 +1,241 @@
+{%- comment -%}
+  Search results page (search template). Shopify's native search: the form submits q (and
+  the chosen result type) to the search route; results come from `search.results` with
+  `paginate`, so the query and filters stay in every pagination URL. The reference store only
+  has a drawer with predictive results (products); this page is the full-results
+  destination of that drawer's "view all" link and of the form.
+  - products: shared product-card (price, sale/sold-out badges, quick add)
+  - articles: shared article-card
+  - pages: page-result-card
+  - type tabs (all / products / articles / pages) use Shopify's `type` parameter
+  Empty query shows only the form; no results shows a message with suggestions.
+{%- endcomment -%}
+{%- liquid
+  assign terms = search.terms
+  assign has_terms = false
+  if terms != blank
+    assign has_terms = true
+  endif
+  assign current_type = ''
+  if search.types.size == 1
+    assign current_type = search.types.first
+  endif
+  assign col_count = section.settings.columns
+  assign tablet_count = col_count | at_most: 3
+  assign card_sizes = '(min-width: 1024px) calc(100vw / ' | append: col_count | append: '), (min-width: 768px) 33vw, 50vw'
+  assign search_title = 'search.title' | t
+-%}
+{%- paginate search.results by section.settings.results_per_page -%}
+  <section
+    class="main-search section scheme-{{ section.settings.color_scheme }}"
+    data-spacing-top="{{ section.settings.spacing_top }}"
+    data-spacing-bottom="{{ section.settings.spacing_bottom }}"
+  >
+    {%- if section.settings.show_breadcrumb -%}
+      <div class="main-search__crumbs">{% render 'breadcrumbs', current_title: search_title %}</div>
+    {%- endif -%}
+
+    <header class="main-search__header">
+      <h1 class="main-search__title heading heading--section">
+        {%- if has_terms and search.performed -%}{{ 'search.results_title' | t: terms: terms }}{%- else -%}{{ search_title }}{%- endif -%}
+      </h1>
+      {%- if has_terms and search.performed -%}
+        <p class="main-search__count text-small text-muted" role="status">{{ 'search.results_count' | t: count: search.results_count }}</p>
+      {%- endif -%}
+
+      <form class="main-search__form" action="{{ routes.search_url }}" method="get" role="search">
+        <label class="visually-hidden" for="main-search-input">{{ 'search.label' | t }}</label>
+        <input class="input main-search__input" id="main-search-input" type="search" name="q" value="{{ terms | escape }}" placeholder="{{ 'search.placeholder' | t }}" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+        <input type="hidden" name="options[prefix]" value="last">
+        {%- if current_type != blank -%}<input type="hidden" name="type" value="{{ current_type }}">{%- endif -%}
+        <button class="button main-search__submit" type="submit">{{ 'search.submit' | t }}</button>
+      </form>
+
+      {%- if has_terms and search.performed and section.settings.show_type_filter -%}
+        <nav class="main-search__types" aria-label="{{ 'search.filter_label' | t }}">
+          <ul class="main-search__type-list" role="list">
+            <li><a class="main-search__type text-nav" href="{{ routes.search_url }}?q={{ terms | url_encode }}&amp;options%5Bprefix%5D=last"{% if current_type == blank %} aria-current="page"{% endif %}>{{ 'search.type_all' | t }}</a></li>
+            <li><a class="main-search__type text-nav" href="{{ routes.search_url }}?q={{ terms | url_encode }}&amp;options%5Bprefix%5D=last&amp;type=product"{% if current_type == 'product' %} aria-current="page"{% endif %}>{{ 'search.products' | t }}</a></li>
+            <li><a class="main-search__type text-nav" href="{{ routes.search_url }}?q={{ terms | url_encode }}&amp;options%5Bprefix%5D=last&amp;type=article"{% if current_type == 'article' %} aria-current="page"{% endif %}>{{ 'search.articles' | t }}</a></li>
+            <li><a class="main-search__type text-nav" href="{{ routes.search_url }}?q={{ terms | url_encode }}&amp;options%5Bprefix%5D=last&amp;type=page"{% if current_type == 'page' %} aria-current="page"{% endif %}>{{ 'search.pages' | t }}</a></li>
+          </ul>
+        </nav>
+      {%- endif -%}
+    </header>
+
+    {%- if has_terms and search.performed -%}
+      {%- if search.results_count > 0 -%}
+        <h2 class="visually-hidden">{{ 'search.results_heading' | t }}</h2>
+        <ul class="main-search__grid" role="list" style="--cols: {{ col_count }}; --cols-tablet: {{ tablet_count }};">
+          {%- for item in search.results -%}
+            <li class="main-search__item main-search__item--{{ item.object_type }}">
+              {%- case item.object_type -%}
+                {%- when 'product' -%}
+                  {% render 'product-card', product: item, image_ratio: settings.card_image_ratio, show_quick_add: section.settings.show_quick_add, sizes: card_sizes, heading_tag: 'h3' %}
+                {%- when 'article' -%}
+                  {% render 'article-card', article: item, image_ratio: 'landscape', heading_tag: 'h3', excerpt_words: 24, show_author: false, sizes: card_sizes %}
+                {%- when 'page' -%}
+                  {% render 'page-result-card', page: item, heading_tag: 'h3' %}
+              {%- endcase -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+        {% render 'pagination', paginate: paginate, class: 'main-search__pagination' %}
+      {%- else -%}
+        <div class="main-search__empty" role="status">
+          <p class="main-search__empty-text">{{ 'search.no_results' | t: terms: terms }}</p>
+          <p class="text-small text-muted">{{ 'search.no_results_hint' | t }}</p>
+          <a class="button button--secondary" href="{{ routes.all_products_collection_url }}">{{ 'general.view_products' | t }}</a>
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <p class="main-search__prompt text-muted">{{ 'search.prompt' | t }}</p>
+    {%- endif -%}
+  </section>
+{%- endpaginate -%}
+
+{% stylesheet %}
+  .main-search__crumbs { margin-bottom: var(--space-16); }
+  .main-search__header { display: flex; flex-direction: column; gap: var(--space-12); margin-bottom: var(--space-32); }
+  .main-search__title, .main-search__count { margin: 0; overflow-wrap: anywhere; }
+  .main-search__form { display: flex; gap: var(--space-8); max-width: 40rem; }
+  .main-search__input { flex: 1 1 auto; min-width: 0; }
+  .main-search__submit { flex: none; }
+  .main-search__type-list { display: flex; flex-wrap: wrap; gap: var(--space-8); margin: 0; padding: 0; list-style: none; }
+  .main-search__type { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-16); border: 1px solid var(--color-border-strong); border-radius: var(--radius-button); text-decoration: none; }
+  @media (hover: hover) { .main-search__type:hover { border-color: var(--scheme-text); } }
+  .main-search__type[aria-current="page"] { background: var(--scheme-button-bg); border-color: var(--scheme-button-bg); color: var(--scheme-button-text); }
+  .main-search__grid { display: grid; grid-template-columns: repeat(var(--cols-mobile, 2), minmax(0, 1fr)); gap: var(--space-32) var(--space-16); margin: 0; padding: 0; list-style: none; align-items: start; }
+  .main-search__item { min-width: 0; }
+  .main-search__item--page { grid-column: 1 / -1; }
+  @media (min-width: 768px) { .main-search__grid { grid-template-columns: repeat(var(--cols-tablet, 3), minmax(0, 1fr)); gap: var(--space-32); } }
+  @media (min-width: 1024px) { .main-search__grid { grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); } }
+  .main-search__pagination { margin-top: var(--space-48); }
+  .main-search__empty { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-12); padding: var(--space-32) 0; }
+  .main-search__empty-text, .main-search__prompt { margin: 0; overflow-wrap: anywhere; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main-search.name",
+  "enabled_on": {
+    "templates": [
+      "search"
+    ]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "t:sections.main-search.settings.show_breadcrumb.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_type_filter",
+      "label": "t:sections.main-search.settings.show_type_filter.label",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "results_per_page",
+      "label": "t:sections.main-search.settings.results_per_page.label",
+      "default": 24,
+      "min": 8,
+      "max": 48,
+      "step": 4
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "t:sections.main-search.settings.columns.label",
+      "default": 4,
+      "min": 3,
+      "max": 5,
+      "step": 1
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quick_add",
+      "label": "t:sections.main-search.settings.show_quick_add.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-search.settings.header__layout.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.main-search.settings.color_scheme.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.main-search.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.main-search.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "dark",
+          "label": "t:sections.main-search.settings.color_scheme.options__3.label"
+        },
+        {
+          "value": "accent-1",
+          "label": "t:sections.main-search.settings.color_scheme.options__4.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.main-search.settings.color_scheme.options__5.label"
+        },
+        {
+          "value": "accent-3",
+          "label": "t:sections.main-search.settings.color_scheme.options__6.label"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "t:sections.main-search.settings.spacing_top.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-search.settings.spacing_top.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-search.settings.spacing_top.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-search.settings.spacing_top.options__3.label"
+        }
+      ],
+      "default": "half"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "t:sections.main-search.settings.spacing_bottom.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-search.settings.spacing_bottom.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-search.settings.spacing_bottom.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-search.settings.spacing_bottom.options__3.label"
+        }
+      ],
+      "default": "full"
+    }
+  ]
+}
+{% endschema %}

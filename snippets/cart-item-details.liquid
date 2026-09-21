@@ -1,0 +1,32 @@
+{%- comment -%}
+  The descriptive lines of a cart line: variant options, selling plan, visible line item
+  properties (those not starting with "_") and line-level discounts. Shared by the cart
+  drawer and the cart page so both describe a line the same way.
+  Accepts: item (cart line item, required)
+{%- endcomment -%}
+{%- unless item.product.has_only_default_variant -%}
+  <ul class="cart-item__meta text-small text-muted" role="list">
+    {%- for option in item.options_with_values -%}
+      <li>{{ option.name | escape }}: {{ option.value | escape }}</li>
+    {%- endfor -%}
+  </ul>
+{%- endunless -%}
+
+{%- if item.selling_plan_allocation != nil -%}
+  <p class="text-small text-muted">{{ item.selling_plan_allocation.selling_plan.name | escape }}</p>
+{%- endif -%}
+
+{%- for property in item.properties -%}
+  {%- assign first_char = property.first | slice: 0 -%}
+  {%- if property.last != blank and first_char != '_' -%}
+    <p class="text-small text-muted">{{ property.first | escape }}: {{ property.last | escape }}</p>
+  {%- endif -%}
+{%- endfor -%}
+
+{%- if item.line_level_discount_allocations.size > 0 -%}
+  <ul class="cart-item__discounts" role="list">
+    {%- for allocation in item.line_level_discount_allocations -%}
+      <li class="badge badge--accent">{{ allocation.discount_application.title | escape }}</li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

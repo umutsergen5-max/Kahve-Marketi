@@ -1,0 +1,47 @@
+{%- comment -%}
+  Price block used by product cards, the featured product, quick add and (later)
+  the product page and search results.
+
+  Accepts:
+  - product: product object (required)
+  - variant: variant to price (optional). Without it, the product's lowest price
+    is shown, prefixed by "from" when variants differ in price.
+  - class: extra CSS classes
+
+  The wrapper carries data-price so product.js can swap its content when the
+  customer selects another variant. Amounts are formatted by Shopify (money).
+{%- endcomment -%}
+{%- liquid
+  if variant
+    assign current_price = variant.price
+    assign compare_price = variant.compare_at_price
+    assign show_from = false
+  else
+    assign current_price = product.price
+    assign compare_price = product.compare_at_price
+    assign show_from = product.price_varies
+  endif
+  assign on_sale = false
+  if compare_price > current_price
+    assign on_sale = true
+  endif
+  assign price_html = current_price | money
+-%}
+<div class="price{% if on_sale %} price--sale{% endif %}{% if class != blank %} {{ class }}{% endif %}" data-price>
+  {%- if on_sale -%}
+    <s class="price__compare"><span class="visually-hidden">{{ 'products.price_regular' | t }}</span> {{ compare_price | money }}</s>
+    <span class="price__current"><span class="visually-hidden">{{ 'products.price_sale' | t }}</span> {{ price_html }}</span>
+  {%- elsif show_from -%}
+    <span class="price__current">{{ 'products.from_price' | t: price: price_html }}</span>
+  {%- else -%}
+    <span class="price__current">{{ price_html }}</span>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .price { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-4) var(--space-8); margin: 0; }
+  .price__current { font-family: var(--font-heading-family); letter-spacing: var(--ls-heading); }
+  .price__compare { color: var(--scheme-text-muted); text-decoration: line-through; }
+  .price--sale .price__current { color: var(--color-alert); }
+  .scheme-dark .price--sale .price__current, .scheme-accent-1 .price--sale .price__current { color: #ffb4ab; }
+{% endstylesheet %}

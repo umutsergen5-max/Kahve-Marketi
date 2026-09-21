@@ -1,0 +1,28 @@
+{%- comment -%}
+  Result card for a Shopify page in search results: title link + text excerpt.
+  (Products use product-card, articles use article-card; pages have no image, so this
+  small card exists only for them.)
+  Accepts: page (page object, required), heading_tag (default h3), excerpt_words (default 30)
+{%- endcomment -%}
+{%- liquid
+  assign card_heading = heading_tag | default: 'h3'
+  assign words = excerpt_words | default: 30
+  assign source = page.content | replace: '</p>', ' </p>' | replace: '</li>', ' </li>' | replace: '</h2>', ' </h2>' | replace: '</h3>', ' </h3>'
+  assign excerpt_text = source | strip_html | strip_newlines | strip | truncatewords: words
+-%}
+<article class="page-result-card" data-page-result>
+  <p class="page-result-card__type overline">{{ 'search.pages_singular' | t }}</p>
+  <{{ card_heading }} class="page-result-card__title heading"><a class="page-result-card__link" href="{{ page.url }}">{{ page.title | escape }}</a></{{ card_heading }}>
+  {%- if excerpt_text != blank -%}<p class="page-result-card__excerpt">{{ excerpt_text }}</p>{%- endif -%}
+</article>
+
+{% stylesheet %}
+  .page-result-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-8); padding: var(--space-16) 0; border-top: 1px solid var(--scheme-border); min-width: 0; }
+  .page-result-card__type, .page-result-card__title, .page-result-card__excerpt { margin: 0; }
+  .page-result-card__type { color: var(--scheme-text-muted); }
+  .page-result-card__title { font-size: var(--fs-section); }
+  .page-result-card__link { text-decoration: none; overflow-wrap: anywhere; }
+  .page-result-card__link::after { content: ""; position: absolute; inset: 0; }
+  .page-result-card__link:hover { text-decoration: underline; text-underline-offset: 0.25em; }
+  .page-result-card__excerpt { overflow-wrap: anywhere; }
+{% endstylesheet %}

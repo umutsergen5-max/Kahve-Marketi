@@ -1,0 +1,194 @@
+{%- comment -%}
+  Product media gallery built on the shared carousel component (assets/carousel.js):
+  native scroll-snap swipe, previous/next buttons, dots (small screens), thumbnails,
+  keyboard support, plus an optional zoom lightbox and hover zoom.
+  Handles images, hosted videos, external videos (YouTube/Vimeo) and 3D models straight
+  from product.media, and copes with 0, 1, 2 or many items.
+
+  Accepts:
+  - product: product object (required)
+  - section_id: unique id suffix (required)
+  - ratio: portrait | square | landscape (default portrait)
+  - layout: thumbnails (default) | stacked. "stacked" lays the media out one after another from
+    1024px up and stays a swipeable carousel on smaller screens.
+  - stack_columns: 1 | 2 (stacked layout only)
+  - show_thumbnails: true/false (default true)
+  - enable_zoom: true/false (default true) — click an image to open the lightbox
+  - hover_zoom: true/false (default false) — magnify on hover, mouse pointers only
+  - first_priority: true when the gallery is above the fold (first image is eager + high priority)
+  - sizes: image sizes attribute (default: about half the viewport from 768px, full width below)
+
+  Behaviour: assets/product.js (variant → slide sync, lightbox), assets/product-page.js
+  (hover zoom, pausing videos, 3D models). Selecting a variant with its own image moves
+  the gallery to it through the "carousel:goto" event.
+{%- endcomment -%}
+{%- liquid
+  assign media_list = product.media
+  assign gallery_ratio = ratio | default: 'portrait'
+  assign gallery_layout = layout | default: 'thumbnails'
+  assign gallery_sizes = sizes | default: '(min-width: 1024px) 60vw, (min-width: 768px) 48vw, 100vw'
+  assign has_media = false
+  assign multiple_media = false
+  if media_list.size > 0
+    assign has_media = true
+  endif
+  if media_list.size > 1
+    assign multiple_media = true
+  endif
+  assign zoom_on = false
+  if enable_zoom != false
+    assign zoom_on = true
+  endif
+  assign thumbs_on = false
+  if show_thumbnails != false and multiple_media
+    assign thumbs_on = true
+  endif
+  assign image_count = product.images.size
+  assign has_model = false
+  for media in media_list
+    if media.media_type == 'model'
+      assign has_model = true
+    endif
+  endfor
+  assign track_id = 'gallery-' | append: section_id
+-%}
+
+{%- if has_media -%}
+  {%- if has_model -%}
+    <link rel="stylesheet" href="https://cdn.shopify.com/shopifycloud/model-viewer-ui/assets/v1.0/model-viewer-ui.css">
+  {%- endif -%}
+  <div
+    class="carousel gallery gallery--{{ gallery_layout }}{% if thumbs_on %} gallery--thumbs{% endif %}"
+    data-component="carousel"
+    data-gallery
+    {% if hover_zoom and zoom_on %}data-hover-zoom{% endif %}
+    style="--pv-mobile: 1; --pv-desktop: 1; --carousel-gap: 0px;{% if gallery_layout == 'stacked' and stack_columns == 2 %} --stack-cols: 2;{% endif %}"
+    role="region"
+    aria-roledescription="carousel"
+    aria-label="{{ 'products.gallery_label' | t }}"
+  >
+    <div class="carousel__track" data-carousel-track tabindex="0" id="{{ track_id }}">
+      {%- for media in media_list -%}
+        {%- liquid
+          assign media_alt = media.alt | default: product.title | escape
+          assign slide_loading = 'lazy'
+          assign slide_priority = 'auto'
+          if forloop.first and first_priority
+            assign slide_loading = 'eager'
+            assign slide_priority = 'high'
+          endif
+        -%}
+        <div
+          class="carousel__slide gallery__slide"
+          data-carousel-slide
+          data-media-id="{{ media.id }}"
+          data-media-type="{{ media.media_type }}"
+          role="group"
+          aria-roledescription="{{ 'carousel.slide' | t | downcase }}"
+          aria-label="{{ 'carousel.slide_of' | t: current: forloop.index, total: media_list.size }}"
+        >
+          {%- case media.media_type -%}
+            {%- when 'image' -%}
+              {%- capture image_html -%}
+                {{- media.preview_image | image_url: width: 1400 | image_tag: loading: slide_loading, fetchpriority: slide_priority, widths: '400, 600, 800, 1000, 1200, 1400', sizes: gallery_sizes, alt: media_alt -}}
+              {%- endcapture -%}
+              {%- if zoom_on -%}
+                <button class="gallery__zoom" type="button" data-zoom-open data-zoom-src="{{ media.preview_image | image_url: width: 2000 }}" data-zoom-alt="{{ media_alt }}" aria-haspopup="dialog" aria-label="{{ 'products.zoom_image' | t }}">
+                  <span class="media media--{{ gallery_ratio }}">{{ image_html }}</span>
+                </button>
+              {%- else -%}
+                <div class="media media--{{ gallery_ratio }}">{{ image_html }}</div>
+              {%- endif -%}
+            {%- when 'video', 'external_video' -%}
+              <div class="media media--{{ gallery_ratio }} gallery__video">{{ media | media_tag: image_size: '1100x', controls: true }}</div>
+            {%- when 'model' -%}
+              <div class="media media--{{ gallery_ratio }} gallery__model" data-model>{{ media | media_tag: image_size: '1100x' }}</div>
+            {%- else -%}
+              <div class="media media--{{ gallery_ratio }}">{{ media.preview_image | image_url: width: 1200 | image_tag: loading: 'lazy', alt: media_alt }}</div>
+          {%- endcase -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if multiple_media -%}
+      <button class="carousel__button carousel__button--prev" type="button" data-carousel-prev aria-controls="{{ track_id }}" aria-label="{{ 'carousel.previous' | t }}">{% render 'icon', name: 'chevron-left', size: 20 %}</button>
+      <button class="carousel__button carousel__button--next" type="button" data-carousel-next aria-controls="{{ track_id }}" aria-label="{{ 'carousel.next' | t }}">{% render 'icon', name: 'chevron-right', size: 20 %}</button>
+      <div class="carousel__dots gallery__dots" data-carousel-dots role="group" aria-label="{{ 'carousel.slides_nav' | t }}"></div>
+    {%- endif -%}
+  </div>
+
+  {%- if thumbs_on -%}
+    <ul class="gallery__thumbs" role="list" data-gallery-thumbs>
+      {%- for media in media_list -%}
+        <li>
+          <button class="gallery__thumb" type="button" data-carousel-goto="{{ forloop.index0 }}" aria-controls="{{ track_id }}" aria-label="{{ 'carousel.go_to_slide' | t: number: forloop.index }}"{% if forloop.first %} aria-current="true"{% endif %}>
+            <span class="media media--square">
+              {{- media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', widths: '80, 120, 160', sizes: '72px', alt: '' -}}
+              {%- if media.media_type != 'image' -%}<span class="gallery__thumb-badge" aria-hidden="true">{% render 'icon', name: 'play', size: 14 %}</span>{%- endif -%}
+            </span>
+          </button>
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if zoom_on and image_count > 0 -%}
+    <dialog class="modal modal--zoom" data-modal="zoom-{{ section_id }}" aria-label="{{ 'products.zoom_image' | t }}">
+      <button class="icon-button modal__close" type="button" data-modal-close aria-label="{{ 'products.close_zoom' | t }}">{% render 'icon', name: 'close', size: 22 %}</button>
+      {%- if image_count > 1 -%}
+        <button class="icon-button modal__nav modal__nav--prev" type="button" data-zoom-prev aria-label="{{ 'carousel.previous' | t }}">{% render 'icon', name: 'chevron-left', size: 22 %}</button>
+        <button class="icon-button modal__nav modal__nav--next" type="button" data-zoom-next aria-label="{{ 'carousel.next' | t }}">{% render 'icon', name: 'chevron-right', size: 22 %}</button>
+        <p class="modal__counter text-small" data-zoom-counter role="status" aria-live="polite"></p>
+      {%- endif -%}
+      <img class="modal__zoom-image" data-zoom-image alt="">
+    </dialog>
+  {%- endif -%}
+{%- else -%}
+  <div class="media media--{{ gallery_ratio }}">{{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+{%- endif -%}
+
+{% stylesheet %}
+  .gallery { --carousel-gap: 0px; }
+  .gallery__slide { position: relative; }
+  .gallery__zoom { display: block; width: 100%; padding: 0; border: 0; background: none; color: inherit; cursor: zoom-in; }
+  .gallery__zoom .media { pointer-events: none; }
+  .gallery .media video, .gallery .media iframe, .gallery .media model-viewer { width: 100%; height: 100%; border: 0; }
+  .gallery__dots { position: absolute; left: 0; right: 0; bottom: var(--space-8); margin: 0; color: #fff; }
+  .gallery__dots .carousel__dot::before { box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25); }
+  .gallery__thumbs { display: none; margin: var(--space-16) 0 0; padding: 0 0 var(--space-4); list-style: none; gap: var(--space-8); overflow-x: auto; scrollbar-width: thin; }
+  .gallery__thumbs li { flex: 0 0 auto; }
+  .gallery__thumb { position: relative; display: block; width: 72px; padding: 0; border: 2px solid transparent; border-radius: var(--radius-image); background: none; cursor: pointer; transition: border-color 0.2s var(--ease-standard); }
+  .gallery__thumb[aria-current="true"] { border-color: var(--scheme-text); }
+  .gallery__thumb-badge { position: absolute; right: 4px; bottom: 4px; display: inline-flex; padding: 3px; border-radius: 50%; background: rgba(0, 0, 0, 0.6); color: #fff; }
+  @media (min-width: 768px) {
+    .gallery__thumbs { display: flex; }
+    .gallery--thumbs .gallery__dots { display: none; }
+  }
+
+  /* Stacked layout: a carousel below 1024px, a plain column (or two) of media above. */
+  @media (min-width: 1024px) {
+    .gallery--stacked .carousel__track { display: grid; grid-template-columns: repeat(var(--stack-cols, 1), minmax(0, 1fr)); gap: var(--space-8); overflow: visible; scroll-snap-type: none; }
+    .gallery--stacked .carousel__slide { flex: none; }
+    .gallery--stacked .carousel__button, .gallery--stacked .carousel__dots { display: none; }
+    .gallery--stacked .carousel__track:focus-visible { outline: none; }
+    .gallery--stacked + .gallery__thumbs { display: none; }
+  }
+
+  /* Hover zoom (mouse pointers only; JS sets --zx/--zy) */
+  @media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+    [data-hover-zoom] .gallery__zoom .media > img { transition: transform 0.25s var(--ease-standard); }
+    [data-hover-zoom] .gallery__zoom.is-zooming .media > img { transform: scale(1.7); transform-origin: var(--zx, 50%) var(--zy, 50%); transition: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-hover-zoom] .gallery__zoom .media > img { transition: none; }
+  }
+
+  /* Lightbox */
+  .modal--zoom { width: min(96vw, 1100px); background: transparent; overflow: visible; }
+  .modal--zoom .modal__close { top: calc(var(--space-8) * -1); right: 0; z-index: 2; background: var(--color-background); border-radius: 50%; }
+  .modal__zoom-image { display: block; width: 100%; height: auto; max-height: 90vh; object-fit: contain; border-radius: var(--radius-image); background: var(--color-background); }
+  .modal__nav { position: absolute; top: 50%; z-index: 2; transform: translateY(-50%); background: var(--color-background); border-radius: 50%; box-shadow: var(--shadow-center); }
+  .modal__nav--prev { left: var(--space-8); }
+  .modal__nav--next { right: var(--space-8); }
+  .modal__counter { position: absolute; left: 50%; bottom: var(--space-8); z-index: 2; margin: 0; padding: var(--space-4) var(--space-12); transform: translateX(-50%); border-radius: var(--radius-button); background: var(--color-background); }
+{% endstylesheet %}

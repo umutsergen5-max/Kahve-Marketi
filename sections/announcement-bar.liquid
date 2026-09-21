@@ -1,0 +1,233 @@
+{%- comment -%}
+  Announcement bar. All content comes from section settings/blocks.
+  Renders nothing when disabled or when no message has text, so no empty
+  band or spacing is left behind.
+
+  Marquee: when "scroll" is on, the message group is rendered twice and the
+  track is translated by -50% in CSS (seamless loop). The clone is inert and
+  aria-hidden. Reduced-motion users get a static, wrapping layout. A
+  pause/play button (WCAG 2.2.2) is revealed by JS when the marquee is running.
+{%- endcomment -%}
+{%- liquid
+  assign has_message = false
+  for block in section.blocks
+    if block.settings.text != blank
+      assign has_message = true
+    endif
+  endfor
+
+  assign copies = 1
+  if section.settings.scroll
+    assign copies = 2
+  endif
+-%}
+
+{%- if section.settings.enabled and has_message -%}
+  <div
+    class="announcement scheme-{{ section.settings.color_scheme }}"
+    data-component="announcement"
+    data-scroll="{{ section.settings.scroll }}"
+    data-speed="{{ section.settings.speed }}"
+    role="region"
+    aria-label="{{ 'accessibility.announcements' | t }}"
+    style="{% if section.settings.background_color != blank %}--scheme-bg: {{ section.settings.background_color }}; {% endif %}{% if section.settings.text_color != blank %}--scheme-text: {{ section.settings.text_color }}; --scheme-focus: {{ section.settings.text_color }};{% endif %}"
+  >
+    <div class="announcement__viewport">
+      <div class="announcement__track" data-announcement-track>
+        {%- for i in (1..copies) -%}
+          <div class="announcement__group"{% if i == 2 %} data-clone aria-hidden="true" inert{% endif %}>
+            {%- for block in section.blocks -%}
+              {%- if block.settings.text != blank -%}
+                <p class="announcement__item text-nav" {{ block.shopify_attributes }}>
+                  {%- if block.settings.link != blank -%}
+                    <a href="{{ block.settings.link }}">{{ block.settings.text | escape }}</a>
+                  {%- else -%}
+                    {{ block.settings.text | escape }}
+                  {%- endif -%}
+                </p>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.scroll -%}
+        <button
+          class="announcement__toggle icon-button"
+          type="button"
+          data-announcement-toggle
+          aria-pressed="false"
+          data-label-pause="{{ 'accessibility.pause_announcements' | t | escape }}"
+          data-label-play="{{ 'accessibility.play_announcements' | t | escape }}"
+          aria-label="{{ 'accessibility.pause_announcements' | t }}"
+          hidden
+        >
+          <span class="announcement__toggle-pause">{% render 'icon', name: 'pause', size: 16 %}</span>
+          <span class="announcement__toggle-play">{% render 'icon', name: 'play', size: 16 %}</span>
+        </button>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .announcement { position: relative; }
+  .announcement__viewport { position: relative; overflow: hidden; }
+
+  .announcement__track {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-4) var(--space-32);
+    padding: var(--space-8) var(--section-x);
+  }
+  .announcement__group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4) var(--space-32);
+  }
+  .announcement__item { margin: 0; text-align: center; }
+  .announcement__item a { text-decoration: none; }
+  @media (hover: hover) {
+    .announcement__item a:hover { text-decoration: underline; }
+  }
+
+  /* Marquee */
+  .announcement[data-scroll="true"] .announcement__track {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 0;
+    width: max-content;
+    padding: 0;
+    animation: announcement-scroll var(--announcement-duration, 30s) linear infinite;
+  }
+  .announcement[data-scroll="true"] .announcement__group {
+    flex: none;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    gap: var(--space-64);
+    min-width: 100vw;
+    padding: var(--space-8) var(--space-32);
+    white-space: nowrap;
+  }
+  .announcement[data-scroll="true"] .announcement__item { white-space: nowrap; }
+
+  .announcement[data-paused="true"] .announcement__track,
+  .announcement[data-scroll="true"]:hover .announcement__track,
+  .announcement[data-scroll="true"]:focus-within .announcement__track { animation-play-state: paused; }
+
+  @keyframes announcement-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-50%, 0, 0); }
+  }
+
+  .announcement__toggle {
+    position: absolute;
+    top: 50%;
+    right: var(--space-8);
+    width: 32px;
+    height: 32px;
+    transform: translateY(-50%);
+    background: var(--scheme-bg);
+    color: var(--scheme-text);
+    box-shadow: -12px 0 12px var(--scheme-bg);
+  }
+  .announcement__toggle-play { display: none; }
+  .announcement[data-paused="true"] .announcement__toggle-pause { display: none; }
+  .announcement[data-paused="true"] .announcement__toggle-play { display: inline-flex; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .announcement[data-scroll="true"] .announcement__track {
+      animation: none;
+      width: auto;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: var(--space-8) var(--section-x);
+    }
+    .announcement[data-scroll="true"] .announcement__group {
+      min-width: 0;
+      flex-wrap: wrap;
+      white-space: normal;
+      padding: 0;
+    }
+    .announcement[data-scroll="true"] .announcement__item { white-space: normal; }
+    .announcement [data-clone],
+    .announcement__toggle { display: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.announcement-bar.name",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "t:sections.announcement-bar.settings.enabled.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.announcement-bar.settings.color_scheme.label",
+      "default": "accent-1",
+      "options": [
+        { "value": "accent-1", "label": "t:sections.announcement-bar.settings.color_scheme.options__1.label" },
+        { "value": "accent-2", "label": "t:sections.announcement-bar.settings.color_scheme.options__2.label" },
+        { "value": "accent-3", "label": "t:sections.announcement-bar.settings.color_scheme.options__3.label" },
+        { "value": "dark", "label": "t:sections.announcement-bar.settings.color_scheme.options__4.label" },
+        { "value": "light", "label": "t:sections.announcement-bar.settings.color_scheme.options__5.label" }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:sections.announcement-bar.settings.background_color.label",
+      "info": "t:sections.announcement-bar.settings.background_color.info"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:sections.announcement-bar.settings.text_color.label",
+      "info": "t:sections.announcement-bar.settings.text_color.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "scroll",
+      "label": "t:sections.announcement-bar.settings.scroll.label",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "t:sections.announcement-bar.settings.speed.label",
+      "info": "t:sections.announcement-bar.settings.speed.info",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "t:sections.announcement-bar.blocks.message.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:sections.announcement-bar.blocks.message.settings.text.label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:sections.announcement-bar.blocks.message.settings.link.label"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

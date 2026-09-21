@@ -1,0 +1,50 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "content_width": "lg",
+        "title_align": "center",
+        "spacing_bottom": "none"
+      }
+    },
+    "locations": {
+      "type": "locations",
+      "blocks": {
+        "l1": {
+          "type": "location",
+          "settings": {
+            "type_label": "Konum türü",
+            "name": "Konum adı 1",
+            "address": "Adres satırı 1\nAdres satırı 2",
+            "hours": "Hafta içi: 09:00 – 18:00\nHafta sonu: 10:00 – 16:00",
+            "description": "<p>Kısa bir açıklama.</p>"
+          }
+        },
+        "l2": {
+          "type": "location",
+          "settings": {
+            "type_label": "Konum türü",
+            "name": "Konum adı 2",
+            "address": "Adres satırı 1\nAdres satırı 2",
+            "hours": "Hafta içi: 09:00 – 18:00\nHafta sonu: 10:00 – 16:00",
+            "description": "<p>Kısa bir açıklama.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "l1",
+        "l2"
+      ],
+      "settings": {
+        "layout": "cards",
+        "columns": 2,
+        "spacing_top": "half"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "locations"
+  ]
+}

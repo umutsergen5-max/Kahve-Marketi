@@ -1,0 +1,132 @@
+{%- comment -%}
+  Predictive search results. Not placed in any template: assets/search.js
+  requests it through Shopify's Predictive Search API
+  (/search/suggest?section_id=predictive-search) and injects the markup into
+  the search drawer.
+{%- endcomment -%}
+{%- liquid
+  assign queries = predictive_search.resources.queries
+  assign products = predictive_search.resources.products
+  assign collections = predictive_search.resources.collections
+  assign articles = predictive_search.resources.articles
+  assign pages = predictive_search.resources.pages
+  assign total = products.size | plus: collections.size | plus: articles.size | plus: pages.size | plus: queries.size
+  assign terms = predictive_search.terms
+  assign encoded_terms = terms | url_encode
+  assign all_url = routes.search_url | append: '?q=' | append: encoded_terms | append: '&options[prefix]=last'
+-%}
+
+<div id="predictive-search-results" data-predictive-results data-count="{{ total }}" data-announce="{% if total > 0 %}{{ 'search.results_announce' | t: count: total | escape }}{% else %}{{ 'search.no_results_short' | t | escape }}{% endif %}">
+  {%- if predictive_search.performed -%}
+    {%- if total == 0 -%}
+      <p class="search-results__empty">{{ 'search.no_results' | t: terms: terms }}</p>
+    {%- else -%}
+      <div class="search-results">
+        {%- if queries.size > 0 -%}
+          <section class="search-results__group" aria-labelledby="ps-queries">
+            <h2 class="search-results__heading text-nav" id="ps-queries">{{ 'search.suggestions' | t }}</h2>
+            <ul class="search-results__list" role="list">
+              {%- for query in queries -%}
+                <li><a class="search-results__link text-small" href="{{ query.url }}" data-result-link>{{ query.styled_text }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </section>
+        {%- endif -%}
+
+        {%- if products.size > 0 -%}
+          <section class="search-results__group search-results__group--products" aria-labelledby="ps-products">
+            <h2 class="search-results__heading text-nav" id="ps-products">{{ 'search.products' | t }}</h2>
+            <ul class="search-results__list search-results__list--products" role="list">
+              {%- for product in products -%}
+                <li>
+                  <a class="search-result" href="{{ product.url }}" data-result-link>
+                    <span class="search-result__media media media--portrait">
+                      {% render 'image', image: product.featured_image, widths: '96, 192, 288', sizes: '64px', alt: '' %}
+                    </span>
+                    <span class="search-result__info">
+                      <span class="search-result__title">{{ product.title | escape }}</span>
+                      <span class="search-result__price text-small">
+                        {%- if product.price_varies -%}
+                          {%- assign from_price = product.price_min | money -%}
+                          {{ 'products.from_price' | t: price: from_price }}
+                        {%- else -%}
+                          {%- if product.compare_at_price > product.price -%}<s class="text-muted">{{ product.compare_at_price | money }}</s> {% endif -%}
+                          {{ product.price | money }}
+                        {%- endif -%}
+                      </span>
+                      {%- unless product.available -%}<span class="badge badge--muted">{{ 'products.sold_out' | t }}</span>{%- endunless -%}
+                    </span>
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </section>
+        {%- endif -%}
+
+        {%- if collections.size > 0 -%}
+          <section class="search-results__group" aria-labelledby="ps-collections">
+            <h2 class="search-results__heading text-nav" id="ps-collections">{{ 'search.collections' | t }}</h2>
+            <ul class="search-results__list" role="list">
+              {%- for collection in collections -%}
+                <li><a class="search-results__link text-small" href="{{ collection.url }}" data-result-link>{{ collection.title | escape }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </section>
+        {%- endif -%}
+
+        {%- if articles.size > 0 -%}
+          <section class="search-results__group" aria-labelledby="ps-articles">
+            <h2 class="search-results__heading text-nav" id="ps-articles">{{ 'search.articles' | t }}</h2>
+            <ul class="search-results__list" role="list">
+              {%- for article in articles -%}
+                <li><a class="search-results__link text-small" href="{{ article.url }}" data-result-link>{{ article.title | escape }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </section>
+        {%- endif -%}
+
+        {%- if pages.size > 0 -%}
+          <section class="search-results__group" aria-labelledby="ps-pages">
+            <h2 class="search-results__heading text-nav" id="ps-pages">{{ 'search.pages' | t }}</h2>
+            <ul class="search-results__list" role="list">
+              {%- for page in pages -%}
+                <li><a class="search-results__link text-small" href="{{ page.url }}" data-result-link>{{ page.title | escape }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </section>
+        {%- endif -%}
+      </div>
+
+      <p class="search-results__all">
+        <a class="button button--secondary button--small" href="{{ all_url }}" data-result-link>{{ 'search.view_all_results' | t }}</a>
+      </p>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .search-results { display: grid; gap: var(--space-32); grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 768px) {
+    .search-results { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+    .search-results__group--products { grid-column: 2; grid-row: 1 / span 4; }
+  }
+  .search-results__heading { margin: 0 0 var(--space-12); color: var(--color-text-muted); }
+  .search-results__list { display: flex; flex-direction: column; gap: var(--space-8); margin: 0; padding: 0; list-style: none; }
+  .search-results__link { display: inline-block; padding: var(--space-4) 0; text-decoration: none; }
+  .search-results__link:hover { text-decoration: underline; text-underline-offset: 0.25em; }
+  .search-results__link mark { background: none; color: inherit; font-weight: 700; }
+  .search-results__empty { padding: var(--space-16) 0; }
+  .search-results__all { margin-top: var(--space-16); }
+
+  .search-result { display: flex; align-items: center; gap: var(--space-16); padding: var(--space-4) 0; text-decoration: none; }
+  .search-result__media { flex: none; width: 64px; }
+  .search-result__info { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); min-width: 0; }
+  .search-result__title { font-family: var(--font-heading-family); letter-spacing: var(--ls-heading); overflow-wrap: anywhere; }
+  .search-result:hover .search-result__title { text-decoration: underline; text-underline-offset: 0.25em; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.predictive-search.name"
+}
+{% endschema %}

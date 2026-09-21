@@ -1,0 +1,80 @@
+{%- comment -%}
+  Quick-add drawer (right). Static section rendered from layout/theme.liquid.
+  It is an empty shell on ordinary pages. When a multi-variant product card asks for
+  quick add, assets/product.js requests this same section on the product's URL
+  (Section Rendering API, ?sections=quick-add): there `product` is defined, so the
+  markup below is rendered server-side and injected into [data-quick-add-content].
+  Only used when the cart type is "drawer".
+{%- endcomment -%}
+{%- if settings.cart_type == 'drawer' -%}
+  <aside
+    class="drawer quick-add-drawer"
+    id="drawer-quick-add"
+    data-drawer="quick-add"
+    data-editor-reveal
+    data-side="right"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="quick-add-title"
+    tabindex="-1"
+  >
+    <div class="drawer__header">
+      <h2 class="drawer__title heading" id="quick-add-title">{{ 'products.choose_options' | t }}</h2>
+      <button class="icon-button" type="button" data-drawer-close aria-label="{{ 'general.close' | t }}">
+        {% render 'icon', name: 'close', size: 22 %}
+      </button>
+    </div>
+
+    <div class="drawer__body quick-add__body" data-quick-add-content aria-busy="false">
+      {%- if product -%}
+        {%- assign quick_id = product.handle | prepend: 'quick-' -%}
+        <div class="quick-add__product" data-component="product-details" data-update-url="false">
+          <div class="quick-add__summary">
+            {%- if product.featured_media != blank -%}
+              <div class="quick-add__image media media--portrait">
+                {{- product.featured_media.preview_image | image_url: width: 240 | image_tag: loading: 'eager', widths: '120, 240', sizes: '96px', alt: '' -}}
+              </div>
+            {%- endif -%}
+            <div class="quick-add__meta">
+              <h3 class="quick-add__title heading heading--block">{{ product.title | escape }}</h3>
+              {% render 'price', product: product, variant: product.selected_or_first_available_variant %}
+            </div>
+          </div>
+
+          {% render 'product-form', product: product, section_id: quick_id, show_quantity: true, option_style: 'pills' %}
+
+          <a class="button button--text" href="{{ product.url }}">{{ 'products.view_details' | t }}</a>
+        </div>
+      {%- endif -%}
+    </div>
+  </aside>
+{%- endif -%}
+
+{% stylesheet %}
+  .quick-add__body { position: relative; }
+  .quick-add__body[aria-busy="true"] { opacity: 0.5; min-height: 160px; }
+  .quick-add__body[aria-busy="true"]::after {
+    content: "";
+    position: absolute;
+    top: var(--space-48);
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin-left: -12px;
+    border: 2px solid var(--color-text);
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: theme-spin 0.7s linear infinite;
+  }
+  .quick-add__product { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-16); }
+  .quick-add__product .product-form-wrap { width: 100%; }
+  .quick-add__summary { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: var(--space-16); align-items: start; width: 100%; }
+  .quick-add__meta { display: flex; flex-direction: column; gap: var(--space-8); }
+  .quick-add__title { margin: 0; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.quick-add.name"
+}
+{% endschema %}

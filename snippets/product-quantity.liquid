@@ -1,0 +1,68 @@
+{%- comment -%}
+  Quantity selector: minus / number input / plus. Honours the variant's Shopify quantity
+  rule (minimum, maximum, increment) and, optionally, tracked stock.
+
+  Accepts:
+  - variant: the initially selected variant (required)
+  - form_id: id of the product <form> (required); the input uses the `form` attribute
+  - input_id: id for the number input (default: "<form_id>-quantity")
+  - limit_by_stock: true to cap the maximum at tracked stock (only for items that are
+    tracked by Shopify and not sold when out of stock). Default false.
+  - show_label: true (default) renders the visible label; false keeps it screen-reader only.
+
+  Behaviour (assets/product.js, "product-details"): buttons and typing are clamped to
+  [min, max] and snapped to the increment; the attributes are refreshed whenever the
+  variant changes.
+{%- endcomment -%}
+{%- liquid
+  assign qty_id = form_id | append: '-quantity'
+  if input_id
+    assign qty_id = input_id
+  endif
+  assign qty_min = variant.quantity_rule.min | default: 1
+  assign qty_step = variant.quantity_rule.increment | default: 1
+  assign qty_max = variant.quantity_rule.max
+  if limit_by_stock and variant.inventory_management == 'shopify' and variant.inventory_policy == 'deny'
+    assign stock = variant.inventory_quantity | at_least: 0
+    if qty_max == nil or stock < qty_max
+      assign qty_max = stock
+    endif
+  endif
+  assign label_class = 'field__label'
+  if show_label == false
+    assign label_class = 'field__label visually-hidden'
+  endif
+-%}
+<div class="field product-quantity" data-quantity-field data-limit-stock="{% if limit_by_stock %}true{% else %}false{% endif %}">
+  <label class="{{ label_class }}" for="{{ qty_id }}">{{ 'products.quantity' | t }}</label>
+  <div class="quantity">
+    <button class="quantity__button" type="button" data-product-qty-step="-1" aria-controls="{{ qty_id }}" aria-label="{{ 'products.decrease_quantity' | t }}">{% render 'icon', name: 'minus', size: 14 %}</button>
+    <input
+      class="quantity__input"
+      type="number"
+      id="{{ qty_id }}"
+      name="quantity"
+      form="{{ form_id }}"
+      value="{{ qty_min }}"
+      min="{{ qty_min }}"
+      step="{{ qty_step }}"
+      {% if qty_max != nil %}max="{{ qty_max }}"{% endif %}
+      inputmode="numeric"
+      autocomplete="off"
+      data-product-qty
+      aria-describedby="{{ qty_id }}-hint"
+    >
+    <button class="quantity__button" type="button" data-product-qty-step="1" aria-controls="{{ qty_id }}" aria-label="{{ 'products.increase_quantity' | t }}">{% render 'icon', name: 'plus', size: 14 %}</button>
+  </div>
+  <p class="field__hint product-quantity__hint" id="{{ qty_id }}-hint" data-qty-hint{% if qty_min <= 1 and qty_step <= 1 and qty_max == nil %} hidden{% endif %}>
+    {%- if qty_min > 1 %}{{ 'products.quantity_min' | t: count: qty_min }} {% endif -%}
+    {%- if qty_step > 1 %}{{ 'products.quantity_step' | t: count: qty_step }} {% endif -%}
+    {%- if qty_max != nil %}{{ 'products.quantity_max' | t: count: qty_max }}{% endif -%}
+  </p>
+</div>
+
+{% stylesheet %}
+  .product-quantity .quantity { align-self: flex-start; }
+  .product-quantity__hint { margin: 0; }
+  .quantity__button[aria-disabled="true"] { opacity: 0.35; cursor: not-allowed; }
+{% endstylesheet %}

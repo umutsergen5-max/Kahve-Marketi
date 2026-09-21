@@ -1,0 +1,182 @@
+{%- comment -%}
+  Recently viewed products. The visitor's product handles are kept in localStorage by
+  assets/recently-viewed.js (recorded on every product page by the layout). This section
+  renders empty and stays hidden; the script fetches each product's card server-side
+  (Section Rendering API, section "product-card-item") once the section is near the
+  viewport. Nothing is stored on the server and no third party is involved.
+  In the theme editor placeholder cards are shown so the layout can be styled.
+{%- endcomment -%}
+{%- liquid
+  assign col_count = section.settings.columns
+  assign col_count_mobile = section.settings.columns_mobile
+  assign tablet_count = col_count | at_most: 3
+  if section.settings.heading != blank
+    assign heading_text = section.settings.heading
+  else
+    assign heading_text = 'collections.recently_viewed' | t
+  endif
+  assign exclude_handle = ''
+  if product
+    assign exclude_handle = product.handle
+  endif
+-%}
+
+<section
+  class="recently-viewed section scheme-{{ section.settings.color_scheme }}"
+  data-component="recently-viewed"
+  data-limit="{{ section.settings.max_products }}"
+  data-exclude="{{ exclude_handle }}"
+  data-design-mode="{{ request.design_mode }}"
+  data-spacing-top="{{ section.settings.spacing_top }}"
+  data-spacing-bottom="{{ section.settings.spacing_bottom }}"
+  {% unless request.design_mode %}hidden{% endunless %}
+>
+  <div class="section__header text-{{ section.settings.heading_align }}">
+    <h2 class="heading heading--section">{{ heading_text | escape }}</h2>
+  </div>
+  <div class="grid recently-viewed__grid" data-recent-grid style="--cols: {{ col_count }}; --cols-tablet: {{ tablet_count }}; --cols-mobile: {{ col_count_mobile }};">
+    {%- if request.design_mode -%}
+      {%- for i in (1..col_count) -%}
+        {% render 'product-card', product: blank, image_ratio: settings.card_image_ratio, heading_tag: 'h3' %}
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "t:sections.recently-viewed.name",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:sections.recently-viewed.settings.heading.label",
+      "info": "t:sections.recently-viewed.settings.heading.info"
+    },
+    {
+      "type": "select",
+      "id": "heading_align",
+      "label": "t:sections.recently-viewed.settings.heading_align.label",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.recently-viewed.settings.heading_align.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.recently-viewed.settings.heading_align.options__2.label"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "t:sections.recently-viewed.settings.max_products.label",
+      "default": 4,
+      "min": 2,
+      "max": 12,
+      "step": 1
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "t:sections.recently-viewed.settings.columns.label",
+      "default": 4,
+      "min": 2,
+      "max": 5,
+      "step": 1
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "t:sections.recently-viewed.settings.columns_mobile.label",
+      "default": 2,
+      "min": 1,
+      "max": 2,
+      "step": 1
+    },
+    {
+      "type": "header",
+      "content": "t:sections.recently-viewed.settings.header__layout.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.recently-viewed.settings.color_scheme.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.recently-viewed.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.recently-viewed.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "dark",
+          "label": "t:sections.recently-viewed.settings.color_scheme.options__3.label"
+        },
+        {
+          "value": "accent-1",
+          "label": "t:sections.recently-viewed.settings.color_scheme.options__4.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.recently-viewed.settings.color_scheme.options__5.label"
+        },
+        {
+          "value": "accent-3",
+          "label": "t:sections.recently-viewed.settings.color_scheme.options__6.label"
+        }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "t:sections.recently-viewed.settings.spacing_top.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.recently-viewed.settings.spacing_top.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.recently-viewed.settings.spacing_top.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.recently-viewed.settings.spacing_top.options__3.label"
+        }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "t:sections.recently-viewed.settings.spacing_bottom.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.recently-viewed.settings.spacing_bottom.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.recently-viewed.settings.spacing_bottom.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.recently-viewed.settings.spacing_bottom.options__3.label"
+        }
+      ],
+      "default": "full"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.recently-viewed.presets.name"
+    }
+  ]
+}
+{% endschema %}

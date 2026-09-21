@@ -1,0 +1,59 @@
+{%- comment -%}
+  Variant data for assets/product.js ("product-details" component).
+  One compact JSON record per Shopify variant: options, availability, server-rendered
+  price markup, media, SKU/barcode, quantity rules and (optionally) stock.
+
+  Accepts:
+  - product: product object (required)
+  - expose_stock: true to include the tracked stock quantity. Only set when a block
+    needs it (low-stock message, exact count, or limiting the quantity input), so the
+    number is not published needlessly.
+{%- endcomment -%}
+<script type="application/json" data-variants>
+  [
+  {%- for variant in product.variants -%}
+    {%- capture price_markup -%}{%- render 'price', product: product, variant: variant -%}{%- endcapture -%}
+    {%- liquid
+      assign variant_on_sale = false
+      assign sale_percent = 0
+      if variant.compare_at_price > variant.price
+        assign variant_on_sale = true
+        assign sale_percent = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round
+      endif
+      assign tracked = false
+      if variant.inventory_management == 'shopify'
+        assign tracked = true
+      endif
+      assign stock = nil
+      if expose_stock and tracked
+        assign stock = variant.inventory_quantity
+      endif
+      assign unit_markup = ''
+      if variant.unit_price_measurement
+        capture unit_markup
+          render 'unit-price', variant: variant
+        endcapture
+      endif
+    -%}
+    {
+      "id": {{ variant.id }},
+      "title": {{ variant.title | json }},
+      "options": {{ variant.options | json }},
+      "available": {{ variant.available | json }},
+      "on_sale": {{ variant_on_sale | json }},
+      "percent": {{ sale_percent | json }},
+      "price_html": {{ price_markup | strip_newlines | json }},
+      "unit_html": {{ unit_markup | strip_newlines | json }},
+      "media": {{ variant.featured_media.id | json }},
+      "sku": {{ variant.sku | json }},
+      "barcode": {{ variant.barcode | json }},
+      "qty_min": {{ variant.quantity_rule.min | default: 1 | json }},
+      "qty_max": {{ variant.quantity_rule.max | json }},
+      "qty_step": {{ variant.quantity_rule.increment | default: 1 | json }},
+      "tracked": {{ tracked | json }},
+      "policy": {{ variant.inventory_policy | json }},
+      "stock": {{ stock | json }}
+    }{% unless forloop.last %},{% endunless %}
+  {%- endfor -%}
+  ]
+</script>

@@ -1,0 +1,11 @@
+{%- comment -%}
+  Error summary for a Shopify form. Pass the form's errors: {% render 'form-errors', errors: form.errors, id: 'login-errors' %}
+  Renders nothing without errors. role="alert" announces it; invalid fields (see form-field)
+  refer to it with aria-describedby.
+{%- endcomment -%}
+{%- if errors -%}
+  <div class="message message--error auth-errors" role="alert" id="{{ id }}" tabindex="-1">
+    <p class="auth-errors__title">{{ 'customer.form_errors' | t }}</p>
+    {{ errors | default_errors }}
+  </div>
+{%- endif -%}

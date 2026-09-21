@@ -1,0 +1,36 @@
+{
+  "name": "Footer group",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "menu-1": {
+          "type": "menu",
+          "settings": {
+            "menu": "footer"
+          }
+        },
+        "menu-2": {
+          "type": "menu",
+          "settings": {}
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "show_social": true
+          }
+        },
+        "about": {
+          "type": "about",
+          "settings": {
+            "text": "<p>Mağazanızı tanıtan kısa bir metin ekleyin. Bu alan tema düzenleyicisinden değiştirilebilir.</p>"
+          }
+        }
+      },
+      "block_order": ["menu-1", "menu-2", "newsletter", "about"],
+      "settings": {}
+    }
+  },
+  "order": ["footer"]
+}

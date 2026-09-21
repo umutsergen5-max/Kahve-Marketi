@@ -1,0 +1,7 @@
+{%- comment -%}
+  Unit price line, e.g. "12,50 TL / 100 g", for variants that have a unit price measurement.
+  Accepts: variant (required). Renders nothing when the variant has no unit price.
+{%- endcomment -%}
+{%- if variant.unit_price_measurement -%}
+  <span class="unit-price"><span class="visually-hidden">{{ 'products.price_unit' | t }}</span> {{ variant.unit_price | money }} / {% if variant.unit_price_measurement.reference_value != 1 %}{{ variant.unit_price_measurement.reference_value }} {% endif %}{{ variant.unit_price_measurement.reference_unit }}</span>
+{%- endif -%}

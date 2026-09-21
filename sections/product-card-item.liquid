@@ -1,0 +1,22 @@
+{%- comment -%}
+  Renders one product card for the product in context. Never placed in a template: it is
+  requested through the Section Rendering API on a product URL
+  (/products/<handle>?sections=product-card-item), e.g. by assets/recently-viewed.js.
+{%- endcomment -%}
+{%- if product -%}
+  <div class="product-card-item" data-product-card-item>
+    {% render 'product-card',
+      product: product,
+      image_ratio: settings.card_image_ratio,
+      show_quick_add: true,
+      heading_tag: 'h3',
+      sizes: '(min-width: 1024px) calc(100vw / 4), (min-width: 768px) 33vw, 50vw'
+    %}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.product-card-item.name"
+}
+{% endschema %}

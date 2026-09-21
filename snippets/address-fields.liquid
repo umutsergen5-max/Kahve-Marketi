@@ -1,0 +1,38 @@
+{%- comment -%}
+  Address form fields (new and edit forms of the addresses page).
+  Accepts: values (the Shopify form object of the surrounding customer_address form), uid (unique
+  id suffix), is_default (checkbox state).
+  The country select comes from Shopify's country option tags; assets/auth.js fills the province
+  select from the selected country's data-provinces.
+{%- endcomment -%}
+{%- liquid
+  assign id_first_name = 'address-first-name-' | append: uid
+  assign id_last_name = 'address-last-name-' | append: uid
+  assign id_company = 'address-company-' | append: uid
+  assign id_address1 = 'address-address1-' | append: uid
+  assign id_address2 = 'address-address2-' | append: uid
+  assign id_city = 'address-city-' | append: uid
+  assign id_zip = 'address-zip-' | append: uid
+  assign id_phone = 'address-phone-' | append: uid
+-%}
+<div class="address-fields">
+  {% render 'form-field', id: id_first_name, name: 'address[first_name]', label_key: 'customer.first_name', value: values.first_name, autocomplete: 'given-name' %}
+  {% render 'form-field', id: id_last_name, name: 'address[last_name]', label_key: 'customer.last_name', value: values.last_name, autocomplete: 'family-name' %}
+  {% render 'form-field', id: id_company, name: 'address[company]', label_key: 'customer.company', value: values.company, autocomplete: 'organization' %}
+  {% render 'form-field', id: id_address1, name: 'address[address1]', label_key: 'customer.address1', value: values.address1, autocomplete: 'address-line1' %}
+  {% render 'form-field', id: id_address2, name: 'address[address2]', label_key: 'customer.address2', value: values.address2, autocomplete: 'address-line2' %}
+  {% render 'form-field', id: id_city, name: 'address[city]', label_key: 'customer.city', value: values.city, autocomplete: 'address-level2' %}
+  <div class="field auth-field">
+    <label class="field__label" for="address-country-{{ uid }}">{{ 'customer.country' | t }}</label>
+    <select class="select" id="address-country-{{ uid }}" name="address[country]" autocomplete="country-name" data-address-country data-default="{{ values.country | escape }}">{{ all_country_option_tags }}</select>
+  </div>
+  <div class="field auth-field" data-address-province-field hidden>
+    <label class="field__label" for="address-province-{{ uid }}">{{ 'customer.province' | t }}</label>
+    <select class="select" id="address-province-{{ uid }}" name="address[province]" autocomplete="address-level1" data-address-province data-default="{{ values.province | escape }}"></select>
+  </div>
+  {% render 'form-field', id: id_zip, name: 'address[zip]', label_key: 'customer.zip', value: values.zip, autocomplete: 'postal-code' %}
+  {% render 'form-field', id: id_phone, name: 'address[phone]', type: 'tel', label_key: 'customer.phone', value: values.phone, autocomplete: 'tel' %}
+  <div class="checkbox address-fields__default">
+    <label class="checkbox__label"><input type="checkbox" name="address[default]" value="1"{% if is_default %} checked{% endif %}> <span>{{ 'customer.set_default' | t }}</span></label>
+  </div>
+</div>

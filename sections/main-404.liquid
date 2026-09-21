@@ -1,0 +1,169 @@
+{%- comment -%}
+  404 page (404 template). Shopify serves it with an HTTP 404 status. Clear status code,
+  heading, short explanation, and ways back: home, search (opens the search drawer, falls back
+  to the search page) and an optional collection with a few products (shared product-card).
+  All text comes from locale strings; the collection is a theme-editor choice.
+{%- endcomment -%}
+{%- liquid
+  assign recovery_collection = section.settings.collection
+  assign col_count = section.settings.columns
+  assign tablet_count = col_count | at_most: 3
+  assign show_products = false
+  if recovery_collection and section.settings.products_to_show > 0
+    if recovery_collection.products.size > 0
+      assign show_products = true
+    endif
+  endif
+-%}
+<section class="not-found section scheme-{{ section.settings.color_scheme }}" data-spacing-top="{{ section.settings.spacing_top }}" data-spacing-bottom="{{ section.settings.spacing_bottom }}">
+  <div class="not-found__inner">
+    <p class="not-found__code overline">{{ 'not_found.code' | t }}</p>
+    <h1 class="not-found__title heading heading--banner">{{ 'not_found.title' | t }}</h1>
+    <p class="not-found__text">{{ 'not_found.text' | t }}</p>
+    <div class="not-found__actions">
+      <a class="button" href="{{ routes.root_url }}">{{ 'not_found.back_home' | t }}</a>
+      <a class="button button--secondary" href="{{ routes.search_url }}" data-drawer-open="search" aria-controls="drawer-search">{{ 'not_found.search' | t }}</a>
+      {%- if recovery_collection -%}
+        <a class="button button--secondary" href="{{ recovery_collection.url }}">{{ 'not_found.browse' | t: title: recovery_collection.title }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if show_products -%}
+    <div class="not-found__products">
+      <h2 class="not-found__products-title heading heading--section">{{ recovery_collection.title | escape }}</h2>
+      <ul class="not-found__grid" role="list" style="--cols: {{ col_count }}; --cols-tablet: {{ tablet_count }};">
+        {%- for product in recovery_collection.products limit: section.settings.products_to_show -%}
+          <li>{% render 'product-card', product: product, image_ratio: settings.card_image_ratio, sizes: '(min-width: 1024px) 25vw, 50vw', heading_tag: 'h3' %}</li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .not-found__inner { display: flex; flex-direction: column; align-items: center; gap: var(--space-16); max-width: var(--width-xs); margin-inline: auto; text-align: center; }
+  .not-found__code, .not-found__title, .not-found__text { margin: 0; }
+  .not-found__code { color: var(--scheme-text-muted); }
+  .not-found__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-12); margin-top: var(--space-8); }
+  .not-found__products { margin-top: var(--space-72); }
+  .not-found__products-title { margin: 0 0 var(--space-32); text-align: center; }
+  .not-found__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-32) var(--space-16); margin: 0; padding: 0; list-style: none; align-items: start; }
+  .not-found__grid > li { min-width: 0; }
+  @media (min-width: 768px) { .not-found__grid { grid-template-columns: repeat(var(--cols-tablet, 3), minmax(0, 1fr)); gap: var(--space-32); } }
+  @media (min-width: 1024px) { .not-found__grid { grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main-404.name",
+  "enabled_on": {
+    "templates": [
+      "404"
+    ]
+  },
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "t:sections.main-404.settings.collection.label",
+      "info": "t:sections.main-404.settings.collection.info"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "t:sections.main-404.settings.products_to_show.label",
+      "info": "t:sections.main-404.settings.products_to_show.info",
+      "default": 4,
+      "min": 0,
+      "max": 8,
+      "step": 1
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "t:sections.main-404.settings.columns.label",
+      "default": 4,
+      "min": 2,
+      "max": 5,
+      "step": 1
+    },
+    {
+      "type": "header",
+      "content": "t:sections.main-404.settings.header__layout.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.main-404.settings.color_scheme.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.main-404.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.main-404.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "dark",
+          "label": "t:sections.main-404.settings.color_scheme.options__3.label"
+        },
+        {
+          "value": "accent-1",
+          "label": "t:sections.main-404.settings.color_scheme.options__4.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.main-404.settings.color_scheme.options__5.label"
+        },
+        {
+          "value": "accent-3",
+          "label": "t:sections.main-404.settings.color_scheme.options__6.label"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "t:sections.main-404.settings.spacing_top.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-404.settings.spacing_top.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-404.settings.spacing_top.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-404.settings.spacing_top.options__3.label"
+        }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "t:sections.main-404.settings.spacing_bottom.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-404.settings.spacing_bottom.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-404.settings.spacing_bottom.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-404.settings.spacing_bottom.options__3.label"
+        }
+      ],
+      "default": "full"
+    }
+  ]
+}
+{% endschema %}

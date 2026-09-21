@@ -1,0 +1,184 @@
+{%- comment -%}
+  Collection navigation: a row of links to related collections, driven by a Shopify menu
+  (Online Store > Navigation). Horizontal on desktop, horizontally scrollable on mobile,
+  with the current collection marked (aria-current). Nothing is hardcoded, so it works
+  with any future categories. Renders nothing when no menu is selected.
+{%- endcomment -%}
+{%- liquid
+  assign nav_menu = section.settings.menu
+  assign has_links = false
+  if nav_menu
+    if nav_menu.links.size > 0
+      assign has_links = true
+    endif
+  endif
+-%}
+{%- if has_links -%}
+  <nav
+    class="collection-nav section scheme-{{ section.settings.color_scheme }} collection-nav--{{ section.settings.style }} collection-nav--{{ section.settings.alignment }}"
+    aria-label="{{ 'collections.collection_nav' | t }}"
+    data-spacing-top="{{ section.settings.spacing_top }}"
+    data-spacing-bottom="{{ section.settings.spacing_bottom }}"
+    data-component="scroll-active"
+  >
+    <div class="collection-nav__scroller" data-scroll-track>
+      <ul class="collection-nav__list" role="list">
+        {%- for link in nav_menu.links -%}
+          <li>
+            <a class="collection-nav__link text-nav" href="{{ link.url }}"{% if link.current or link.child_current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </nav>
+{%- endif -%}
+
+{% stylesheet %}
+  .collection-nav { position: relative; }
+  .collection-nav__scroller { overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; margin-inline: calc(var(--section-x) * -1); padding-inline: var(--section-x); }
+  .collection-nav__scroller::-webkit-scrollbar { display: none; }
+  .collection-nav__list { display: flex; flex-wrap: nowrap; gap: var(--space-8) var(--space-32); margin: 0; padding: 0; list-style: none; width: max-content; min-width: 100%; }
+  .collection-nav--center .collection-nav__list { justify-content: center; }
+  .collection-nav__link { position: relative; display: inline-flex; align-items: center; min-height: 44px; white-space: nowrap; text-decoration: none; }
+  .collection-nav--underline .collection-nav__link::after { content: ""; position: absolute; left: 0; right: 0; bottom: 6px; height: 2px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 0.3s var(--ease-out); }
+  .collection-nav--underline .collection-nav__link[aria-current="page"]::after { transform: scaleX(1); }
+  @media (hover: hover) { .collection-nav--underline .collection-nav__link:hover::after { transform: scaleX(1); } }
+  .collection-nav--pills .collection-nav__link { padding: 0 var(--space-16); border: 1px solid var(--color-border-strong); border-radius: 22px; transition: background-color 0.2s var(--ease-button), color 0.2s var(--ease-button); }
+  .collection-nav--pills .collection-nav__link[aria-current="page"] { background: var(--scheme-button-bg); color: var(--scheme-button-text); border-color: var(--scheme-button-bg); }
+  @media (hover: hover) { .collection-nav--pills .collection-nav__link:not([aria-current]):hover { background: var(--color-background-light); } }
+  /* Edge fades hint that the row scrolls (set by assets/collection.js) */
+  .collection-nav[data-can-scroll-end="true"]::after { content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: var(--space-32); background: linear-gradient(to right, transparent, var(--scheme-bg)); pointer-events: none; }
+  .collection-nav[data-can-scroll-start="true"]::before { content: ""; position: absolute; top: 0; left: 0; bottom: 0; width: var(--space-32); z-index: 1; background: linear-gradient(to left, transparent, var(--scheme-bg)); pointer-events: none; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.collection-nav.name",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:sections.collection-nav.settings.menu.label",
+      "info": "t:sections.collection-nav.settings.menu.info"
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "t:sections.collection-nav.settings.style.label",
+      "options": [
+        {
+          "value": "underline",
+          "label": "t:sections.collection-nav.settings.style.options__1.label"
+        },
+        {
+          "value": "pills",
+          "label": "t:sections.collection-nav.settings.style.options__2.label"
+        }
+      ],
+      "default": "underline"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "t:sections.collection-nav.settings.alignment.label",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.collection-nav.settings.alignment.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.collection-nav.settings.alignment.options__2.label"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.collection-nav.settings.header__layout.content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.collection-nav.settings.color_scheme.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.collection-nav.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.collection-nav.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "dark",
+          "label": "t:sections.collection-nav.settings.color_scheme.options__3.label"
+        },
+        {
+          "value": "accent-1",
+          "label": "t:sections.collection-nav.settings.color_scheme.options__4.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.collection-nav.settings.color_scheme.options__5.label"
+        },
+        {
+          "value": "accent-3",
+          "label": "t:sections.collection-nav.settings.color_scheme.options__6.label"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "t:sections.collection-nav.settings.spacing_top.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.collection-nav.settings.spacing_top.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.collection-nav.settings.spacing_top.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.collection-nav.settings.spacing_top.options__3.label"
+        }
+      ],
+      "default": "half"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "t:sections.collection-nav.settings.spacing_bottom.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.collection-nav.settings.spacing_bottom.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.collection-nav.settings.spacing_bottom.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.collection-nav.settings.spacing_bottom.options__3.label"
+        }
+      ],
+      "default": "none"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.collection-nav.presets.name"
+    }
+  ],
+  "enabled_on": {
+    "templates": [
+      "collection"
+    ]
+  }
+}
+{% endschema %}

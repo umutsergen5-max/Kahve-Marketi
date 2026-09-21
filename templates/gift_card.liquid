@@ -1,0 +1,95 @@
+{%- layout none -%}
+{%- comment -%}
+  Gift card page. Shopify renders this template on its own (no theme layout, no header/footer),
+  with the `gift_card` object: code, balance, initial_value, enabled, expired, expires_on,
+  pass_url (Apple Wallet), qr_identifier, currency… The page shows the value, the code (with
+  copy and print), the state (active / expired / disabled), when it expires and how to use it.
+  Brand comes from the centralized settings. Untested against a real gift card: the runtime data
+  only exists inside Shopify. A QR image is not drawn: it needs a QR library, which the theme
+  does not bundle (gift_card.qr_identifier is available for one).
+{%- endcomment -%}
+{%- liquid
+  assign brand = settings.brand_name | default: shop.name
+  assign card_state = 'active'
+  if gift_card.enabled == false
+    assign card_state = 'disabled'
+  elsif gift_card.expired
+    assign card_state = 'expired'
+  endif
+  assign formatted_code = gift_card.code | format_code
+-%}
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{ 'gift_card.title' | t }} – {{ brand | escape }}</title>
+    {%- if settings.favicon != blank %}<link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">{%- endif %}
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {% render 'css-variables' %}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'components.css' | asset_url | stylesheet_tag }}
+    {{ content_for_header }}
+    <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
+    <script src="{{ 'gift-card.js' | asset_url }}" defer="defer"></script>
+  </head>
+
+  <body class="template-gift-card" data-template="gift_card">
+    <main id="MainContent" tabindex="-1" class="gift-card-page">
+      <article class="gift-card" data-state="{{ card_state }}" aria-labelledby="gift-card-title">
+        <div class="gift-card__brand">
+          <a class="gift-card__brand-link" href="{{ shop.url }}">
+            {%- if settings.logo != blank -%}
+              {% render 'image', image: settings.logo, widths: '200, 400, 600', sizes: '200px', loading: 'eager', alt: brand %}
+            {%- else -%}
+              <span class="gift-card__wordmark heading heading--featured">{{ brand | escape }}</span>
+            {%- endif -%}
+          </a>
+        </div>
+
+        <h1 class="gift-card__title heading heading--section" id="gift-card-title">{{ 'gift_card.title' | t }}</h1>
+
+        {%- case card_state -%}
+          {%- when 'disabled' -%}
+            <p class="message message--error" role="status">{{ 'gift_card.disabled' | t }}</p>
+          {%- when 'expired' -%}
+            <p class="message message--error" role="status">{{ 'gift_card.expired' | t }}{% if gift_card.expires_on %} {{ gift_card.expires_on | date: '%d.%m.%Y' }}{% endif %}</p>
+        {%- endcase -%}
+
+        <div class="gift-card__value">
+          <p class="gift-card__label text-nav">{{ 'gift_card.balance' | t }}</p>
+          <p class="gift-card__amount heading heading--banner">{{ gift_card.balance | money }}</p>
+          {%- if gift_card.balance != gift_card.initial_value -%}
+            <p class="gift-card__initial text-small text-muted">{{ 'gift_card.initial' | t }}: {{ gift_card.initial_value | money }}</p>
+          {%- endif -%}
+        </div>
+
+        <div class="gift-card__code-box">
+          <p class="gift-card__label text-nav" id="gift-card-code-label">{{ 'gift_card.code' | t }}</p>
+          <p class="gift-card__code" id="gift-card-code" aria-labelledby="gift-card-code-label"><code>{{ formatted_code }}</code></p>
+          <p class="text-small text-muted gift-card__hint">{{ 'gift_card.use_at_checkout' | t }}</p>
+          {%- if gift_card.expires_on and card_state == 'active' -%}
+            <p class="text-small text-muted">{{ 'gift_card.expires_on' | t }} {{ gift_card.expires_on | date: '%d.%m.%Y' }}</p>
+          {%- endif -%}
+        </div>
+
+        <div class="gift-card__actions">
+          <button class="button gift-card__copy" type="button" data-copy-code="{{ gift_card.code | escape }}" data-copied="{{ 'gift_card.copied' | t }}" hidden>
+            {% render 'icon', name: 'copy', size: 16 %}<span>{{ 'gift_card.copy' | t }}</span>
+          </button>
+          <button class="button button--secondary gift-card__print" type="button" data-print hidden>
+            {% render 'icon', name: 'print', size: 16 %}<span>{{ 'gift_card.print' | t }}</span>
+          </button>
+          {%- if gift_card.pass_url != blank -%}
+            <a class="button button--secondary gift-card__wallet" href="{{ gift_card.pass_url }}">{% render 'icon', name: 'download', size: 16 %}<span>{{ 'gift_card.add_to_wallet' | t }}</span></a>
+          {%- endif -%}
+          <a class="button button--text gift-card__shop" href="{{ shop.url }}">{{ 'gift_card.shop_now' | t }}</a>
+        </div>
+        <p class="visually-hidden" role="status" aria-live="polite" data-copy-status></p>
+      </article>
+    </main>
+  </body>
+</html>

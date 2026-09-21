@@ -1,0 +1,55 @@
+{%- comment -%}
+  One labelled form field (label + input + optional hint), used by every customer, password
+  and account form so labels, required marks, error wiring and the password visibility
+  toggle exist in one place. Native controls only.
+
+  Accepts:
+  - id, name: required
+  - label_key: translation key of the label (e.g. "customer.email"), or label: literal text
+  - type: text (default) | email | password | tel | search ...
+  - value, autocomplete, hint, minlength
+  - is_required: true/false
+  - errors: the form's errors (pass `form.errors`); with `field` the input is marked
+    aria-invalid when that field is in the list, and points to the error summary
+  - field: the error key of this field, e.g. "email", "password", "first_name"
+  - summary_id: id of the error summary element the input refers to
+  - autofocus: true to focus the field on load
+{%- endcomment -%}
+{%- liquid
+  assign field_type = type | default: 'text'
+  assign field_label = label
+  if label_key != blank
+    assign field_label = label_key | t
+  endif
+  assign is_invalid = false
+  if errors and field
+    if errors contains field
+      assign is_invalid = true
+    endif
+  endif
+-%}
+<div class="field auth-field">
+  <label class="field__label" for="{{ id }}">{{ field_label | escape }}{% if is_required %} <span class="visually-hidden">({{ 'general.required' | t }})</span>{% endif %}</label>
+  <div class="auth-field__control">
+    <input
+      class="input"
+      type="{{ field_type }}"
+      id="{{ id }}"
+      name="{{ name }}"
+      value="{{ value | escape }}"
+      {% if autocomplete != blank %}autocomplete="{{ autocomplete }}"{% endif %}
+      {% if minlength %}minlength="{{ minlength }}"{% endif %}
+      {% if is_required %}required aria-required="true"{% endif %}
+      {% if is_invalid %}aria-invalid="true"{% if summary_id != blank %} aria-describedby="{{ summary_id }}"{% endif %}{% elsif hint != blank %} aria-describedby="{{ id }}-hint"{% endif %}
+      {% if field_type == 'email' %}autocapitalize="off" spellcheck="false"{% endif %}
+      {% if autofocus %}autofocus{% endif %}
+    >
+    {%- if field_type == 'password' -%}
+      <button class="auth-field__toggle icon-button" type="button" data-password-toggle aria-controls="{{ id }}" aria-pressed="false" data-label-show="{{ 'customer.show_password' | t }}" data-label-hide="{{ 'customer.hide_password' | t }}" aria-label="{{ 'customer.show_password' | t }}" hidden>
+        <span data-password-icon="show">{% render 'icon', name: 'eye', size: 20 %}</span>
+        <span data-password-icon="hide" hidden>{% render 'icon', name: 'eye-off', size: 20 %}</span>
+      </button>
+    {%- endif -%}
+  </div>
+  {%- if hint != blank -%}<p class="field__hint" id="{{ id }}-hint">{{ hint | escape }}</p>{%- endif -%}
+</div>

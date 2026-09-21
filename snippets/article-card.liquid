@@ -1,0 +1,126 @@
+{%- comment -%}
+  Article card — the single card for blog articles: blog grids, featured blog / related
+  articles and (later) search results. Nothing is hardcoded; everything comes from the
+  Shopify `article` object.
+
+  Accepts:
+  - article: article object. When blank a placeholder card is rendered (theme editor preview).
+  - image_ratio: natural (default, each image keeps its own shape) | portrait | square | landscape
+  - show_image / show_excerpt / show_date / show_author / show_tags / show_read_more: true/false
+    (all default to true except show_tags, which defaults to false)
+  - excerpt_words: words kept in the excerpt (default 30)
+  - heading_tag: h2 | h3 | h4 (default h3)
+  - loading: lazy (default) | eager
+  - sizes: image sizes attribute
+  - class: extra CSS classes
+
+  The title link stretches over the whole card (one link per card for keyboard and screen
+  reader users); the image link is hidden from assistive technology as it repeats the title.
+{%- endcomment -%}
+{%- liquid
+  assign ratio = image_ratio | default: 'natural'
+  assign card_heading = heading_tag | default: 'h3'
+  assign card_loading = loading | default: 'lazy'
+  assign card_sizes = sizes | default: '(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw'
+  assign words = excerpt_words | default: 30
+  assign with_image = true
+  assign with_excerpt = true
+  assign with_date = true
+  assign with_author = true
+  assign with_tags = false
+  assign with_more = true
+  if show_image == false
+    assign with_image = false
+  endif
+  if show_excerpt == false
+    assign with_excerpt = false
+  endif
+  if show_date == false
+    assign with_date = false
+  endif
+  if show_author == false
+    assign with_author = false
+  endif
+  if show_tags
+    assign with_tags = true
+  endif
+  if show_read_more == false
+    assign with_more = false
+  endif
+-%}
+
+{%- if article == blank -%}
+  <article class="article-card article-card--placeholder{% if class != blank %} {{ class }}{% endif %}">
+    {%- if with_image -%}
+      <div class="article-card__media"><div class="media media--{% if ratio == 'natural' %}landscape{% else %}{{ ratio }}{% endif %}">{{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}</div></div>
+    {%- endif -%}
+    <div class="article-card__body">
+      <{{ card_heading }} class="article-card__title heading">{{ 'blog.placeholder_title' | t }}</{{ card_heading }}>
+      <p class="article-card__meta text-small">{{ 'blog.placeholder_date' | t }}</p>
+    </div>
+  </article>
+{%- else -%}
+  {%- liquid
+    assign excerpt_source = article.excerpt_or_content | replace: '</p>', ' </p>' | replace: '</h2>', ' </h2>' | replace: '</h3>', ' </h3>' | replace: '</li>', ' </li>' | replace: '<br>', ' <br>' | replace: '</td>', ' </td>' | replace: '</th>', ' </th>' | replace: '</figcaption>', ' </figcaption>' | replace: '</blockquote>', ' </blockquote>' | replace: '</h4>', ' </h4>'
+    assign excerpt_text = excerpt_source | strip_html | strip_newlines | strip | truncatewords: words
+    assign article_title = article.title | escape
+    assign has_meta = false
+    if with_date and article.published_at
+      assign has_meta = true
+    endif
+    if with_author and article.author != blank
+      assign has_meta = true
+    endif
+  -%}
+  <article class="article-card{% if class != blank %} {{ class }}{% endif %}" data-article-card>
+    {%- if with_image and article.image -%}
+      <a class="article-card__media" href="{{ article.url }}" tabindex="-1" aria-hidden="true">
+        <span class="media media--{{ ratio }}">
+          {{- article.image | image_url: width: 1000 | image_tag: loading: card_loading, widths: '320, 480, 640, 800, 1000', sizes: card_sizes, class: 'article-card__image', alt: '' -}}
+        </span>
+      </a>
+    {%- endif -%}
+    <div class="article-card__body">
+      {%- if with_tags and article.tags.size > 0 -%}
+        <ul class="article-card__tags text-subnav" role="list">
+          {%- for tag in article.tags limit: 3 -%}<li>{{ tag | escape }}</li>{%- endfor -%}
+        </ul>
+      {%- endif -%}
+      <{{ card_heading }} class="article-card__title heading">
+        <a class="article-card__link" href="{{ article.url }}">{{ article_title }}</a>
+      </{{ card_heading }}>
+      {%- if has_meta -%}
+        <p class="article-card__meta text-small">
+          {%- if with_date and article.published_at -%}
+            {{ article.published_at | time_tag: format: 'date' }}
+          {%- endif -%}
+          {%- if with_author and article.author != blank -%}
+            <span class="article-card__author">{{ 'blog.by_author' | t: author: article.author }}</span>
+          {%- endif -%}
+        </p>
+      {%- endif -%}
+      {%- if with_excerpt and excerpt_text != blank -%}
+        <p class="article-card__excerpt">{{ excerpt_text }}</p>
+      {%- endif -%}
+      {%- if with_more -%}
+        <span class="article-card__more text-nav" aria-hidden="true">{{ 'blog.read_more' | t }}</span>
+      {%- endif -%}
+    </div>
+  </article>
+{%- endif -%}
+
+{% stylesheet %}
+  .article-card { position: relative; display: flex; flex-direction: column; gap: var(--space-12); min-width: 0; }
+  .article-card__media { display: block; }
+  .article-card__image { transition: transform 0.6s var(--ease-out); }
+  @media (hover: hover) { .article-card:hover .article-card__image { transform: scale(1.03); } }
+  .article-card__body { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-8); }
+  .article-card__title { margin: 0; font-size: var(--fs-section); }
+  .article-card__link { text-decoration: none; overflow-wrap: anywhere; }
+  .article-card__link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+  .article-card__link:hover { text-decoration: underline; text-underline-offset: 0.25em; }
+  .article-card__tags { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-12); margin: 0; padding: 0; list-style: none; color: var(--scheme-text-muted); text-transform: uppercase; }
+  .article-card__meta { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-12); margin: 0; color: var(--scheme-text-muted); }
+  .article-card__excerpt { margin: 0; color: var(--scheme-text); overflow-wrap: anywhere; }
+  .article-card__more { margin-top: var(--space-4); text-decoration: underline; text-underline-offset: 0.25em; }
+{% endstylesheet %}

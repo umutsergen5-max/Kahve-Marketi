@@ -1,0 +1,209 @@
+{%- comment -%}
+  Filter / sort / browse drawer for a collection. A real <form method="get">: without
+  JavaScript it submits Shopify's native filter parameters and reloads the page; with
+  assets/collection.js every change is applied through the Section Rendering API and the
+  URL is updated. It reuses the shared drawer module (data-drawer="filter"), the accordion
+  module (data-disclosure) and the shared form controls.
+
+  Accepts:
+  - collection: collection object (required)
+  - section_id: id of the section that renders the results (required)
+  - filtering / sorting / browse: true/false — which groups to render
+  - menu: link list for the "browse" group
+  - current_sort / default_sort: sort values
+  - results_count: number of products matching the current filters
+  - active_count: number of applied filters
+  - clear_url: URL that removes every filter
+{%- endcomment -%}
+{%- liquid
+  assign uid = section_id
+  assign any_group_open = false
+-%}
+<aside
+  class="drawer filter-drawer"
+  id="drawer-filter"
+  data-drawer="filter"
+  data-side="right"
+  data-filter-drawer
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="filter-drawer-title-{{ uid }}"
+  tabindex="-1"
+>
+  <div class="drawer__header">
+    <h2 class="drawer__title heading" id="filter-drawer-title-{{ uid }}">{{ 'collections.filter_and_sort' | t }}</h2>
+    <button class="icon-button" type="button" data-drawer-close aria-label="{{ 'general.close' | t }}">{% render 'icon', name: 'close', size: 22 %}</button>
+  </div>
+
+  <form class="filter-form" id="filter-form-{{ uid }}" action="{{ collection.url }}" method="get" data-filter-form data-default-sort="{{ default_sort }}">
+    <div class="drawer__body filter-form__body">
+
+      {%- if browse -%}
+        <div class="filter-group" data-disclosure data-component="disclosure" data-open="false" data-filter-group="browse">
+          <h3 class="filter-group__heading">
+            <button class="filter-group__trigger text-nav" type="button" data-disclosure-trigger aria-expanded="false" aria-controls="filter-panel-{{ uid }}-browse">
+              <span>{{ 'collections.browse' | t }}</span>{% render 'icon', name: 'chevron-down', size: 16, class: 'disclosure__icon' %}
+            </button>
+          </h3>
+          <div class="disclosure__panel" id="filter-panel-{{ uid }}-browse">
+            <div class="disclosure__content">
+              <ul class="filter-list" role="list">
+                {%- for link in menu.links -%}
+                  <li><a class="filter-link text-nav" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- if sorting -%}
+        <div class="filter-group" data-disclosure data-component="disclosure" data-open="false" data-filter-group="sort">
+          <h3 class="filter-group__heading">
+            <button class="filter-group__trigger text-nav" type="button" data-disclosure-trigger aria-expanded="false" aria-controls="filter-panel-{{ uid }}-sort">
+              <span>{{ 'collections.sort_by' | t }}</span>{% render 'icon', name: 'chevron-down', size: 16, class: 'disclosure__icon' %}
+            </button>
+          </h3>
+          <div class="disclosure__panel" id="filter-panel-{{ uid }}-sort">
+            <div class="disclosure__content">
+              <fieldset class="filter-fieldset">
+                <legend class="visually-hidden">{{ 'collections.sort_group' | t }}</legend>
+                <ul class="filter-list" role="list">
+                  {%- for sort_option in collection.sort_options -%}
+                    <li>
+                      <label class="check check--radio">
+                        <input class="check__input" type="radio" name="sort_by" value="{{ sort_option.value }}" id="sort-{{ uid }}-{{ forloop.index }}" data-sort-name="{{ sort_option.name | escape }}"{% if sort_option.value == current_sort %} checked{% endif %}>
+                        <span class="check__box" aria-hidden="true"></span>
+                        <span class="check__label text-nav">{{ sort_option.name | escape }}</span>
+                      </label>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- if filtering -%}
+        {%- for filter in collection.filters -%}
+          {%- liquid
+            assign group_index = forloop.index
+            assign group_active = false
+            if filter.type == 'price_range'
+              if filter.min_value.value != nil or filter.max_value.value != nil
+                assign group_active = true
+              endif
+            elsif filter.active_values.size > 0
+              assign group_active = true
+            endif
+          -%}
+          <div class="filter-group" data-disclosure data-component="disclosure" data-open="{{ group_active }}" data-filter-group="filter">
+            <h3 class="filter-group__heading">
+              <button class="filter-group__trigger text-nav" type="button" data-disclosure-trigger aria-expanded="{{ group_active }}" aria-controls="filter-panel-{{ uid }}-{{ group_index }}">
+                <span>{{ filter.label | escape }}</span>{% render 'icon', name: 'chevron-down', size: 16, class: 'disclosure__icon' %}
+              </button>
+            </h3>
+            <div class="disclosure__panel" id="filter-panel-{{ uid }}-{{ group_index }}">
+              <div class="disclosure__content">
+                {%- if filter.type == 'price_range' -%}
+                  {%- capture price_max_value -%}{%- render 'cents-to-decimal', cents: filter.range_max -%}{%- endcapture -%}
+                  {%- capture price_min_current -%}{%- if filter.min_value.value != nil -%}{%- render 'cents-to-decimal', cents: filter.min_value.value -%}{%- endif -%}{%- endcapture -%}
+                  {%- capture price_max_current -%}{%- if filter.max_value.value != nil -%}{%- render 'cents-to-decimal', cents: filter.max_value.value -%}{%- endif -%}{%- endcapture -%}
+                  <div class="price-range" data-price-range>
+                    <div class="field">
+                      <label class="field__label" for="price-min-{{ uid }}">{{ 'collections.price_min_label' | t }}</label>
+                      <div class="price-range__input">
+                        <span class="price-range__currency" aria-hidden="true">{{ cart.currency.symbol }}</span>
+                        <input class="input" type="number" inputmode="decimal" step="any" min="0" max="{{ price_max_value }}" id="price-min-{{ uid }}" name="{{ filter.min_value.param_name }}" placeholder="0" value="{{ price_min_current }}" data-price-input="min">
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="field__label" for="price-max-{{ uid }}">{{ 'collections.price_max_label' | t }}</label>
+                      <div class="price-range__input">
+                        <span class="price-range__currency" aria-hidden="true">{{ cart.currency.symbol }}</span>
+                        <input class="input" type="number" inputmode="decimal" step="any" min="0" max="{{ price_max_value }}" id="price-max-{{ uid }}" name="{{ filter.max_value.param_name }}" placeholder="{{ price_max_value }}" value="{{ price_max_current }}" data-price-input="max">
+                      </div>
+                    </div>
+                  </div>
+                {%- else -%}
+                  <ul class="filter-list" role="list">
+                    {%- for value in filter.values -%}
+                      <li>
+                        <label class="check">
+                          <input
+                            class="check__input"
+                            type="checkbox"
+                            name="{{ value.param_name }}"
+                            value="{{ value.value }}"
+                            id="filter-{{ uid }}-{{ group_index }}-{{ forloop.index }}"
+                            data-value-label="{{ value.label | escape }}"
+                            {% if value.active %}checked{% endif %}
+                            {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                          >
+                          <span class="check__box" aria-hidden="true"></span>
+                          {%- if value.swatch != nil -%}
+                            <span class="check__swatch" aria-hidden="true" style="{% if value.swatch.image %}background-image: url('{{ value.swatch.image | image_url: width: 48 }}');{% elsif value.swatch.color %}background-color: {{ value.swatch.color }};{% endif %}"></span>
+                          {%- endif -%}
+                          <span class="check__label text-nav">{{ value.label | escape }}</span>
+                          <span class="check__count text-small" data-filter-count>({{ value.count }})</span>
+                        </label>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    <div class="drawer__footer filter-form__footer" data-filter-footer>
+      <button class="button button--full" type="submit" data-filter-apply>
+        <span data-filter-apply-label>{% if filtering %}{{ 'collections.show_results' | t: count: results_count }}{% else %}{{ 'collections.apply_filters' | t }}{% endif %}</span>
+      </button>
+      <a class="button button--text button--full" href="{{ clear_url }}" data-filter-link data-filter-clear{% if active_count == 0 %} hidden{% endif %}>{{ 'collections.clear_all' | t }}</a>
+    </div>
+  </form>
+</aside>
+
+{% stylesheet %}
+  .filter-form { display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0; }
+  .filter-form__body { padding-block: 0; }
+  .filter-form__footer { display: flex; flex-direction: column; gap: var(--space-8); }
+  .filter-group { border-bottom: 1px solid var(--color-border); }
+  .filter-group__heading { margin: 0; font-size: inherit; letter-spacing: inherit; font-family: inherit; font-weight: inherit; text-transform: none; }
+  .filter-group__trigger { display: flex; align-items: center; justify-content: space-between; gap: var(--space-16); width: 100%; min-height: 56px; padding: 0; border: 0; background: none; color: inherit; text-align: left; }
+  .filter-group__trigger[aria-expanded="true"] .disclosure__icon { transform: rotate(180deg); }
+  .filter-fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+  .filter-list { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+  .filter-link { display: flex; align-items: center; min-height: 44px; text-decoration: none; }
+  .filter-link[aria-current="page"] { text-decoration: underline; text-underline-offset: 0.3em; }
+  .filter-link:hover { text-decoration: underline; text-underline-offset: 0.3em; }
+
+  /* Checkbox / radio row (custom box, real input underneath for accessibility) */
+  .check { position: relative; display: flex; align-items: center; gap: var(--space-12); min-height: 44px; cursor: pointer; }
+  .check__input { position: absolute; opacity: 0; width: 20px; height: 20px; margin: 0; }
+  .check__box { flex: none; width: 20px; height: 20px; border: 1px solid var(--color-border-strong); border-radius: 3px; background: var(--color-background); transition: background-color 0.15s var(--ease-standard), border-color 0.15s var(--ease-standard); }
+  .check--radio .check__box { border-radius: 50%; }
+  .check__input:checked + .check__box { background: var(--color-button); border-color: var(--color-button); box-shadow: inset 0 0 0 3px var(--color-background); }
+  .check__input:not(.check--radio):checked + .check__box { box-shadow: inset 0 0 0 3px var(--color-background); }
+  .check__input:focus-visible + .check__box { outline: 2px solid var(--color-background-dark); outline-offset: 2px; }
+  .check__input:disabled ~ .check__label, .check__input:disabled ~ .check__count { opacity: 0.45; }
+  .check__input:disabled + .check__box { opacity: 0.45; }
+  .check__label { flex: 1; min-width: 0; }
+  .check__count { color: var(--color-text-muted); }
+  .check__swatch { flex: none; width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--color-border-strong); background-size: cover; }
+
+  .price-range { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-12); }
+  .price-range__input { position: relative; }
+  .price-range__currency { position: absolute; left: var(--space-12); top: 50%; transform: translateY(-50%); color: var(--color-text-muted); pointer-events: none; }
+  .price-range__input .input { padding-left: var(--space-32); }
+
+  /* No JavaScript: show the form inline instead of as a drawer. */
+  .no-js .filter-drawer { position: static; visibility: visible; transform: none; opacity: 1; width: auto; max-width: none; height: auto; box-shadow: none; transition: none; }
+  .no-js .toolbar-button { display: none; }
+  .no-js .filter-drawer .icon-button { display: none; }
+  .no-js .filter-group .disclosure__panel { grid-template-rows: 1fr; visibility: visible; }
+{% endstylesheet %}
