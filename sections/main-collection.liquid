@@ -11,7 +11,7 @@
 {%- endcomment -%}
 {%- liquid
   assign col_count = section.settings.columns
-  assign col_count_mobile = section.settings.columns_mobile
+  assign col_count_mobile = section.settings.columns_mobile | plus: 0
   assign tablet_count = col_count | at_most: 3
   assign image_ratio = section.settings.image_ratio
   if image_ratio == 'default'
@@ -282,13 +282,20 @@
       "step": 1
     },
     {
-      "type": "range",
+      "type": "select",
       "id": "columns_mobile",
       "label": "t:sections.main-collection.settings.columns_mobile.label",
-      "default": 1,
-      "min": 1,
-      "max": 2,
-      "step": 1
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:sections.main-collection.settings.columns_mobile.options__1.label"
+        },
+        {
+          "value": "2",
+          "label": "t:sections.main-collection.settings.columns_mobile.options__2.label"
+        }
+      ]
     },
     {
       "type": "range",

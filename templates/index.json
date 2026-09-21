@@ -61,7 +61,7 @@
       ],
       "settings": {
         "columns": 2,
-        "columns_mobile": 1,
+        "columns_mobile": "1",
         "image_ratio": "landscape"
       }
     },

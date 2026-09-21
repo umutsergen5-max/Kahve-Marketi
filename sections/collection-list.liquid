@@ -8,7 +8,7 @@
 {%- endcomment -%}
 {%- liquid
   assign col_count = section.settings.columns
-  assign col_count_mobile = section.settings.columns_mobile
+  assign col_count_mobile = section.settings.columns_mobile | plus: 0
   assign tablet_count = col_count | at_most: 3
   assign rows_layout = false
   if section.settings.layout == 'rows'
@@ -146,13 +146,20 @@
       "step": 1
     },
     {
-      "type": "range",
+      "type": "select",
       "id": "columns_mobile",
       "label": "t:sections.collection-list.settings.columns_mobile.label",
-      "default": 2,
-      "min": 1,
-      "max": 2,
-      "step": 1
+      "default": "2",
+      "options": [
+        {
+          "value": "1",
+          "label": "t:sections.collection-list.settings.columns_mobile.options__1.label"
+        },
+        {
+          "value": "2",
+          "label": "t:sections.collection-list.settings.columns_mobile.options__2.label"
+        }
+      ]
     },
     {
       "type": "range",

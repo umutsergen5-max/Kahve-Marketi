@@ -664,7 +664,13 @@
           "label": "Sütun sayısı (masaüstü)"
         },
         "columns_mobile": {
-          "label": "Sütun sayısı (mobil)"
+          "label": "Sütun sayısı (mobil)",
+          "options__1": {
+            "label": "1 sütun"
+          },
+          "options__2": {
+            "label": "2 sütun"
+          }
         },
         "image_ratio": {
           "label": "Görsel oranı",
@@ -1007,7 +1013,13 @@
           "label": "Sütun sayısı (masaüstü)"
         },
         "columns_mobile": {
-          "label": "Sütun sayısı (mobil)"
+          "label": "Sütun sayısı (mobil)",
+          "options__1": {
+            "label": "1 sütun"
+          },
+          "options__2": {
+            "label": "2 sütun"
+          }
         },
         "header__card": {
           "content": "Ürün kartı"
@@ -1475,7 +1487,13 @@
           "label": "Sütun sayısı (masaüstü)"
         },
         "columns_mobile": {
-          "label": "Sütun sayısı (mobil)"
+          "label": "Sütun sayısı (mobil)",
+          "options__1": {
+            "label": "1 sütun"
+          },
+          "options__2": {
+            "label": "2 sütun"
+          }
         },
         "products_per_page": {
           "label": "Sayfa başına ürün"
@@ -1619,7 +1637,13 @@
           "label": "Sütun sayısı (masaüstü)"
         },
         "columns_mobile": {
-          "label": "Sütun sayısı (mobil)"
+          "label": "Sütun sayısı (mobil)",
+          "options__1": {
+            "label": "1 sütun"
+          },
+          "options__2": {
+            "label": "2 sütun"
+          }
         },
         "collections_per_page": {
           "label": "Sayfa başına koleksiyon"
@@ -1921,7 +1945,13 @@
           "label": "Sütun sayısı (masaüstü)"
         },
         "columns_mobile": {
-          "label": "Sütun sayısı (mobil)"
+          "label": "Sütun sayısı (mobil)",
+          "options__1": {
+            "label": "1 sütun"
+          },
+          "options__2": {
+            "label": "2 sütun"
+          }
         },
         "header__layout": {
           "content": "Yerleşim ve renk"
@@ -2353,7 +2383,13 @@
           "label": "Sütun sayısı (masaüstü)"
         },
         "columns_mobile": {
-          "label": "Sütun sayısı (mobil)"
+          "label": "Sütun sayısı (mobil)",
+          "options__1": {
+            "label": "1 sütun"
+          },
+          "options__2": {
+            "label": "2 sütun"
+          }
         },
         "show_quick_add": {
           "label": "Hızlı ekle düğmesini göster"
