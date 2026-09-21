@@ -62,7 +62,8 @@
     }
 
     function fetchCard(handle) {
-      return fetch(endpoint(handle), { headers: { 'Accept': 'application/json' } })
+      // No Accept header: 'application/json' makes a product URL return the product JSON instead of the section.
+      return fetch(endpoint(handle))
         .then(function (res) {
           if (!res.ok) { var err = new Error(res.statusText); err.status = res.status; throw err; }
           return res.json();

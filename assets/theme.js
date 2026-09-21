@@ -401,7 +401,8 @@
       options = options || {};
       var url = new URL(options.url || window.location.pathname, window.location.origin);
       url.searchParams.set('sections', [].concat(ids).join(','));
-      return fetch(url.toString(), { headers: { 'Accept': 'application/json' } })
+      // No Accept header: with 'application/json' a product URL answers with the product's own JSON, not the sections.
+      return fetch(url.toString())
         .then(function (res) { if (!res.ok) throw new Error(res.statusText); return res.json(); })
         .then(function (json) {
           var out = {};

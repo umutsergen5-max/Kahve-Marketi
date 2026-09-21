@@ -428,7 +428,8 @@
     var token = url.toString();
     content.setAttribute('data-request', token);
 
-    fetch(token, { headers: { 'Accept': 'application/json' } })
+    // No Accept header: 'application/json' makes a product URL return the product JSON instead of the section.
+    fetch(token)
       .then(function (res) { if (!res.ok) throw new Error(res.statusText); return res.json(); })
       .then(function (json) {
         if (content.getAttribute('data-request') !== token) return;    // a newer request superseded this one
