@@ -1,0 +1,29 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "benefits": {
+      "type": "zzz-test4",
+      "blocks": {
+        "b1": {
+          "type": "item",
+          "settings": {
+            "title": "Avantaj başlığı"
+          }
+        }
+      },
+      "block_order": [
+        "b1"
+      ],
+      "settings": {
+        "heading": "Avantajlar"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "benefits"
+  ]
+}
