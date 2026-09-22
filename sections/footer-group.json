@@ -8,12 +8,16 @@
         "menu-1": {
           "type": "menu",
           "settings": {
+            "heading": "Kurumsal",
             "menu": "footer"
           }
         },
         "menu-2": {
           "type": "menu",
-          "settings": {}
+          "settings": {
+            "heading": "Yasal",
+            "menu": "yasal"
+          }
         },
         "newsletter": {
           "type": "newsletter",
