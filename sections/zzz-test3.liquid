@@ -1,0 +1,226 @@
+<div>zzz test 3</div>
+
+{% schema %}
+{
+  "name": "zzz test 3",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "label"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "label"
+    },
+    {
+      "type": "select",
+      "id": "header_align",
+      "label": "label",
+      "options": [
+        {
+          "value": "left",
+          "label": "label"
+        },
+        {
+          "value": "center",
+          "label": "label"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "content"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "label",
+      "options": [
+        {
+          "value": "grid",
+          "label": "label"
+        },
+        {
+          "value": "list",
+          "label": "label"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "label",
+      "default": 3,
+      "min": 1,
+      "max": 6,
+      "step": 1
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "label",
+      "options": [
+        {
+          "value": "left",
+          "label": "label"
+        },
+        {
+          "value": "center",
+          "label": "label"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "numbered",
+      "label": "label",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "content"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "label",
+      "options": [
+        {
+          "value": "default",
+          "label": "label"
+        },
+        {
+          "value": "light",
+          "label": "label"
+        },
+        {
+          "value": "dark",
+          "label": "label"
+        },
+        {
+          "value": "accent-1",
+          "label": "label"
+        },
+        {
+          "value": "accent-2",
+          "label": "label"
+        },
+        {
+          "value": "accent-3",
+          "label": "label"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "label",
+      "options": [
+        {
+          "value": "none",
+          "label": "label"
+        },
+        {
+          "value": "half",
+          "label": "label"
+        },
+        {
+          "value": "full",
+          "label": "label"
+        }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "label",
+      "options": [
+        {
+          "value": "none",
+          "label": "label"
+        },
+        {
+          "value": "half",
+          "label": "label"
+        },
+        {
+          "value": "full",
+          "label": "label"
+        }
+      ],
+      "default": "full"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "name",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "label",
+          "options": [
+            {
+              "value": "none",
+              "label": "label"
+            },
+            {
+              "value": "check",
+              "label": "label"
+            },
+            {
+              "value": "arrow-right",
+              "label": "label"
+            },
+            {
+              "value": "pin",
+              "label": "label"
+            },
+            {
+              "value": "bag",
+              "label": "label"
+            },
+            {
+              "value": "user",
+              "label": "label"
+            },
+            {
+              "value": "search",
+              "label": "label"
+            },
+            {
+              "value": "plus",
+              "label": "label"
+            }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "label",
+          "default": "Başlık"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "name"
+    }
+  ]
+}
+{% endschema %}
