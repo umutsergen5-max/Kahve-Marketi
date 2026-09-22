@@ -1,0 +1,31 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "benefits": {
+      "type": "feature-list",
+      "blocks": {
+        "b1": {
+          "type": "item",
+          "settings": {
+            "icon": "check",
+            "title": "Avantaj başlığı",
+            "text": "Kısa açıklama."
+          }
+        }
+      },
+      "block_order": [
+        "b1"
+      ],
+      "settings": {
+        "heading": "Avantajlar"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "benefits"
+  ]
+}
