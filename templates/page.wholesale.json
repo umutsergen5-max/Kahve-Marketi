@@ -1,134 +1,134 @@
 {
-    "sections": {
-        "hero": {
-            "type": "image-with-text",
-            "settings": {
-                "layout": "overlay",
-                "heading": "Başlık",
-                "overline": "Üst başlık",
-                "text": "<p>Kısa bir tanıtım metni.</p>",
-                "overlay_height": "medium",
-                "full_width": true,
-                "spacing_top": "none",
-                "spacing_bottom": "none"
-            }
-        },
-        "main": {
-            "type": "main-page",
-            "settings": {
-                "content_width": "sm",
-                "show_breadcrumb": true,
-                "show_title": true
-            }
-        },
-        "benefits": {
-            "type": "feature-list",
-            "blocks": {
-                "b1": {
-                    "type": "item",
-                    "settings": {
-                        "icon": "check",
-                        "title": "Avantaj başlığı",
-                        "text": "Kısa açıklama."
-                    }
-                },
-                "b2": {
-                    "type": "item",
-                    "settings": {
-                        "icon": "check",
-                        "title": "Avantaj başlığı",
-                        "text": "Kısa açıklama."
-                    }
-                },
-                "b3": {
-                    "type": "item",
-                    "settings": {
-                        "icon": "check",
-                        "title": "Avantaj başlığı",
-                        "text": "Kısa açıklama."
-                    }
-                }
-            },
-            "block_order": [
-                "b1",
-                "b2",
-                "b3"
-            ],
-            "settings": {
-                "heading": "Avantajlar",
-                "color_scheme": "light"
-            }
-        },
-        "requirements": {
-            "type": "feature-list",
-            "blocks": {
-                "r1": {
-                    "type": "item",
-                    "settings": {
-                        "icon": "none",
-                        "title": "Koşul başlığı",
-                        "text": "Kısa açıklama."
-                    }
-                },
-                "r2": {
-                    "type": "item",
-                    "settings": {
-                        "icon": "none",
-                        "title": "Koşul başlığı",
-                        "text": "Kısa açıklama."
-                    }
-                }
-            },
-            "block_order": [
-                "r1",
-                "r2"
-            ],
-            "settings": {
-                "heading": "Koşullar",
-                "layout": "list",
-                "numbered": true
-            }
-        },
-        "apply": {
-            "type": "contact-form",
-            "settings": {
-                "heading": "Başvuru formu",
-                "text": "<p>Formu doldurun, size dönüş yapalım.</p>",
-                "show_company": true,
-                "show_phone": true,
-                "color_scheme": "light"
-            }
-        },
-        "contact": {
-            "type": "locations",
-            "blocks": {
-                "l1": {
-                    "type": "location",
-                    "settings": {
-                        "type_label": "İletişim",
-                        "name": "Ad",
-                        "address": "Adres satırı",
-                        "phone": "",
-                        "email": "",
-                        "hours": ""
-                    }
-                }
-            },
-            "block_order": [
-                "l1"
-            ],
-            "settings": {
-                "layout": "cards",
-                "columns": 1
-            }
-        }
+  "sections": {
+    "hero": {
+      "type": "image-with-text",
+      "settings": {
+        "layout": "overlay",
+        "heading": "Başlık",
+        "overline": "Üst başlık",
+        "text": "<p>Kısa bir tanıtım metni.</p>",
+        "overlay_height": "medium",
+        "full_width": true,
+        "spacing_top": "none",
+        "spacing_bottom": "none"
+      }
     },
-    "order": [
-        "hero",
-        "main",
-        "benefits",
-        "requirements",
-        "apply",
-        "contact"
-    ]
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "content_width": "sm",
+        "show_breadcrumb": true,
+        "show_title": true
+      }
+    },
+    "benefits": {
+      "type": "feature-list",
+      "blocks": {
+        "b1": {
+          "type": "item",
+          "settings": {
+            "icon": "check",
+            "title": "Avantaj başlığı",
+            "text": "Kısa açıklama."
+          }
+        },
+        "b2": {
+          "type": "item",
+          "settings": {
+            "icon": "check",
+            "title": "Avantaj başlığı",
+            "text": "Kısa açıklama."
+          }
+        },
+        "b3": {
+          "type": "item",
+          "settings": {
+            "icon": "check",
+            "title": "Avantaj başlığı",
+            "text": "Kısa açıklama."
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3"
+      ],
+      "settings": {
+        "heading": "Avantajlar",
+        "color_scheme": "light"
+      }
+    },
+    "requirements": {
+      "type": "feature-list",
+      "blocks": {
+        "r1": {
+          "type": "item",
+          "settings": {
+            "icon": "none",
+            "title": "Koşul başlığı",
+            "text": "Kısa açıklama."
+          }
+        },
+        "r2": {
+          "type": "item",
+          "settings": {
+            "icon": "none",
+            "title": "Koşul başlığı",
+            "text": "Kısa açıklama."
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2"
+      ],
+      "settings": {
+        "heading": "Koşullar",
+        "layout": "list",
+        "numbered": true
+      }
+    },
+    "apply": {
+      "type": "contact-form",
+      "settings": {
+        "heading": "Başvuru formu",
+        "text": "<p>Formu doldurun, size dönüş yapalım.</p>",
+        "show_company": true,
+        "show_phone": true,
+        "color_scheme": "light"
+      }
+    },
+    "contact": {
+      "type": "locations",
+      "blocks": {
+        "l1": {
+          "type": "location",
+          "settings": {
+            "type_label": "İletişim",
+            "name": "Ad",
+            "address": "Adres satırı",
+            "phone": "",
+            "email": "",
+            "hours": ""
+          }
+        }
+      },
+      "block_order": [
+        "l1"
+      ],
+      "settings": {
+        "layout": "cards",
+        "columns": 1
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "main",
+    "benefits",
+    "requirements",
+    "apply",
+    "contact"
+  ]
 }
