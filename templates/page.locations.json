@@ -14,31 +14,18 @@
         "l1": {
           "type": "location",
           "settings": {
-            "type_label": "Konum türü",
-            "name": "Konum adı 1",
-            "address": "Adres satırı 1\nAdres satırı 2",
-            "hours": "Hafta içi: 09:00 – 18:00\nHafta sonu: 10:00 – 16:00",
-            "description": "<p>Kısa bir açıklama.</p>"
-          }
-        },
-        "l2": {
-          "type": "location",
-          "settings": {
-            "type_label": "Konum türü",
-            "name": "Konum adı 2",
-            "address": "Adres satırı 1\nAdres satırı 2",
-            "hours": "Hafta içi: 09:00 – 18:00\nHafta sonu: 10:00 – 16:00",
-            "description": "<p>Kısa bir açıklama.</p>"
+            "type_label": "Atölye",
+            "name": "Vengo Roastery Kavurma Atölyesi",
+            "description": "<p>Yeşil çekirdekleri küçük partiler halinde kavurduğumuz, kahvenin fincana ulaşana kadar geçtiği tüm sürecin yürütüldüğü atölyemiz.</p>"
           }
         }
       },
       "block_order": [
-        "l1",
-        "l2"
+        "l1"
       ],
       "settings": {
         "layout": "cards",
-        "columns": 2,
+        "columns": 1,
         "spacing_top": "half"
       }
     }

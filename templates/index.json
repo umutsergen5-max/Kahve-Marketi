@@ -3,10 +3,13 @@
     "hero": {
       "type": "hero",
       "settings": {
-        "heading": "Başlık ekleyin",
+        "heading": "Özenle kavrulmuş, taze kahve",
         "heading_level": "h1",
-        "text": "Bu metni tema düzenleyicisinden değiştirin.",
-        "button_label": "Düğme",
+        "text": "Yeşil çekirdekleri küçük partiler halinde kavuruyor, her fincanda tutarlı bir kahve deneyimi sunuyoruz.",
+        "button_label": "Kahveleri keşfet",
+        "button_link": "/collections/all",
+        "button_2_label": "Hakkımızda",
+        "button_2_link": "/pages/hakkimizda",
         "text_align": "center",
         "vertical_align": "center",
         "height": "large",
@@ -16,8 +19,9 @@
     "brand-video": {
       "type": "featured-video",
       "settings": {
-        "heading": "Bizi tanıyın",
-        "text": "<p>Kısa bir video ile markamızı ve kavurma sürecimizi tanıtın.</p>"
+        "overline": "Kavurma atölyemiz",
+        "heading": "Vengo Roastery'i tanıyın",
+        "text": "<p>Yeşil çekirdekten fincana uzanan kavurma sürecimize kısaca göz atın.</p>"
       }
     },
     "image-grid": {
@@ -26,37 +30,41 @@
         "tile-1": {
           "type": "tile",
           "settings": {
-            "heading": "Başlık",
-            "text": "Kısa bir açıklama ekleyin.",
-            "button_label": "Keşfet",
-            "overline": "Üst başlık"
+            "overline": "Kafelerimiz",
+            "heading": "Konumlarımız",
+            "text": "Sizi ağırladığımız yerleri keşfedin.",
+            "button_label": "Hemen bul",
+            "link": "/pages/konumlarimiz"
           }
         },
         "tile-2": {
           "type": "tile",
           "settings": {
-            "heading": "Başlık",
-            "text": "Kısa bir açıklama ekleyin.",
-            "button_label": "Keşfet",
-            "overline": "Üst başlık"
+            "overline": "Hikayemiz",
+            "heading": "Bizi tanıyın",
+            "text": "Kavurma sürecimiz ve markamız hakkında daha fazla bilgi edinin.",
+            "button_label": "Hakkımızda",
+            "link": "/pages/hakkimizda"
           }
         },
         "tile-3": {
           "type": "tile",
           "settings": {
-            "heading": "Başlık",
-            "text": "Kısa bir açıklama ekleyin.",
-            "button_label": "Keşfet",
-            "overline": "Üst başlık"
+            "overline": "Sezonun kahveleri",
+            "heading": "Kahvelerimiz",
+            "text": "Taze kavrulmuş, özenle seçilmiş kahve çeşitlerimize göz atın.",
+            "button_label": "Hemen keşfet",
+            "link": "/collections/all"
           }
         },
         "tile-4": {
           "type": "tile",
           "settings": {
-            "heading": "Başlık",
-            "text": "Kısa bir açıklama ekleyin.",
-            "button_label": "Keşfet",
-            "overline": "Üst başlık"
+            "overline": "İşletmeler için",
+            "heading": "Toptan Alım",
+            "text": "Kafe ve işletmeniz için toptan kahve tedariki.",
+            "button_label": "Hemen üye ol",
+            "link": "/pages/toptan-alim-basvurusu"
           }
         }
       },
@@ -74,14 +82,18 @@
     },
     "featured-product": {
       "type": "featured-product",
-      "settings": {}
+      "settings": {
+        "product": "test-colombia-huila",
+        "show_vendor": true
+      }
     },
     "featured-collection": {
       "type": "featured-collection",
       "settings": {
-        "heading": "Koleksiyon başlığı",
-        "layout": "carousel",
-        "columns": 4
+        "collection": "test-collection",
+        "heading": "Öne çıkan kahveler",
+        "layout": "grid",
+        "columns": 2
       }
     },
     "slideshow-cards": {

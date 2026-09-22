@@ -4,6 +4,7 @@
       "type": "featured-text",
       "settings": {
         "heading": "Sıkça sorulan sorular",
+        "heading_level": "h1",
         "text": "<p>Aşağıda en sık sorulan soruların yanıtlarını bulabilirsiniz. Aradığınızı bulamazsanız bizimle iletişime geçin.</p>",
         "content_width": "sm",
         "spacing_bottom": "none"
