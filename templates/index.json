@@ -13,6 +13,13 @@
         "mobile_height": "medium"
       }
     },
+    "brand-video": {
+      "type": "featured-video",
+      "settings": {
+        "heading": "Bizi tanıyın",
+        "text": "<p>Kısa bir video ile markamızı ve kavurma sürecimizi tanıtın.</p>"
+      }
+    },
     "image-grid": {
       "type": "grid-overlay",
       "blocks": {
@@ -189,6 +196,7 @@
   },
   "order": [
     "hero",
+    "brand-video",
     "image-grid",
     "featured-product",
     "featured-collection",

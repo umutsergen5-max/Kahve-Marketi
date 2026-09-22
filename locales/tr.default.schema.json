@@ -2943,6 +2943,74 @@
         }
       }
     },
+    "main-policy": {
+      "name": "Politika içeriği",
+      "settings": {
+        "show_breadcrumb": {
+          "label": "Sayfa yolunu göster"
+        },
+        "show_title": {
+          "label": "Politika başlığını göster"
+        },
+        "title_align": {
+          "label": "Başlık hizalaması",
+          "options__1": {
+            "label": "Sol"
+          },
+          "options__2": {
+            "label": "Orta"
+          }
+        },
+        "content_width": {
+          "label": "Metin genişliği",
+          "options__1": {
+            "label": "Dar"
+          },
+          "options__2": {
+            "label": "Orta"
+          },
+          "options__3": {
+            "label": "Geniş"
+          }
+        },
+        "color_scheme": {
+          "label": "Renk şeması",
+          "options__1": {
+            "label": "Beyaz"
+          },
+          "options__2": {
+            "label": "Açık gri"
+          },
+          "options__3": {
+            "label": "Koyu"
+          }
+        },
+        "spacing_top": {
+          "label": "Üst boşluk",
+          "options__1": {
+            "label": "Yok"
+          },
+          "options__2": {
+            "label": "Yarım"
+          },
+          "options__3": {
+            "label": "Tam"
+          }
+        },
+        "spacing_bottom": {
+          "label": "Alt boşluk",
+          "options__1": {
+            "label": "Yok"
+          },
+          "options__2": {
+            "label": "Yarım"
+          },
+          "options__3": {
+            "label": "Tam"
+          }
+        }
+      }
+    },
     "faq": {
       "name": "Sık sorulan sorular",
       "settings": {
@@ -3185,6 +3253,133 @@
       },
       "presets": {
         "name": "Öne çıkan metin"
+      }
+    },
+    "featured-video": {
+      "name": "Öne çıkan video",
+      "settings": {
+        "header__content": {
+          "content": "İçerik"
+        },
+        "overline": {
+          "label": "Üst başlık"
+        },
+        "heading": {
+          "label": "Başlık"
+        },
+        "heading_level": {
+          "label": "Başlık seviyesi",
+          "options__1": {
+            "label": "H2"
+          },
+          "options__2": {
+            "label": "H3"
+          }
+        },
+        "text": {
+          "label": "Metin"
+        },
+        "header__video": {
+          "content": "Video"
+        },
+        "video": {
+          "label": "Video",
+          "info": "Shopify'a yüklenen bir video dosyası."
+        },
+        "cover_image": {
+          "label": "Kapak görseli",
+          "info": "Video yüklenmeden önce ve oynatılamadığında gösterilir."
+        },
+        "aspect_ratio": {
+          "label": "En-boy oranı",
+          "options__1": {
+            "label": "Yatay (3:2)"
+          },
+          "options__2": {
+            "label": "Geniş (16:9)"
+          },
+          "options__3": {
+            "label": "Kare"
+          }
+        },
+        "caption": {
+          "label": "Alt yazı"
+        },
+        "header__align": {
+          "content": "Hizalama"
+        },
+        "text_align": {
+          "label": "Metin hizalaması",
+          "options__1": {
+            "label": "Sol"
+          },
+          "options__2": {
+            "label": "Orta"
+          }
+        },
+        "content_width": {
+          "label": "Video genişliği",
+          "options__1": {
+            "label": "Orta"
+          },
+          "options__2": {
+            "label": "Geniş"
+          },
+          "options__3": {
+            "label": "Çok geniş"
+          }
+        },
+        "header__layout": {
+          "content": "Yerleşim ve renk"
+        },
+        "color_scheme": {
+          "label": "Renk şeması",
+          "options__1": {
+            "label": "Beyaz"
+          },
+          "options__2": {
+            "label": "Açık gri"
+          },
+          "options__3": {
+            "label": "Koyu"
+          },
+          "options__4": {
+            "label": "Vurgu 1"
+          },
+          "options__5": {
+            "label": "Vurgu 2"
+          },
+          "options__6": {
+            "label": "Vurgu 3"
+          }
+        },
+        "spacing_top": {
+          "label": "Üst boşluk",
+          "options__1": {
+            "label": "Yok"
+          },
+          "options__2": {
+            "label": "Yarım"
+          },
+          "options__3": {
+            "label": "Tam"
+          }
+        },
+        "spacing_bottom": {
+          "label": "Alt boşluk",
+          "options__1": {
+            "label": "Yok"
+          },
+          "options__2": {
+            "label": "Yarım"
+          },
+          "options__3": {
+            "label": "Tam"
+          }
+        }
+      },
+      "presets": {
+        "name": "Öne çıkan video"
       }
     },
     "feature-list": {

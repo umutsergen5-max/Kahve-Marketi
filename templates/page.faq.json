@@ -1,10 +1,21 @@
 {
   "sections": {
+    "intro": {
+      "type": "featured-text",
+      "settings": {
+        "heading": "Sıkça sorulan sorular",
+        "text": "<p>Aşağıda en sık sorulan soruların yanıtlarını bulabilirsiniz. Aradığınızı bulamazsanız bizimle iletişime geçin.</p>",
+        "content_width": "sm",
+        "spacing_bottom": "none"
+      }
+    },
     "main": {
       "type": "main-page",
       "settings": {
+        "show_title": false,
         "content_width": "sm",
         "title_align": "center",
+        "spacing_top": "none",
         "spacing_bottom": "none"
       }
     },
@@ -51,6 +62,7 @@
     }
   },
   "order": [
+    "intro",
     "main",
     "faq"
   ]

@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-policy",
+      "settings": {
+        "content_width": "sm",
+        "title_align": "left"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

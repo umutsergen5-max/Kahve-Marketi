@@ -1,0 +1,158 @@
+{%- comment -%}
+  Main policy: renders one of Shopify's own store policies (Settings → Policies) —
+  privacy, refund, terms of service, shipping or subscription. The `policy` object is
+  filled in automatically by Shopify for whichever policy the merchant has written;
+  nothing here is hardcoded. Same reading-width rich text presentation as main-page,
+  so /policies/... pages stay on-brand instead of falling back to Shopify's bare
+  generic template.
+{%- endcomment -%}
+{% # theme-check-disable UndefinedObject %}
+<article
+  class="main-page section scheme-{{ section.settings.color_scheme }}"
+  style="--page-width: var(--width-{{ section.settings.content_width }});"
+  data-spacing-top="{{ section.settings.spacing_top }}"
+  data-spacing-bottom="{{ section.settings.spacing_bottom }}"
+>
+  {%- if section.settings.show_breadcrumb -%}
+    <div class="main-page__crumbs">{% render 'breadcrumbs', current_title: policy.title %}</div>
+  {%- endif -%}
+
+  {%- if section.settings.show_title -%}
+    <header class="main-page__header text-{{ section.settings.title_align }}">
+      <h1 class="main-page__title heading heading--banner">{{ policy.title | escape }}</h1>
+    </header>
+  {%- endif -%}
+
+  {%- if policy.body != blank -%}
+    <div class="main-page__content rte">{{ policy.body }}</div>
+  {%- endif -%}
+</article>
+{% # theme-check-enable UndefinedObject %}
+
+{% stylesheet %}
+  .main-page__crumbs { margin-bottom: var(--space-32); }
+  .main-page__header { max-width: var(--page-width, var(--width-sm)); margin: 0 auto var(--space-32); }
+  .main-page__title { margin: 0; overflow-wrap: anywhere; }
+  .main-page__content { max-width: var(--page-width, var(--width-sm)); margin-inline: auto; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.main-policy.name",
+  "enabled_on": {
+    "templates": [
+      "policy"
+    ]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "t:sections.main-policy.settings.show_breadcrumb.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "t:sections.main-policy.settings.show_title.label",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "title_align",
+      "label": "t:sections.main-policy.settings.title_align.label",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.main-policy.settings.title_align.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.main-policy.settings.title_align.options__2.label"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "t:sections.main-policy.settings.content_width.label",
+      "options": [
+        {
+          "value": "xs",
+          "label": "t:sections.main-policy.settings.content_width.options__1.label"
+        },
+        {
+          "value": "sm",
+          "label": "t:sections.main-policy.settings.content_width.options__2.label"
+        },
+        {
+          "value": "md",
+          "label": "t:sections.main-policy.settings.content_width.options__3.label"
+        }
+      ],
+      "default": "sm"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.main-policy.settings.color_scheme.label",
+      "options": [
+        {
+          "value": "default",
+          "label": "t:sections.main-policy.settings.color_scheme.options__1.label"
+        },
+        {
+          "value": "light",
+          "label": "t:sections.main-policy.settings.color_scheme.options__2.label"
+        },
+        {
+          "value": "dark",
+          "label": "t:sections.main-policy.settings.color_scheme.options__3.label"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "spacing_top",
+      "label": "t:sections.main-policy.settings.spacing_top.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-policy.settings.spacing_top.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-policy.settings.spacing_top.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-policy.settings.spacing_top.options__3.label"
+        }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "select",
+      "id": "spacing_bottom",
+      "label": "t:sections.main-policy.settings.spacing_bottom.label",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:sections.main-policy.settings.spacing_bottom.options__1.label"
+        },
+        {
+          "value": "half",
+          "label": "t:sections.main-policy.settings.spacing_bottom.options__2.label"
+        },
+        {
+          "value": "full",
+          "label": "t:sections.main-policy.settings.spacing_bottom.options__3.label"
+        }
+      ],
+      "default": "full"
+    }
+  ]
+}
+{% endschema %}
