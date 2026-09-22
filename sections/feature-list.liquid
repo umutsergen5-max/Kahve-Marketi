@@ -35,7 +35,7 @@
             {%- endif -%}
             <div class="feature-list__body">
               {%- if block.settings.title != blank -%}<h3 class="feature-list__title heading heading--block">{{ block.settings.title | escape }}</h3>{%- endif -%}
-              {%- if block.settings.text != blank -%}<div class="feature-list__item-text rte">{{ block.settings.text }}</div>{%- endif -%}
+              {%- if block.settings.text != blank -%}<p class="feature-list__item-text">{{ block.settings.text | escape }}</p>{%- endif -%}
             </div>
           </li>
         {%- endfor -%}
@@ -276,7 +276,7 @@
           "default": "Başlık"
         },
         {
-          "type": "richtext",
+          "type": "textarea",
           "id": "text",
           "label": "t:sections.feature-list.blocks.item.settings.text.label"
         }
