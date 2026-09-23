@@ -486,6 +486,12 @@
         },
         "paragraph__1": {
           "content": "Sosyal medya bağlantıları ve bülten metinleri Tema ayarları bölümünden yönetilir."
+        },
+        "support_label": {
+          "label": "Destek yazısı (alt satır)"
+        },
+        "support_link": {
+          "label": "Destek bağlantısı"
         }
       },
       "blocks": {
@@ -520,6 +526,9 @@
             },
             "text": {
               "label": "Metin"
+            },
+            "logo_width": {
+              "label": "Logo genişliği"
             }
           }
         }
@@ -4450,48 +4459,9 @@
     "image-banner": {
       "name": "Görsel banner",
       "settings": {
-        "header__media": {
-          "content": "Görsel"
-        },
-        "image": {
-          "label": "Görsel"
-        },
-        "image_mobile": {
-          "label": "Mobil görsel (isteğe bağlı)"
-        },
-        "height": {
-          "label": "Yükseklik (masaüstü)",
-          "options__1": {
-            "label": "Küçük"
-          },
-          "options__2": {
-            "label": "Orta"
-          },
-          "options__3": {
-            "label": "Büyük"
-          }
-        },
-        "overlay_opacity": {
-          "label": "Karartma"
-        },
-        "header__content": {
-          "content": "İçerik"
-        },
-        "overline": {
-          "label": "Üst başlık"
-        },
-        "heading": {
-          "label": "Başlık"
-        },
-        "text": {
-          "label": "Metin"
-        },
-        "button_label": {
-          "label": "Bağlantı yazısı"
-        },
-        "link": {
-          "label": "Bağlantı",
-          "info": "Ayarlanırsa banner'ın tamamı tıklanabilir olur."
+        "columns": {
+          "label": "Yan yana görsel sayısı (masaüstü)",
+          "info": "Mobilde görseller alt alta dizilir."
         },
         "cta_style": {
           "label": "Bağlantı görünümü",
@@ -4501,34 +4471,129 @@
           "options__2": {
             "label": "Alt çizgili yazı"
           }
-        },
-        "header__style": {
-          "content": "Görünüm"
-        },
-        "vertical_align": {
-          "label": "Dikey hizalama",
-          "options__1": {
-            "label": "Üst"
-          },
-          "options__2": {
-            "label": "Orta"
-          },
-          "options__3": {
-            "label": "Alt"
-          }
-        },
-        "text_color": {
-          "label": "Yazı rengi",
-          "options__1": {
-            "label": "Açık"
-          },
-          "options__2": {
-            "label": "Koyu"
+        }
+      },
+      "blocks": {
+        "slide": {
+          "name": "Görsel",
+          "settings": {
+            "image": {
+              "label": "Görsel"
+            },
+            "mobile_image": {
+              "label": "Mobil görsel (isteğe bağlı)"
+            },
+            "overline": {
+              "label": "Üst başlık"
+            },
+            "heading": {
+              "label": "Başlık"
+            },
+            "button_label": {
+              "label": "Bağlantı yazısı"
+            },
+            "link": {
+              "label": "Bağlantı",
+              "info": "Ayarlanırsa görselin tamamı tıklanabilir olur."
+            },
+            "overlay_opacity": {
+              "label": "Karartma"
+            },
+            "text_color": {
+              "label": "Yazı rengi",
+              "options__1": {
+                "label": "Açık"
+              },
+              "options__2": {
+                "label": "Koyu"
+              }
+            }
           }
         }
       },
       "presets": {
         "name": "Görsel banner"
+      }
+    },
+    "gallery": {
+      "name": "Galeri",
+      "settings": {
+        "heading": {
+          "label": "Başlık"
+        },
+        "columns": {
+          "label": "Sütun sayısı (masaüstü)"
+        },
+        "columns_mobile": {
+          "label": "Sütun sayısı (mobil)",
+          "options__1": {
+            "label": "1"
+          },
+          "options__2": {
+            "label": "2"
+          },
+          "options__3": {
+            "label": "3"
+          }
+        },
+        "header__layout": {
+          "content": "Görünüm"
+        },
+        "color_scheme": {
+          "label": "Renk düzeni",
+          "options__1": {
+            "label": "Varsayılan"
+          },
+          "options__2": {
+            "label": "Açık"
+          },
+          "options__3": {
+            "label": "Vurgu 2"
+          },
+          "options__4": {
+            "label": "Vurgu 3"
+          }
+        },
+        "spacing_top": {
+          "label": "Üst boşluk",
+          "options__1": {
+            "label": "Yok"
+          },
+          "options__2": {
+            "label": "Yarım"
+          },
+          "options__3": {
+            "label": "Tam"
+          }
+        },
+        "spacing_bottom": {
+          "label": "Alt boşluk",
+          "options__1": {
+            "label": "Yok"
+          },
+          "options__2": {
+            "label": "Yarım"
+          },
+          "options__3": {
+            "label": "Tam"
+          }
+        }
+      },
+      "blocks": {
+        "image": {
+          "name": "Görsel",
+          "settings": {
+            "image": {
+              "label": "Görsel"
+            },
+            "link": {
+              "label": "Bağlantı (isteğe bağlı)"
+            }
+          }
+        }
+      },
+      "presets": {
+        "name": "Galeri"
       }
     }
   }

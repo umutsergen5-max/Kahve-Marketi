@@ -28,13 +28,24 @@
         "about": {
           "type": "about",
           "settings": {
-            "text": "<p>Mağazanızı tanıtan kısa bir metin ekleyin. Bu alan tema düzenleyicisinden değiştirilebilir.</p>"
+            "logo_width": 120,
+            "text": "<p>Küçük partilerde özenle kavrulmuş kahve.</p>"
           }
         }
       },
-      "block_order": ["menu-1", "menu-2", "newsletter", "about"],
-      "settings": {}
+      "block_order": [
+        "menu-1",
+        "menu-2",
+        "newsletter",
+        "about"
+      ],
+      "settings": {
+        "support_label": "Destek için bize ulaşın",
+        "support_link": "/pages/i%CC%87letisim"
+      }
     }
   },
-  "order": ["footer"]
+  "order": [
+    "footer"
+  ]
 }

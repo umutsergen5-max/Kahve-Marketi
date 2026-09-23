@@ -6,63 +6,69 @@
 {%- liquid
   assign current_year = 'now' | date: '%Y'
   assign brand = settings.brand_name | default: shop.name
-  assign column_count = section.blocks.size | at_most: 4 | at_least: 1
-  assign tablet_columns = column_count | at_most: 2
 -%}
 
 <footer class="site-footer scheme-{{ section.settings.color_scheme }}">
   <div class="site-footer__wrapper section">
     {%- if section.blocks.size > 0 -%}
-      <div class="grid site-footer__grid" style="--cols: {{ column_count }}; --cols-tablet: {{ tablet_columns }};">
+      <div class="site-footer__grid">
         {%- for block in section.blocks -%}
           {%- case block.type -%}
             {%- when 'menu' -%}
               {%- assign footer_menu = block.settings.menu -%}
               {%- if footer_menu != blank and footer_menu.links.size > 0 -%}
                 {%- assign menu_heading = block.settings.heading | default: footer_menu.title -%}
-                <div class="site-footer__block" {{ block.shopify_attributes }}>
-                  <h2 class="site-footer__heading heading heading--block" id="footer-menu-{{ block.id }}">{{ menu_heading | escape }}</h2>
-                  <nav aria-labelledby="footer-menu-{{ block.id }}">
-                    <ul class="site-footer__menu" role="list">
-                      {%- for link in footer_menu.links -%}
-                        <li><a class="site-footer__link text-nav" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>
-                      {%- endfor -%}
-                    </ul>
-                  </nav>
+                <div class="site-footer__block site-footer__block--menu" {{ block.shopify_attributes }}>
+                  <div class="site-footer__inner">
+                    <h2 class="site-footer__heading heading heading--block" id="footer-menu-{{ block.id }}">{{ menu_heading | escape }}</h2>
+                    <nav aria-labelledby="footer-menu-{{ block.id }}">
+                      <ul class="site-footer__menu" role="list">
+                        {%- for link in footer_menu.links -%}
+                          <li><a class="site-footer__link text-subnav" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>
+                        {%- endfor -%}
+                      </ul>
+                    </nav>
+                  </div>
                 </div>
               {%- endif -%}
 
             {%- when 'newsletter' -%}
               {%- if settings.newsletter_enable -%}
                 <div class="site-footer__block site-footer__block--newsletter" {{ block.shopify_attributes }}>
-                  {% render 'newsletter-form', form_id: 'footer-newsletter' %}
-                  {%- if block.settings.show_social -%}
-                    {% render 'social-links', class: 'site-footer__social' %}
-                  {%- endif -%}
+                  <div class="site-footer__inner">
+                    {% render 'newsletter-form', form_id: 'footer-newsletter', style: 'underline' %}
+                    {%- if block.settings.show_social -%}
+                      {% render 'social-links', class: 'site-footer__social' %}
+                    {%- endif -%}
+                  </div>
                 </div>
               {%- elsif block.settings.show_social -%}
-                <div class="site-footer__block" {{ block.shopify_attributes }}>
-                  {% render 'social-links', class: 'site-footer__social' %}
+                <div class="site-footer__block site-footer__block--newsletter" {{ block.shopify_attributes }}>
+                  <div class="site-footer__inner">
+                    {% render 'social-links', class: 'site-footer__social' %}
+                  </div>
                 </div>
               {%- endif -%}
 
             {%- when 'about' -%}
               <div class="site-footer__block site-footer__block--about" {{ block.shopify_attributes }}>
-                {%- if block.settings.image != blank -%}
-                  <div class="site-footer__about-image">
-                    {% render 'image', image: block.settings.image, widths: '200, 400, 600', sizes: '(min-width: 1024px) 20vw, 50vw', alt: '' %}
+                <div class="site-footer__inner" style="--logo-width: {{ block.settings.logo_width }}px;">
+                  <div class="site-footer__logo{% if block.settings.image == blank %} site-footer__logo--empty{% endif %}">
+                    {%- if block.settings.image != blank -%}
+                      {% render 'image', image: block.settings.image, widths: '120, 240, 360, 480', sizes: '(min-width: 768px) 240px, 50vw', alt: brand %}
+                    {%- endif -%}
                   </div>
-                {%- endif -%}
-                {%- if block.settings.text != blank -%}
-                  <div class="site-footer__about-text rte">{{ block.settings.text }}</div>
-                {%- endif -%}
+                  {%- if block.settings.text != blank -%}
+                    <div class="site-footer__about-text text-subnav rte">{{ block.settings.text }}</div>
+                  {%- endif -%}
+                </div>
               </div>
           {%- endcase -%}
         {%- endfor -%}
       </div>
     {%- endif -%}
 
-    <div class="site-footer__bottom text-small">
+    <div class="site-footer__bottom text-subnav">
       <p class="site-footer__copyright">
         {%- if section.settings.copyright != blank -%}
           {{ section.settings.copyright | escape }}
@@ -70,6 +76,15 @@
           {{ 'general.copyright' | t: year: current_year, shop_name: brand }}
         {%- endif -%}
       </p>
+      {%- if section.settings.support_label != blank -%}
+        <p class="site-footer__support">
+          {%- if section.settings.support_link != blank -%}
+            <a href="{{ section.settings.support_link }}">{{ section.settings.support_label | escape }}</a>
+          {%- else -%}
+            {{ section.settings.support_label | escape }}
+          {%- endif -%}
+        </p>
+      {%- endif -%}
       <p class="site-footer__powered">{{ powered_by_link }}</p>
     </div>
   </div>
@@ -77,26 +92,50 @@
 
 {% stylesheet %}
   .site-footer { margin-top: auto; }
-  .site-footer__grid { --gap-row: var(--space-48); --gap-column: var(--space-32); }
-  .site-footer__block { display: flex; flex-direction: column; gap: var(--space-16); min-width: 0; }
+
+  /* Four blocks in a row: menu | menu | newsletter | brand/logo. Middle blocks are centred, the last one sits on the right. */
+  .site-footer__grid { display: flex; flex-direction: column; align-items: center; gap: var(--space-32); text-align: center; }
+  .site-footer__block { display: flex; flex-direction: column; align-items: center; min-width: 0; width: 100%; }
+  .site-footer__inner { display: flex; flex-direction: column; gap: var(--space-16); width: 100%; min-width: 0; }
+  .site-footer__block--menu .site-footer__inner { width: auto; align-items: center; }
+  .site-footer__block--newsletter .site-footer__inner { max-width: 280px; margin-inline: auto; }
+  .site-footer__block--about .site-footer__inner { align-items: center; }
+  @media (min-width: 768px) {
+    .site-footer__grid { flex-direction: row; align-items: flex-start; justify-content: space-between; gap: var(--space-32); text-align: left; }
+    .site-footer__block { flex: 1 1 0; align-items: stretch; width: auto; }
+    .site-footer__block--menu .site-footer__inner { align-items: flex-start; }
+    .site-footer__block:not(:first-child):not(:last-child) .site-footer__inner { margin-inline: auto; }
+    .site-footer__block--menu:not(:first-child):not(:last-child) .site-footer__inner { width: fit-content; }
+    .site-footer__block--newsletter .site-footer__inner { max-width: 320px; }
+    .site-footer__block--about { align-items: flex-end; }
+    .site-footer__block--about .site-footer__inner { align-items: flex-start; width: auto; }
+  }
   .site-footer__heading { margin: 0; }
   .site-footer__menu { display: flex; flex-direction: column; gap: var(--space-8); margin: 0; padding: 0; list-style: none; }
-  .site-footer__link { display: inline-block; padding: var(--space-4) 0; text-decoration: none; }
+  .site-footer__link { display: inline-block; text-decoration: none; }
   .site-footer__link:hover { text-decoration: underline; text-underline-offset: 0.3em; }
   .site-footer__link[aria-current="page"] { text-decoration: underline; text-underline-offset: 0.3em; }
-  .site-footer__about-image { max-width: 220px; }
-  .site-footer__about-text { color: var(--scheme-text-muted); }
+  .site-footer__social { justify-content: center; margin-top: var(--space-8); }
+  @media (min-width: 768px) { .site-footer__social { justify-content: flex-start; } }
+  .site-footer__social svg { width: 16px; height: 16px; }
+
+  /* Brand/logo position: reserved square until a logo image is chosen. */
+  .site-footer__logo { width: var(--logo-width, 120px); max-width: 100%; }
+  .site-footer__logo--empty { aspect-ratio: 1 / 1; border: 1px dashed var(--scheme-border); border-radius: var(--radius-image); }
+  .site-footer__about-text { color: var(--scheme-text-muted); max-width: 400px; }
+  .site-footer__about-text > * { margin: 0; }
 
   .site-footer__bottom {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-    gap: var(--space-8) var(--space-16);
+    justify-content: center;
+    gap: var(--space-8) var(--space-32);
     margin-top: var(--space-48);
     padding-top: var(--space-16);
     border-top: 1px solid var(--scheme-border);
     color: var(--scheme-text-muted);
   }
+  @media (min-width: 768px) { .site-footer__bottom { justify-content: space-between; } }
   .site-footer__grid:empty + .site-footer__bottom { margin-top: 0; }
   .site-footer__bottom p { margin: 0; }
   .site-footer__bottom a { color: inherit; }
@@ -112,6 +151,15 @@
   .newsletter__error { margin: 0; }
   .scheme-dark .newsletter__error, .scheme-accent-1 .newsletter__error { color: #ffb4ab; }
   .scheme-dark .message--success, .scheme-accent-1 .message--success { color: #b7e4c7; border-color: currentColor; }
+  /* Underlined variant (footer): one line, arrow button, no visible submit label */
+  .newsletter--underline { gap: var(--space-8); }
+  .newsletter--underline .newsletter__text { font-size: var(--fs-nav); }
+  .newsletter--underline .newsletter__field { align-items: center; gap: var(--space-8); border-bottom: 1px solid currentColor; }
+  .newsletter--underline .newsletter__input { min-height: 40px; padding: 0 var(--space-4); border: 0; border-radius: 0; background: transparent; font-size: var(--fs-nav); }
+  .newsletter--underline .newsletter__input:focus-visible { outline: none; }
+  .newsletter--underline .newsletter__field:focus-within { outline: 1px solid currentColor; outline-offset: 2px; }
+  .newsletter__arrow { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 40px; height: 40px; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }
+  .newsletter--underline .newsletter__disclaimer { font-size: 10px; }
   .site-footer .input { background: transparent; color: inherit; border-color: color-mix(in srgb, currentColor 45%, transparent); }
   .site-footer .input::placeholder { color: var(--scheme-text-muted); }
   .site-footer .input:focus-visible { outline-color: var(--scheme-focus); border-color: currentColor; }
@@ -139,6 +187,16 @@
       "id": "copyright",
       "label": "t:sections.footer.settings.copyright.label",
       "info": "t:sections.footer.settings.copyright.info"
+    },
+    {
+      "type": "text",
+      "id": "support_label",
+      "label": "t:sections.footer.settings.support_label.label"
+    },
+    {
+      "type": "url",
+      "id": "support_link",
+      "label": "t:sections.footer.settings.support_link.label"
     },
     {
       "type": "paragraph",
@@ -190,6 +248,16 @@
           "type": "image_picker",
           "id": "image",
           "label": "t:sections.footer.blocks.about.settings.image.label"
+        },
+        {
+          "type": "range",
+          "id": "logo_width",
+          "label": "t:sections.footer.blocks.about.settings.logo_width.label",
+          "default": 120,
+          "min": 60,
+          "max": 280,
+          "step": 10,
+          "unit": "px"
         },
         {
           "type": "richtext",

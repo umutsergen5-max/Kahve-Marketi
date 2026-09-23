@@ -122,125 +122,90 @@
         "card_align": "center"
       }
     },
-    "slideshow-cards": {
-      "type": "editorial-slideshow",
-      "blocks": {
-        "slide-1": {
-          "type": "slide",
-          "settings": {
-            "title": "Başlık",
-            "text": "Kısa bir açıklama ekleyin.",
-            "address": "Adres veya ek bilgi",
-            "link_label": "Ayrıntılar",
-            "icon": "pin"
-          }
-        },
-        "slide-2": {
-          "type": "slide",
-          "settings": {
-            "title": "Başlık",
-            "text": "Kısa bir açıklama ekleyin.",
-            "address": "Adres veya ek bilgi",
-            "link_label": "Ayrıntılar",
-            "icon": "pin"
-          }
-        },
-        "slide-3": {
-          "type": "slide",
-          "settings": {
-            "title": "Başlık",
-            "text": "Kısa bir açıklama ekleyin.",
-            "address": "Adres veya ek bilgi",
-            "link_label": "Ayrıntılar",
-            "icon": "pin"
-          }
-        },
-        "slide-4": {
-          "type": "slide",
-          "settings": {
-            "title": "Başlık",
-            "text": "Kısa bir açıklama ekleyin.",
-            "address": "Adres veya ek bilgi",
-            "link_label": "Ayrıntılar",
-            "icon": "pin"
-          }
-        }
-      },
-      "block_order": [
-        "slide-1",
-        "slide-2",
-        "slide-3",
-        "slide-4"
-      ],
-      "settings": {
-        "heading": "Başlık",
-        "card_style": "below",
-        "slides_per_view": 3
-      }
-    },
-    "slideshow-overlay": {
-      "type": "editorial-slideshow",
-      "blocks": {
-        "slide-1": {
-          "type": "slide",
-          "settings": {
-            "title": "Başlık",
-            "text": "Kısa bir açıklama ekleyin.",
-            "link_label": "Bağlantı",
-            "icon": "external"
-          }
-        },
-        "slide-2": {
-          "type": "slide",
-          "settings": {
-            "title": "Başlık",
-            "text": "Kısa bir açıklama ekleyin.",
-            "link_label": "Bağlantı",
-            "icon": "external"
-          }
-        },
-        "slide-3": {
-          "type": "slide",
-          "settings": {
-            "title": "Başlık",
-            "text": "Kısa bir açıklama ekleyin.",
-            "link_label": "Bağlantı",
-            "icon": "external"
-          }
-        },
-        "slide-4": {
-          "type": "slide",
-          "settings": {
-            "title": "Başlık",
-            "text": "Kısa bir açıklama ekleyin.",
-            "link_label": "Bağlantı",
-            "icon": "external"
-          }
-        }
-      },
-      "block_order": [
-        "slide-1",
-        "slide-2",
-        "slide-3",
-        "slide-4"
-      ],
-      "settings": {
-        "heading": "Başlık",
-        "card_style": "overlay",
-        "slides_per_view": 3,
-        "color_scheme": "light"
-      }
-    },
     "footer-banner": {
       "type": "image-banner",
+      "blocks": {
+        "slide-1": {
+          "type": "slide",
+          "settings": {
+            "overline": "Vengo Roastery",
+            "heading": "Fincandaki hikaye",
+            "button_label": "Bizi tanıyın",
+            "link": "/pages/hakkimizda",
+            "overlay_opacity": 30
+          }
+        },
+        "slide-2": {
+          "type": "slide",
+          "settings": {
+            "overline": "İşletmeler için",
+            "heading": "Toptan kahve",
+            "button_label": "Başvuru yapın",
+            "link": "/pages/toptan-alim-basvurusu",
+            "overlay_opacity": 30
+          }
+        }
+      },
+      "block_order": [
+        "slide-1",
+        "slide-2"
+      ],
       "settings": {
-        "overline": "Vengo Roastery",
-        "heading": "Fincandaki hikaye",
-        "button_label": "Bizi tanıyın",
-        "link": "/pages/hakkimizda",
-        "cta_style": "link",
-        "height": "medium",
-        "overlay_opacity": 30
+        "columns": 2,
+        "cta_style": "link"
+      }
+    },
+    "gallery": {
+      "type": "gallery",
+      "blocks": {
+        "g1": {
+          "type": "image",
+          "settings": {}
+        },
+        "g2": {
+          "type": "image",
+          "settings": {}
+        },
+        "g3": {
+          "type": "image",
+          "settings": {}
+        },
+        "g4": {
+          "type": "image",
+          "settings": {}
+        },
+        "g5": {
+          "type": "image",
+          "settings": {}
+        },
+        "g6": {
+          "type": "image",
+          "settings": {}
+        },
+        "g7": {
+          "type": "image",
+          "settings": {}
+        },
+        "g8": {
+          "type": "image",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+        "g6",
+        "g7",
+        "g8"
+      ],
+      "settings": {
+        "heading": "galeri",
+        "columns": 4,
+        "columns_mobile": "2",
+        "color_scheme": "accent-2"
       }
     }
   },
@@ -250,8 +215,7 @@
     "image-grid",
     "featured-product",
     "featured-collection",
-    "slideshow-cards",
-    "slideshow-overlay",
+    "gallery",
     "footer-banner"
   ]
 }

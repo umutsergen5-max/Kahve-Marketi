@@ -6,6 +6,7 @@
 
   Accepts:
   - form_id: unique id for the form (required when the snippet is used twice)
+  - style: 'underline' for the compact one-line footer variant (arrow button); default is the boxed field with a text button
 
   Usage: {% render 'newsletter-form', form_id: 'footer-newsletter' %}
 {%- endcomment -%}
@@ -23,7 +24,7 @@
   endif
 -%}
 
-<div class="newsletter">
+<div class="newsletter{% if style == 'underline' %} newsletter--underline{% endif %}">
   <h2 class="newsletter__heading heading heading--block" id="{{ nl_id }}-heading">{{ nl_heading | escape }}</h2>
   <p class="newsletter__text">{{ nl_text | escape }}</p>
 
@@ -49,9 +50,13 @@
           aria-required="true"
           {% if form.errors %}aria-invalid="true" aria-describedby="{{ nl_id }}-error"{% else %}aria-describedby="{{ nl_id }}-disclaimer"{% endif %}
         >
-        <button class="button newsletter__submit" type="submit">
-          <span>{{ 'newsletter.submit' | t }}</span>
-        </button>
+        {%- if style == 'underline' -%}
+          <button class="newsletter__arrow" type="submit" aria-label="{{ 'newsletter.submit' | t }}">{% render 'icon', name: 'arrow-right', size: 20 %}</button>
+        {%- else -%}
+          <button class="button newsletter__submit" type="submit">
+            <span>{{ 'newsletter.submit' | t }}</span>
+          </button>
+        {%- endif -%}
       </div>
 
       {%- if form.errors -%}
