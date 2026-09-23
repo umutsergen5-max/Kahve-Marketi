@@ -6,7 +6,7 @@
   label is presentational. Desktop: N slides side by side without gaps (default 2, each
   720:550); mobile: stacked, one per row.
 {%- endcomment -%}
-<section class="image-banner" style="--banner-cols: {{ section.settings.columns }};">
+<section class="image-banner image-banner--{{ section.settings.height }}" style="--banner-cols: {{ section.settings.columns }};">
   <div class="image-banner__row">
     {%- for block in section.blocks -%}
       {%- liquid
@@ -17,7 +17,7 @@
           assign slide_tag = 'a'
         endif
         assign has_content = false
-        if block.settings.overline != blank or block.settings.heading != blank or block.settings.button_label != blank
+        if block.settings.overline != blank or block.settings.heading != blank or block.settings.text != blank or block.settings.button_label != blank
           assign has_content = true
         endif
       -%}
@@ -57,6 +57,9 @@
             {%- if block.settings.heading != blank -%}
               <h2 class="image-banner__heading heading heading--featured">{{ block.settings.heading | escape }}</h2>
             {%- endif -%}
+            {%- if block.settings.text != blank -%}
+              <p class="image-banner__text">{{ block.settings.text | escape }}</p>
+            {%- endif -%}
             {%- if block.settings.button_label != blank -%}
               {%- if section.settings.cta_style == 'link' -%}
                 <span class="image-banner__link">{{ block.settings.button_label | escape }}</span>
@@ -89,7 +92,12 @@
   a.image-banner__slide:focus-visible { outline: 2px solid currentColor; outline-offset: -4px; }
 
   .image-banner__content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-8); padding: var(--space-32) var(--section-x); text-align: center; }
-  .image-banner__overline, .image-banner__heading { margin: 0; max-width: 40rem; }
+  .image-banner__overline, .image-banner__heading, .image-banner__text { margin: 0; max-width: 40rem; }
+  .image-banner__text { font-size: 14px; line-height: 1.5; }
+  /* Wide band: full-width slides at a fixed height (450px desktop, 344px mobile). */
+  .image-banner--band .image-banner__slide { aspect-ratio: 375 / 344; }
+  @media (min-width: 768px) { .image-banner--band .image-banner__slide { aspect-ratio: auto; height: 450px; } }
+  .image-banner--band .image-banner__content { max-width: 500px; margin-inline: auto; padding-inline: var(--space-16); gap: var(--space-16); }
   .image-banner__overline { letter-spacing: 1.5px; }
   .image-banner__button { margin-top: var(--space-8); }
   .image-banner__link { display: inline-block; margin-top: var(--space-8); padding-bottom: 3px; font-family: var(--font-body-family); font-weight: var(--font-nav-weight); font-size: var(--fs-nav); letter-spacing: 1px; line-height: 1; text-transform: var(--tt-ui); background: linear-gradient(currentColor, currentColor) left bottom / 100% 1px no-repeat; }
@@ -131,6 +139,22 @@
         }
       ],
       "default": "link"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "t:sections.image-banner.settings.height.label",
+      "options": [
+        {
+          "value": "standard",
+          "label": "t:sections.image-banner.settings.height.options__1.label"
+        },
+        {
+          "value": "band",
+          "label": "t:sections.image-banner.settings.height.options__2.label"
+        }
+      ],
+      "default": "standard"
     }
   ],
   "blocks": [
@@ -157,6 +181,11 @@
           "type": "text",
           "id": "heading",
           "label": "t:sections.image-banner.blocks.slide.settings.heading.label"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:sections.image-banner.blocks.slide.settings.text.label"
         },
         {
           "type": "text",

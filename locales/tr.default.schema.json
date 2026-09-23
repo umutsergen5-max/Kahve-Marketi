@@ -1369,6 +1369,9 @@
           },
           "options__3": {
             "label": "Görsel sağda"
+          },
+          "options__4": {
+            "label": "Banner (sabit yükseklik, ortalanmış başlık)"
           }
         },
         "height": {
@@ -1466,6 +1469,10 @@
           "options__3": {
             "label": "Tam"
           }
+        },
+        "fallback_image": {
+          "label": "Yedek görsel",
+          "info": "Koleksiyonun kendi görseli yoksa kullanılır. Koleksiyon görseli Shopify > Koleksiyonlar bölümünden seçilir."
         }
       },
       "presets": {
@@ -1587,6 +1594,9 @@
           },
           "options__4": {
             "label": "Yatay"
+          },
+          "options__5": {
+            "label": "Uzun dikey (2:3)"
           }
         },
         "card_align": {
@@ -4471,6 +4481,15 @@
           "options__2": {
             "label": "Alt çizgili yazı"
           }
+        },
+        "height": {
+          "label": "Yükseklik",
+          "options__1": {
+            "label": "Standart (oranlı)"
+          },
+          "options__2": {
+            "label": "Geniş bant (450px)"
+          }
         }
       },
       "blocks": {
@@ -4507,6 +4526,9 @@
               "options__2": {
                 "label": "Koyu"
               }
+            },
+            "text": {
+              "label": "Açıklama"
             }
           }
         }

@@ -103,7 +103,6 @@
           {%- endif -%}
           {%- if filtering -%}
             <button class="toolbar-button text-nav" type="button" data-drawer-open="filter" data-filter-group="filter" aria-controls="drawer-filter" aria-haspopup="dialog" aria-expanded="false">
-              {% render 'icon', name: 'filter', size: 16 %}
               <span>{{ 'collections.filter' | t }}</span>
               <span class="toolbar-button__badge text-subnav" data-active-count{% if active_count == 0 %} hidden{% endif %}>{{ active_count }}</span>
             </button>
@@ -205,33 +204,36 @@
 {%- endpaginate -%}
 
 {% stylesheet %}
-  .collection-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-12) var(--space-16); margin-bottom: var(--space-16); }
-  .collection-toolbar__buttons { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-8); }
+  /* Toolbar: one bordered pill holding the browse / sort / filter buttons, layout toggle at the far right. */
+  .collection-main { --collection-gap: var(--space-16); }
+  @media (min-width: 768px) { .collection-main { --collection-gap: var(--space-32); } }
+  .collection-toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-16); padding-top: var(--space-32); margin-bottom: var(--space-32); }
+  .collection-toolbar__buttons { display: flex; align-items: center; height: 40px; padding: 0 3px; border: 1px solid rgba(68, 68, 68, 0.1); border-radius: 20px; }
   .toolbar-button {
     display: inline-flex;
     align-items: center;
     gap: var(--space-8);
-    min-height: 44px;
-    padding: 0 var(--space-16);
-    border: 1px solid var(--color-border-strong);
-    border-radius: var(--radius-button);
+    height: 32px;
+    padding: 0 var(--space-12);
+    border: 0;
+    border-radius: 16px;
     background: transparent;
     color: inherit;
+    white-space: nowrap;
     cursor: pointer;
-    transition: background-color 0.2s var(--ease-button), color 0.2s var(--ease-button), border-color 0.2s var(--ease-button);
+    transition: background-color 0.2s var(--ease-button), color 0.2s var(--ease-button);
   }
-  @media (hover: hover) { .toolbar-button:hover { background: var(--scheme-button-bg); color: var(--scheme-button-text); border-color: var(--scheme-button-bg); } }
-  .toolbar-button__badge { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--color-accent-1); color: #fff; }
+  @media (hover: hover) { .toolbar-button:hover { background: var(--scheme-button-bg); color: var(--scheme-button-text); } }
+  .toolbar-button:focus-visible, .layout-button:focus-visible { outline: 2px solid var(--scheme-focus); outline-offset: 2px; }
+  .toolbar-button__badge { display: inline-flex; align-items: center; justify-content: center; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: var(--color-accent-1); color: #fff; }
   .toolbar-button__badge[hidden] { display: none; }
-  .collection-toolbar__count { margin: 0; color: var(--scheme-text-muted); }
-  .collection-toolbar__layout { display: none; margin-left: auto; gap: var(--space-4); }
-  @media (min-width: 768px) {
-    .collection-toolbar__layout { display: flex; }
-    .collection-toolbar__count { margin-left: auto; }
-    .collection-toolbar__count + .collection-toolbar__layout { margin-left: 0; }
-  }
-  .layout-button { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 1px solid transparent; border-radius: var(--radius-button); background: none; color: var(--scheme-text-muted); cursor: pointer; }
-  .layout-button[aria-pressed="true"] { color: var(--scheme-text); border-color: var(--color-border-strong); }
+  .collection-toolbar__count { margin: 0 auto 0 0; color: var(--scheme-text-muted); }
+  .collection-toolbar__layout { display: none; margin-left: auto; gap: 0; }
+  @media (min-width: 768px) { .collection-toolbar__layout { display: flex; } }
+  .layout-button { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; border: 1px solid rgba(68, 68, 68, 0.1); background: none; color: var(--scheme-text-muted); cursor: pointer; }
+  .layout-button:first-child { border-radius: 20px 0 0 20px; }
+  .layout-button:last-child { border-radius: 0 20px 20px 0; border-left: 0; }
+  .layout-button[aria-pressed="true"] { color: var(--scheme-text); background: rgba(68, 68, 68, 0.06); }
 
   .active-filters { margin-bottom: var(--space-16); }
   .active-filters[hidden] { display: none; }
@@ -255,8 +257,11 @@
 
   .collection-results { position: relative; transition: opacity 0.2s var(--ease-standard); }
   .collection-results[aria-busy="true"] { opacity: 0.45; pointer-events: none; }
-  .collection-grid { --cols: var(--cols-config); --cols-tablet: var(--cols-tablet-config); --gap-row: var(--space-32); }
-  @media (min-width: 768px) { .collection-grid { --gap-row: var(--space-48); } }
+  .collection-grid { --cols: var(--cols-config); --cols-tablet: var(--cols-tablet-config); --gap-row: var(--space-32); --gap-column: var(--space-16); }
+  @media (min-width: 768px) { .collection-grid { --gap-column: var(--space-32); } }
+  /* Card typography as on the reference: regular body-font name, small bold tracked price. */
+  .collection-grid .product-card__title { font-family: var(--font-body-family); font-weight: 400; font-size: var(--fs-body); letter-spacing: normal; text-transform: none; line-height: var(--lh-body); }
+  .collection-grid .product-card__info .price, .collection-grid .product-card__info .price * { font-size: var(--fs-nav); font-weight: var(--font-nav-weight); letter-spacing: 1px; text-transform: uppercase; }
   /* Layout toggle (desktop): "large" = 2 columns; "compact" = the configured column count. */
   @media (min-width: 768px) { .collection-grid[data-layout="large"] { --cols: 2; --cols-tablet: 2; } }
   .collection-empty { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-16); padding: var(--space-32) 0; }
@@ -318,6 +323,10 @@
         {
           "value": "default",
           "label": "t:sections.main-collection.settings.image_ratio.options__1.label"
+        },
+        {
+          "value": "tall",
+          "label": "t:sections.main-collection.settings.image_ratio.options__5.label"
         },
         {
           "value": "portrait",

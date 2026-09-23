@@ -1,38 +1,70 @@
 {
-    "sections": {
-        "header": {
-            "type": "collection-header",
-            "settings": {}
-        },
-        "nav": {
-            "type": "collection-nav",
-            "settings": {}
-        },
-        "main": {
-            "type": "main-collection",
-            "settings": {}
-        },
-        "recently-viewed": {
-            "type": "recently-viewed",
-            "settings": {}
-        },
-        "editorial": {
-            "type": "image-with-text",
-            "settings": {
-                "layout": "overlay",
-                "overline": "Üst başlık",
-                "heading": "Başlık",
-                "text": "<p>Bu alanı tema düzenleyicisinden değiştirin.</p>",
-                "spacing_top": "none",
-                "spacing_bottom": "none"
-            }
-        }
+  "sections": {
+    "header": {
+      "type": "collection-header",
+      "settings": {
+        "layout": "banner",
+        "show_product_count": false,
+        "show_description": false,
+        "overlay_opacity": 20,
+        "text_align": "center",
+        "vertical_align": "center",
+        "text_color": "light"
+      }
     },
-    "order": [
-        "header",
-        "nav",
-        "main",
-        "recently-viewed",
-        "editorial"
-    ]
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "columns": 4,
+        "columns_mobile": "1",
+        "image_ratio": "tall",
+        "card_align": "center",
+        "show_product_count": false,
+        "browse_menu": "kategoriler",
+        "spacing_top": "none",
+        "spacing_bottom": "full"
+      }
+    },
+    "recently-viewed": {
+      "type": "recently-viewed",
+      "settings": {
+        "heading": "son bakılanlar",
+        "heading_align": "center",
+        "columns": 4,
+        "columns_mobile": "1",
+        "max_products": 4,
+        "spacing_top": "full",
+        "spacing_bottom": "full"
+      }
+    },
+    "banner": {
+      "type": "image-banner",
+      "blocks": {
+        "slide-1": {
+          "type": "slide",
+          "settings": {
+            "heading": "Vengo Roastery kafelerimizde buluşalım",
+            "text": "Taze kavrulmuş kahvelerimizi fincanda deneyimlemek için kafelerimize uğrayın.",
+            "button_label": "Kafelerimiz",
+            "link": "/pages/konumlarimiz",
+            "overlay_opacity": 35
+          }
+        }
+      },
+      "block_order": [
+        "slide-1"
+      ],
+      "settings": {
+        "columns": 1,
+        "cta_style": "button",
+        "height": "band"
+      }
+    }
+  },
+  "order": [
+    "header",
+    "main",
+    "recently-viewed",
+    "banner"
+  ]
 }

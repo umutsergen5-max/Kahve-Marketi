@@ -6,7 +6,7 @@
   nothing is hardcoded. Without a collection image the header falls back to text only.
 {%- endcomment -%}
 {%- liquid
-  assign header_image = collection.image
+  assign header_image = collection.image | default: section.settings.fallback_image
   assign has_image = false
   if section.settings.show_image
     if header_image
@@ -14,7 +14,11 @@
     endif
   endif
   assign layout = section.settings.layout
-  if has_image == false
+  assign is_banner = false
+  if layout == 'banner'
+    assign is_banner = true
+    assign layout = 'overlay'
+  elsif has_image == false
     assign layout = 'text'
   endif
   if collection.title != blank
@@ -38,12 +42,16 @@
 -%}
 
 <div
-  class="collection-header collection-header--{{ layout }} collection-header--h-{{ section.settings.height }} collection-header--text-{{ section.settings.text_color }} collection-header--valign-{{ section.settings.vertical_align }} collection-header--align-{{ section.settings.text_align }}{% if layout == 'text' or layout == 'split-left' or layout == 'split-right' %} section scheme-{{ section.settings.color_scheme }}{% endif %}"
+  class="collection-header collection-header--{{ layout }}{% if is_banner %} collection-header--banner{% endif %} collection-header--h-{{ section.settings.height }} collection-header--text-{{ section.settings.text_color }} collection-header--valign-{{ section.settings.vertical_align }} collection-header--align-{{ section.settings.text_align }}{% if layout == 'text' or layout == 'split-left' or layout == 'split-right' %} section scheme-{{ section.settings.color_scheme }}{% endif %}"
   {% if layout == 'text' or layout == 'split-left' or layout == 'split-right' %}data-spacing-top="{{ section.settings.spacing_top }}" data-spacing-bottom="{{ section.settings.spacing_bottom }}"{% endif %}
 >
-  {%- if has_image -%}
+  {%- if has_image or is_banner -%}
     <div class="collection-header__media{% if layout == 'overlay' %} collection-header__media--cover{% else %} media media--landscape{% endif %}">
-      {{- header_image | image_url: width: 2200 | image_tag: loading: img_loading, fetchpriority: img_priority, widths: '480, 768, 1100, 1600, 2200', sizes: '(min-width: 1024px) 100vw, 100vw', class: 'collection-header__image', alt: '' -}}
+      {%- if has_image -%}
+        {{- header_image | image_url: width: 2200 | image_tag: loading: img_loading, fetchpriority: img_priority, widths: '480, 768, 1100, 1600, 2200', sizes: '(min-width: 1024px) 100vw, 100vw', class: 'collection-header__image', alt: '' -}}
+      {%- else -%}
+        <div class="collection-header__placeholder">{{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+      {%- endif -%}
       {%- if layout == 'overlay' -%}
         <span class="collection-header__overlay" style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}" aria-hidden="true"></span>
       {%- endif -%}
@@ -55,7 +63,7 @@
       {%- if section.settings.show_breadcrumb -%}
         {% render 'breadcrumbs', current_title: title, parent_title: parent_label, parent_url: routes.collections_url %}
       {%- endif -%}
-      <h1 class="collection-header__title heading heading--banner">{{ title | escape }}</h1>
+      <h1 class="collection-header__title heading {% if is_banner %}heading--featured{% else %}heading--banner{% endif %}">{{ title | escape }}</h1>
       {%- if section.settings.show_product_count -%}
         <p class="collection-header__count text-small">{{ 'collections.products_count' | t: count: collection.all_products_count }}</p>
       {%- endif -%}
@@ -109,6 +117,15 @@
   .collection-header--overlay { --scheme-focus: #fff; --scheme-text: #fff; --scheme-text-muted: rgba(255, 255, 255, 0.85); }
   .collection-header--overlay.collection-header--text-dark { --scheme-focus: var(--color-background-dark); --scheme-text: var(--color-background-dark); --scheme-text-muted: rgba(32, 32, 32, 0.8); }
 
+  /* Banner (default): fixed-height full-bleed image, centred title on a light overlay; placeholder when no image. */
+  .collection-header--banner { --header-min-h: min(113vw, 480px); }
+  @media (min-width: 768px) { .collection-header--banner { --header-min-h: 550px; } }
+  .collection-header--banner .collection-header__content { justify-content: center; }
+  .collection-header--banner .collection-header__text { max-width: 40rem; }
+  .collection-header__placeholder { position: absolute; inset: 0; display: block; }
+  .collection-header__placeholder svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.35; background: #3a3a3a; object-fit: cover; }
+  .collection-header--banner .collection-header__count, .collection-header--banner .collection-header__description { font-size: var(--fs-featured-body); }
+
   /* Side by side */
   .collection-header--split-left, .collection-header--split-right { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-16); align-items: center; }
   @media (min-width: 768px) {
@@ -151,6 +168,12 @@
       "default": true
     },
     {
+      "type": "image_picker",
+      "id": "fallback_image",
+      "label": "t:sections.collection-header.settings.fallback_image.label",
+      "info": "t:sections.collection-header.settings.fallback_image.info"
+    },
+    {
       "type": "header",
       "content": "t:sections.collection-header.settings.header__style.content"
     },
@@ -159,6 +182,10 @@
       "id": "layout",
       "label": "t:sections.collection-header.settings.layout.label",
       "options": [
+        {
+          "value": "banner",
+          "label": "t:sections.collection-header.settings.layout.options__4.label"
+        },
         {
           "value": "overlay",
           "label": "t:sections.collection-header.settings.layout.options__1.label"
@@ -172,7 +199,7 @@
           "label": "t:sections.collection-header.settings.layout.options__3.label"
         }
       ],
-      "default": "overlay"
+      "default": "banner"
     },
     {
       "type": "select",
