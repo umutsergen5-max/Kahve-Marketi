@@ -99,11 +99,11 @@
             <button class="toolbar-button text-nav" type="button" data-drawer-open="filter" data-filter-group="browse" aria-controls="drawer-filter" aria-haspopup="dialog" aria-expanded="false">{{ 'collections.browse' | t }}</button>
           {%- endif -%}
           {%- if sorting -%}
-            <button class="toolbar-button text-nav" type="button" data-drawer-open="filter" data-filter-group="sort" aria-controls="drawer-filter" aria-haspopup="dialog" aria-expanded="false">{{ 'collections.sort_by' | t }}</button>
+            <button class="toolbar-button toolbar-button--sort text-nav" type="button" data-drawer-open="filter" data-filter-group="sort" aria-controls="drawer-filter" aria-haspopup="dialog" aria-expanded="false">{{ 'collections.sort_by' | t }}</button>
           {%- endif -%}
           {%- if filtering -%}
             <button class="toolbar-button text-nav" type="button" data-drawer-open="filter" data-filter-group="filter" aria-controls="drawer-filter" aria-haspopup="dialog" aria-expanded="false">
-              <span>{{ 'collections.filter' | t }}</span>
+              <span>{{ 'collections.refine' | t }}</span>
               <span class="toolbar-button__badge text-subnav" data-active-count{% if active_count == 0 %} hidden{% endif %}>{{ active_count }}</span>
             </button>
           {%- endif -%}
@@ -224,6 +224,15 @@
     transition: background-color 0.2s var(--ease-button), color 0.2s var(--ease-button);
   }
   @media (hover: hover) { .toolbar-button:hover { background: var(--scheme-button-bg); color: var(--scheme-button-text); } }
+  .toolbar-button { letter-spacing: 1px; }
+  .toolbar-button--sort { display: none; }
+  @media (min-width: 768px) { .toolbar-button--sort { display: inline-flex; } }
+  /* Mobile: two separate outlined pills (browse left, refine right); sorting stays inside the drawer. */
+  @media (max-width: 767px) {
+    .collection-toolbar { padding-top: var(--space-32); }
+    .collection-toolbar__buttons { flex: 1; justify-content: space-between; height: 32px; padding: 0; border: 0; border-radius: 0; }
+    .toolbar-button { padding: 0 var(--space-16); border: 1px solid rgba(68, 68, 68, 0.1); }
+  }
   .toolbar-button:focus-visible, .layout-button:focus-visible { outline: 2px solid var(--scheme-focus); outline-offset: 2px; }
   .toolbar-button__badge { display: inline-flex; align-items: center; justify-content: center; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: var(--color-accent-1); color: #fff; }
   .toolbar-button__badge[hidden] { display: none; }
