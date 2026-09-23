@@ -2148,6 +2148,9 @@
           },
           "options__3": {
             "label": "Yatay"
+          },
+          "options__4": {
+            "label": "Kompakt (7:8)"
           }
         },
         "show_thumbnails": {

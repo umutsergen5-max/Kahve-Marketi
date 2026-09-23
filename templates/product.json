@@ -1,63 +1,70 @@
 {
-    "sections": {
-        "main": {
-            "type": "main-product",
-            "blocks": {
-                "vendor": {
-                    "type": "vendor"
-                },
-                "title": {
-                    "type": "title"
-                },
-                "price": {
-                    "type": "price"
-                },
-                "variant-picker": {
-                    "type": "variant_picker"
-                },
-                "quantity": {
-                    "type": "quantity"
-                },
-                "buy-buttons": {
-                    "type": "buy_buttons"
-                },
-                "description": {
-                    "type": "description"
-                }
-            },
-            "block_order": [
-                "vendor",
-                "title",
-                "price",
-                "variant-picker",
-                "quantity",
-                "buy-buttons",
-                "description"
-            ],
-            "settings": {}
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title"
         },
-        "recommendations": {
-            "type": "product-recommendations",
-            "settings": {}
+        "vendor": {
+          "type": "vendor"
         },
-        "recently-viewed": {
-            "type": "recently-viewed",
-            "settings": {}
+        "price": {
+          "type": "price"
         },
-        "editorial": {
-            "type": "image-with-text",
-            "disabled": true,
-            "settings": {
-                "layout": "image-left",
-                "heading": "Başlık",
-                "text": "<p>Bu alanı ürün hakkında ek bilgi, hikaye veya bakım önerileri için kullanabilirsiniz.</p>"
-            }
+        "variant-picker": {
+          "type": "variant_picker"
+        },
+        "quantity": {
+          "type": "quantity"
+        },
+        "buy-buttons": {
+          "type": "buy_buttons"
+        },
+        "description": {
+          "type": "description"
         }
+      },
+      "block_order": [
+        "title",
+        "vendor",
+        "price",
+        "variant-picker",
+        "quantity",
+        "buy-buttons",
+        "description"
+      ],
+      "settings": {
+        "gallery_ratio": "compact",
+        "media_size": "medium"
+      }
     },
-    "order": [
-        "main",
-        "recommendations",
-        "recently-viewed",
-        "editorial"
-    ]
+    "recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "layout": "grid",
+        "columns": 4,
+        "columns_mobile": "1",
+        "spacing_top": "full",
+        "spacing_bottom": "full"
+      }
+    },
+    "recently-viewed": {
+      "type": "recently-viewed",
+      "settings": {
+        "heading": "son bakılanlar",
+        "heading_align": "center",
+        "columns": 4,
+        "columns_mobile": "1",
+        "max_products": 4,
+        "spacing_top": "full",
+        "spacing_bottom": "full"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "recommendations",
+    "recently-viewed"
+  ]
 }

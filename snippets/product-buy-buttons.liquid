@@ -8,6 +8,7 @@
   - product: product object (required)
   - form_id: id for the <form> (required)
   - show_dynamic_checkout: render {{ form | payment_button }} (default false)
+  - show_price: show the variant price at the right edge of the button (default false)
   - fallback_quantity: when the page has no quantity field, a hidden quantity is posted
     so products with a minimum order quantity still validate. Optional.
 
@@ -41,6 +42,9 @@
     {% unless current_variant.available %}disabled{% endunless %}
   >
     <span data-add-label>{% if current_variant.available %}{{ 'products.add_to_cart' | t }}{% else %}{{ 'products.sold_out' | t }}{% endif %}</span>
+    {%- if show_price -%}
+      <span class="product-form__price" data-add-price{% unless current_variant.available %} hidden{% endunless %}>{{ current_variant.price | money }}</span>
+    {%- endif -%}
   </button>
 
   {%- if show_dynamic_checkout -%}
@@ -55,6 +59,8 @@
 
 {% stylesheet %}
   .product-form { display: flex; flex-direction: column; gap: var(--space-12); margin: 0; }
+  .product-form__submit:has(.product-form__price) { justify-content: space-between; }
+  .product-form__price[hidden] { display: none; }
   .product-form__submit[disabled] { cursor: not-allowed; }
   .product-form__submit[aria-busy="true"] { opacity: 0.7; cursor: progress; }
   .product-form__payment[hidden] { display: none; }

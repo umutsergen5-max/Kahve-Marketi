@@ -147,6 +147,17 @@
         var fresh = tpl.content.firstElementChild;
         if (fresh) price.replaceWith(fresh);
       }
+      var buttonPrice = utils.qs('[data-add-price]', root);
+      if (buttonPrice && variant.price_html) {
+        var tmp = doc.createElement('template');
+        tmp.innerHTML = variant.price_html.trim();
+        var current = tmp.content.querySelector('.price__current');
+        if (current) {
+          utils.qsa('.visually-hidden', current).forEach(function (n) { n.remove(); });
+          buttonPrice.textContent = current.textContent.replace(/\s+/g, ' ').trim();
+        }
+        buttonPrice.hidden = !variant.available;
+      }
       var block = utils.qs('[data-price-block]', root);
       var badges = utils.qs('[data-price-badges]', root);
       if (block && badges) {

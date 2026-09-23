@@ -194,7 +194,8 @@
                 product: product,
                 form_id: form_id,
                 show_dynamic_checkout: block.settings.show_dynamic_checkout,
-                fallback_quantity: fallback_qty
+                fallback_quantity: fallback_qty,
+                show_price: true
               %}
 
             {%- when 'description' -%}
@@ -315,6 +316,51 @@
     .main-product__layout--medium { --media-fr: 1.2fr; }
     .main-product__layout--large  { --media-fr: 1.6fr; }
   }
+  /* Buy box in the reference style: centred column, fixed 375px text width on desktop, 2px outlined controls. */
+  .main-product__info { align-items: stretch; gap: var(--space-16); text-align: center; }
+  .main-product__block--accordion, .main-product__description, .main-product__text, .main-product__spec { text-align: left; }
+  .main-product__vendor { color: var(--scheme-text); letter-spacing: 1px; }
+  .main-product__title { font-size: 20px; }
+  .main-product__price-block { align-items: center; margin-bottom: var(--space-16); gap: 0; }
+  .main-product__price-row { justify-content: center; }
+  .main-product__price-row .price { font-size: 20px; }
+  .main-product__price-row .price__current, .main-product__price-row .price__compare { font-family: var(--font-body-family); font-weight: var(--font-nav-weight); letter-spacing: 1px; text-transform: uppercase; }
+  .main-product__price-row .price__compare { font-weight: 400; }
+  .main-product__unit, .main-product__tax { font-size: 12px; line-height: var(--lh-body); color: var(--scheme-text); }
+
+  .main-product .product-options { gap: var(--space-16); }
+  .main-product .option { text-align: center; }
+  .main-product .option legend { margin-bottom: 0; padding-bottom: var(--space-8); font-size: 12px; letter-spacing: 1px; }
+  .main-product .option__values { justify-content: center; gap: var(--space-8) var(--space-16); }
+  .main-product .option__pill { min-width: 0; min-height: 45px; padding: 0 var(--space-16); border: 2px solid var(--scheme-text-muted); font-size: 14px; letter-spacing: normal; color: var(--scheme-text); }
+  .main-product .option__input:checked + .option__pill { background: transparent; border-color: var(--scheme-text); color: var(--scheme-text); }
+  @media (hover: hover) { .main-product .option__pill:hover { border-color: var(--scheme-text); } }
+  .main-product .option__input[data-sold-out] + .option__pill { color: var(--scheme-text-muted); }
+  .main-product .option__input[data-sold-out]:checked + .option__pill { color: var(--scheme-text-muted); }
+  .main-product .option--swatches .option__pill { width: 45px; min-height: 45px; padding: 0; }
+
+  .main-product .product-quantity { align-items: center; }
+  .main-product .product-quantity .quantity { align-self: center; height: 45px; border: 2px solid var(--scheme-text-muted); }
+  .main-product .quantity__button { height: 41px; }
+  .main-product .quantity__input { height: 41px; }
+  .main-product__block--buy-buttons { margin-top: var(--space-16); }
+  .main-product .product-form__submit { min-height: 45px; padding: 0 var(--space-16); border-color: var(--color-background-dark); background: transparent; color: var(--scheme-text); letter-spacing: normal; }
+  .main-product .product-form__submit:disabled { opacity: 0.55; }
+  .main-product .product-form__payment .shopify-payment-button__button { min-height: 45px; }
+  .main-product .info-accordion__trigger { letter-spacing: 1px; }
+
+  @media (min-width: 1024px) {
+    .main-product__layout {
+      --media-w: 723px;
+      grid-template-columns: minmax(0, var(--media-w)) minmax(0, 375px);
+      justify-content: space-between;
+      max-width: 1200px;
+      margin-inline: auto;
+      gap: var(--space-32);
+    }
+    .main-product__layout--small { --media-w: 560px; }
+    .main-product__layout--large { --media-w: 860px; }
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -404,6 +450,10 @@
       "id": "gallery_ratio",
       "label": "t:sections.main-product.settings.gallery_ratio.label",
       "options": [
+        {
+          "value": "compact",
+          "label": "t:sections.main-product.settings.gallery_ratio.options__4.label"
+        },
         {
           "value": "portrait",
           "label": "t:sections.main-product.settings.gallery_ratio.options__1.label"

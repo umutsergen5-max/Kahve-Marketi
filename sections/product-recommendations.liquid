@@ -88,6 +88,17 @@
   </div>
 </section>
 
+{% stylesheet %}
+  /* Same card look as the collection grid: 2:3 image, regular body-font name, small bold tracked price. */
+  .product-recommendations .section__header { margin-bottom: var(--space-32); }
+  .product-recommendations__grid { --gap-row: var(--space-32); --gap-column: var(--space-16); }
+  @media (min-width: 768px) { .product-recommendations__grid { --gap-column: var(--space-32); } }
+  .product-recommendations .product-card .media { aspect-ratio: 2 / 3; }
+  .product-recommendations .product-card__info { padding-bottom: var(--space-12); }
+  .product-recommendations .product-card__title { font-family: var(--font-body-family); font-weight: 400; font-size: var(--fs-body); letter-spacing: normal; text-transform: none; line-height: var(--lh-body); }
+  .product-recommendations .product-card__info .price, .product-recommendations .product-card__info .price * { font-size: var(--fs-nav); font-weight: var(--font-nav-weight); letter-spacing: 1px; text-transform: uppercase; }
+{% endstylesheet %}
+
 {% schema %}
 {
   "name": "t:sections.product-recommendations.name",
