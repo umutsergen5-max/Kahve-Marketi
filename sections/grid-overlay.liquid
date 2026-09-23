@@ -155,6 +155,7 @@
 
   /* Mosaic: asymmetric grid on fixed-height rows; a tile can span 2 columns and/or 2 rows. */
   .grid-overlay--mosaic .grid-overlay__grid { align-items: stretch; grid-auto-flow: row dense; }
+  @media (max-width: 767px) { .grid-overlay--mosaic.section--flush { padding-inline: var(--section-x); } }
   .grid-overlay--mosaic .tile { aspect-ratio: 4 / 5; }
   .grid-overlay--mosaic .tile__media { position: absolute; inset: 0; height: auto; aspect-ratio: auto; }
   .grid-overlay--mosaic .tile__content { padding: var(--space-16); }
