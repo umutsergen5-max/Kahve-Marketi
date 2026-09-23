@@ -795,3 +795,26 @@ main .shopify-policy__container { max-width: var(--width-lg); margin: 0 auto; pa
 
 /* Text-block headings inside content-page sections follow the 20px mobile heading size. */
 @media (max-width: 767px) { .image-text__heading, .main-page__title { font-size: 20px; } }
+
+/* Search, cart, 404 and customer pages: reference typography and card look. */
+.main-search__header { align-items: center; text-align: center; }
+.main-search__form { width: 100%; margin-inline: auto; }
+.main-search__type-list { justify-content: center; }
+.main-search .product-card .media, .not-found .product-card .media { aspect-ratio: 2 / 3; }
+.main-search .product-card__info, .not-found .product-card__info { padding-bottom: var(--space-12); }
+.main-search .product-card__title, .not-found .product-card__title { font-family: var(--font-body-family); font-weight: 400; font-size: var(--fs-body); letter-spacing: normal; text-transform: none; line-height: var(--lh-body); }
+.main-search .product-card__info .price, .main-search .product-card__info .price *, .not-found .product-card__info .price, .not-found .product-card__info .price * { font-size: var(--fs-nav); font-weight: var(--font-nav-weight); letter-spacing: 1px; text-transform: uppercase; }
+.page-result-card__title, .article-card__title { font-size: 19px; line-height: 1.2; }
+
+.main-cart__header { justify-content: center; text-align: center; }
+.cart-item__title { font-family: var(--font-body-family); font-weight: 400; font-size: var(--fs-body); letter-spacing: normal; text-transform: none; line-height: var(--lh-body); }
+.cart-totals__value { font-family: var(--font-body-family); font-weight: var(--font-nav-weight); font-size: 20px; letter-spacing: 1px; }
+
+.auth__inner { max-width: 400px; }
+.auth__title { text-align: center; }
+.auth__panel > .auth__subtitle { text-align: center; }
+
+@media (max-width: 767px) {
+  .main-search__title, .main-cart__title, .not-found__title, .auth__title { font-size: 20px; }
+  .cart-totals__value { font-size: 16px; }
+}
