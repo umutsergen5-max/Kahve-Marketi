@@ -1,134 +1,100 @@
 {
-    "sections": {
-        "hero": {
-            "type": "image-with-text",
-            "settings": {
-                "layout": "overlay",
-                "heading": "Başlık",
-                "overline": "Üst başlık",
-                "text": "<p>Kısa bir tanıtım metni.</p>",
-                "overlay_height": "medium",
-                "full_width": true,
-                "spacing_top": "none",
-                "spacing_bottom": "none"
-            }
-        },
-        "main": {
-            "type": "main-page",
-            "settings": {
-                "content_width": "sm",
-                "show_breadcrumb": true,
-                "show_title": true
-            }
-        },
-        "benefits": {
-            "type": "feature-list",
-            "blocks": {
-                "b1": {
-                    "type": "item",
-                    "settings": {
-                        "icon": "check",
-                        "title": "Avantaj başlığı",
-                        "text": "Kısa açıklama."
-                    }
-                },
-                "b2": {
-                    "type": "item",
-                    "settings": {
-                        "icon": "check",
-                        "title": "Avantaj başlığı",
-                        "text": "Kısa açıklama."
-                    }
-                },
-                "b3": {
-                    "type": "item",
-                    "settings": {
-                        "icon": "check",
-                        "title": "Avantaj başlığı",
-                        "text": "Kısa açıklama."
-                    }
-                }
-            },
-            "block_order": [
-                "b1",
-                "b2",
-                "b3"
-            ],
-            "settings": {
-                "heading": "Avantajlar",
-                "color_scheme": "light"
-            }
-        },
-        "requirements": {
-            "type": "feature-list",
-            "blocks": {
-                "r1": {
-                    "type": "item",
-                    "settings": {
-                        "icon": "none",
-                        "title": "Koşul başlığı",
-                        "text": "Kısa açıklama."
-                    }
-                },
-                "r2": {
-                    "type": "item",
-                    "settings": {
-                        "icon": "none",
-                        "title": "Koşul başlığı",
-                        "text": "Kısa açıklama."
-                    }
-                }
-            },
-            "block_order": [
-                "r1",
-                "r2"
-            ],
-            "settings": {
-                "heading": "Koşullar",
-                "layout": "list",
-                "numbered": true
-            }
-        },
-        "apply": {
-            "type": "contact-form",
-            "settings": {
-                "heading": "Başvuru formu",
-                "text": "<p>Formu doldurun, size dönüş yapalım.</p>",
-                "show_company": true,
-                "show_phone": true,
-                "color_scheme": "light"
-            }
-        },
-        "contact": {
-            "type": "locations",
-            "blocks": {
-                "l1": {
-                    "type": "location",
-                    "settings": {
-                        "type_label": "İletişim",
-                        "name": "Ad",
-                        "address": "Adres satırı",
-                        "phone": "",
-                        "email": "",
-                        "hours": ""
-                    }
-                }
-            },
-            "block_order": [
-                "l1"
-            ],
-            "settings": {
-                "layout": "cards",
-                "columns": 1
-            }
-        }
+  "sections": {
+    "hero": {
+      "type": "image-with-text",
+      "settings": {
+        "layout": "overlay",
+        "overline": "Toptan alım",
+        "heading": "İşletmenizde de Vengo Roastery",
+        "heading_level": "h2",
+        "text": "<p>Toptan alım fiyatlarından ve birebir servisten yararlanın.</p>",
+        "overlay_height": "band",
+        "text_align": "left",
+        "vertical_align": "center",
+        "overlay_opacity": 20,
+        "full_width": true,
+        "spacing_top": "none",
+        "spacing_bottom": "none"
+      }
     },
-    "order": [
-        "hero",
-        "main",
-        "benefits",
-        "requirements",
-        "apply",
-        "contact"
-    ]
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "show_breadcrumb": false,
+        "content_width": "lg",
+        "title_align": "left",
+        "color_scheme": "light",
+        "spacing_top": "full",
+        "spacing_bottom": "none"
+      }
+    },
+    "intro": {
+      "type": "featured-text",
+      "settings": {
+        "heading": "Kahve tutkusunu paylaşan iş ortakları arıyoruz",
+        "heading_level": "h2",
+        "text": "<p>Birlikte çalıştığımız işletmeleri müşteri olarak değil, çözüm ortağı olarak görüyoruz. Mekanınızın gereksinimlerini birlikte belirliyor; altyapı kurulumundan kahve eğitimine, düzenli taze kavrulmuş kahve teslimatından fikir alışverişine kadar destek oluyoruz.</p>",
+        "text_align": "left",
+        "content_width": "lg",
+        "color_scheme": "light",
+        "spacing_top": "none",
+        "spacing_bottom": "full"
+      }
+    },
+    "benefits": {
+      "type": "feature-list",
+      "blocks": {
+        "b1": {
+          "type": "item",
+          "settings": {
+            "icon": "check",
+            "title": "Taze kavrulmuş çekirdek kahve",
+            "text": "Lezzete göre seçtiğimiz kahveleri işletmenizin ihtiyacına uygun şekilde taze kavurup teslim ediyoruz."
+          }
+        },
+        "b2": {
+          "type": "item",
+          "settings": {
+            "icon": "check",
+            "title": "Ekipman ve kurulum desteği",
+            "text": "Espresso makineleri, demleme ekipmanları, öğütücüler, su filtrasyonu ve servis ekipmanları için doğru seçim ve kurulum desteği sağlıyoruz."
+          }
+        },
+        "b3": {
+          "type": "item",
+          "settings": {
+            "icon": "check",
+            "title": "Eğitim ve teknik servis",
+            "text": "Kahve eğitimi, tadım etkinlikleri ve teknik servis ile ekibinizin yanındayız."
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3"
+      ],
+      "settings": {
+        "heading": "Sunduğumuz hizmetler",
+        "color_scheme": "default"
+      }
+    },
+    "apply": {
+      "type": "contact-form",
+      "settings": {
+        "heading": "Başvuru formu",
+        "text": "<p>Formu doldurun, size dönüş yapalım.</p>",
+        "show_company": true,
+        "show_phone": true,
+        "color_scheme": "light"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "main",
+    "intro",
+    "benefits",
+    "apply"
+  ]
 }

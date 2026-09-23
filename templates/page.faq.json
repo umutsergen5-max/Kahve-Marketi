@@ -4,18 +4,18 @@
       "type": "featured-text",
       "settings": {
         "heading": "Sıkça sorulan sorular",
-        "heading_level": "h1",
+        "heading_level": "h2",
         "text": "<p>Aşağıda en sık sorulan soruların yanıtlarını bulabilirsiniz. Aradığınızı bulamazsanız bizimle iletişime geçin.</p>",
-        "content_width": "sm",
+        "content_width": "md",
         "spacing_bottom": "none"
       }
     },
     "main": {
       "type": "main-page",
       "settings": {
+        "show_breadcrumb": false,
         "show_title": false,
-        "content_width": "sm",
-        "title_align": "center",
+        "content_width": "lg",
         "spacing_top": "none",
         "spacing_bottom": "none"
       }
@@ -23,42 +23,99 @@
     "faq": {
       "type": "faq",
       "blocks": {
-        "category-1": {
+        "c1": {
           "type": "category",
           "settings": {
-            "heading": "Kategori başlığı"
+            "heading": "Kargo"
           }
         },
         "q1": {
           "type": "question",
           "settings": {
-            "question": "Örnek soru 1",
-            "answer": "<p>Bu bir örnek cevaptır. Metni tema düzenleyicide değiştirin veya bloğu silin.</p>"
+            "question": "Siparişim ne zaman kargoya verilir?",
+            "answer": "<p>Kahvelerimizi tazeliğini koruyacak şekilde hazırlıyoruz. Siparişiniz kargoya verildiğinde size bir bilgilendirme e-postası gönderilir.</p>"
           }
         },
         "q2": {
           "type": "question",
           "settings": {
-            "question": "Örnek soru 2",
-            "answer": "<p>Bu bir örnek cevaptır. Metni tema düzenleyicide değiştirin veya bloğu silin.</p>"
+            "question": "Kargo ücreti nasıl hesaplanır?",
+            "answer": "<p>Kargo ücreti ödeme adımında hesaplanır. Belirli bir sepet tutarının üzerindeki siparişlerde ücretsiz kargo uygulanır; kalan tutarı sepetinizde görebilirsiniz.</p>"
           }
         },
         "q3": {
           "type": "question",
           "settings": {
-            "question": "Örnek soru 3",
-            "answer": "<p>Bu bir örnek cevaptır. Metni tema düzenleyicide değiştirin veya bloğu silin.</p>"
+            "question": "Siparişimi nasıl takip edebilirim?",
+            "answer": "<p>Kargoya verilen siparişinizin takip bilgisi e-posta ile size iletilir. Bir sorun olursa bizimle iletişime geçebilirsiniz.</p>"
+          }
+        },
+        "c2": {
+          "type": "category",
+          "settings": {
+            "heading": "İade"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Kahve ürünlerinde iade veya değişim yapılıyor mu?",
+            "answer": "<p>Gıda ürünlerinde cayma hakkı mevzuattaki istisnalara tabidir. Ayrıntılar için <a href=\"/pages/tuketici-haklari-cayma-ve-i%CC%87ade-kosullari\">Tüketici Hakları, Cayma ve İade Koşulları</a> sayfamıza göz atabilirsiniz.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Ürünüm hasarlı veya yanlış geldi, ne yapmalıyım?",
+            "answer": "<p>Lütfen bizimle iletişime geçin ve ürünün fotoğrafını paylaşın; durumu inceleyip size en kısa sürede yardımcı olalım.</p>"
+          }
+        },
+        "c3": {
+          "type": "category",
+          "settings": {
+            "heading": "Kahve"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "Kahvelerinizi nasıl kavuruyorsunuz?",
+            "answer": "<p>Yeşil çekirdekleri küçük partiler halinde, her kahvenin kendi karakterini öne çıkaracak şekilde kavuruyoruz.</p>"
+          }
+        },
+        "q7": {
+          "type": "question",
+          "settings": {
+            "question": "Hangi öğütme seçeneklerini sunuyorsunuz?",
+            "answer": "<p>Öğütme seçenekleri ürün sayfasında listelenir; demleme yönteminize uygun olanı seçebilirsiniz.</p>"
+          }
+        },
+        "q8": {
+          "type": "question",
+          "settings": {
+            "question": "Kahveyi nasıl saklamalıyım?",
+            "answer": "<p>Kahvenizi ışıktan, nemden ve ısıdan uzakta, hava almayan bir kapta saklamanızı öneririz.</p>"
           }
         }
       },
       "block_order": [
-        "category-1",
+        "c1",
         "q1",
         "q2",
-        "q3"
+        "q3",
+        "c2",
+        "q4",
+        "q5",
+        "c3",
+        "q6",
+        "q7",
+        "q8"
       ],
       "settings": {
-        "spacing_top": "half"
+        "display": "list",
+        "content_width": "lg",
+        "spacing_top": "full",
+        "spacing_bottom": "full"
       }
     }
   },

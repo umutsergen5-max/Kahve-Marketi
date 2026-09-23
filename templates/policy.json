@@ -3,8 +3,12 @@
     "main": {
       "type": "main-policy",
       "settings": {
-        "content_width": "sm",
-        "title_align": "left"
+        "show_breadcrumb": false,
+        "content_width": "lg",
+        "title_align": "left",
+        "color_scheme": "light",
+        "spacing_top": "full",
+        "spacing_bottom": "full"
       }
     }
   },

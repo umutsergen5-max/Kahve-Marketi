@@ -106,6 +106,8 @@
 {%- endpaginate -%}
 
 {% stylesheet %}
+  .main-blog { --blog-width: var(--width-lg); }
+  .main-blog > * { max-width: var(--blog-width); margin-inline: auto; }
   .main-blog__crumbs { margin-bottom: var(--space-16); }
   .main-blog__header { margin-bottom: var(--space-32); }
   .main-blog__title { margin: 0; }

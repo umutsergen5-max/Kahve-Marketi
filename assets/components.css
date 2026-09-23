@@ -776,3 +776,9 @@
 .cart-item__remove { padding: var(--space-8) 0; }
 .cart-totals { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-16); margin: 0; }
 .cart-totals__value { font-size: var(--fs-block); font-family: var(--font-heading-family); letter-spacing: var(--ls-heading); }
+
+/* Text pages (page / legal / policy): reference reading style — 15px body, roomier lists, bold 22.5px section headings. */
+.main-page .rte ul, .main-page .rte ol { padding-left: 32px; line-height: 25.5px; }
+.main-page .rte h2 { font-family: var(--font-body-family); font-size: 1.5em; font-weight: 700; letter-spacing: normal; line-height: 1; margin-block: 1.25em 0.6em; }
+.main-page .rte h3 { font-family: var(--font-body-family); font-size: 1em; font-weight: 700; letter-spacing: normal; }
+.main-page .rte > :first-child { margin-top: 0; }

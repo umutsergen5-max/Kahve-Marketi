@@ -1878,6 +1878,12 @@
           },
           "options__3": {
             "label": "Büyük"
+          },
+          "options__4": {
+            "label": "Bant (350px)"
+          },
+          "options__5": {
+            "label": "Yüksek (550px)"
           }
         },
         "overlay_opacity": {
@@ -1899,6 +1905,9 @@
           },
           "options__2": {
             "label": "H3"
+          },
+          "options__3": {
+            "label": "H1"
           }
         },
         "text": {
@@ -1999,6 +2008,10 @@
         },
         "open_new_tab": {
           "label": "Düğme yeni sekmede açılsın"
+        },
+        "hide_without_image": {
+          "label": "Görsel seçilmediyse bölümü gizle",
+          "info": "Tema düzenleyicide görünmeye devam eder."
         }
       },
       "presets": {
@@ -3057,6 +3070,9 @@
           },
           "options__3": {
             "label": "Geniş"
+          },
+          "options__4": {
+            "label": "Çok geniş"
           }
         },
         "color_scheme": {
@@ -3141,6 +3157,9 @@
           },
           "options__3": {
             "label": "Geniş"
+          },
+          "options__4": {
+            "label": "Çok geniş"
           }
         },
         "header__layout": {
@@ -3189,6 +3208,15 @@
           },
           "options__3": {
             "label": "Tam"
+          }
+        },
+        "display": {
+          "label": "Görünüm",
+          "options__1": {
+            "label": "Liste (kategori başlığı + düz metin)"
+          },
+          "options__2": {
+            "label": "Açılır liste"
           }
         }
       },
@@ -3286,6 +3314,9 @@
           },
           "options__3": {
             "label": "Geniş"
+          },
+          "options__4": {
+            "label": "Çok geniş"
           }
         },
         "header__layout": {

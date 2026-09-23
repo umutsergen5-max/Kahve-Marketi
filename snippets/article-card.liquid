@@ -115,12 +115,12 @@
   .article-card__image { transition: transform 0.6s var(--ease-out); }
   @media (hover: hover) { .article-card:hover .article-card__image { transform: scale(1.03); } }
   .article-card__body { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-8); }
-  .article-card__title { margin: 0; font-size: var(--fs-section); }
+  .article-card__title { margin: 0; font-size: 19px; line-height: 1.2; }
   .article-card__link { text-decoration: none; overflow-wrap: anywhere; }
   .article-card__link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
   .article-card__link:hover { text-decoration: underline; text-underline-offset: 0.25em; }
   .article-card__tags { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-12); margin: 0; padding: 0; list-style: none; color: var(--scheme-text-muted); text-transform: uppercase; }
-  .article-card__meta { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-12); margin: 0; color: var(--scheme-text-muted); }
+  .article-card__meta { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-12); margin: 0; font-size: 12px; font-weight: var(--font-nav-weight); letter-spacing: 1px; text-transform: uppercase; }
   .article-card__excerpt { margin: 0; color: var(--scheme-text); overflow-wrap: anywhere; }
-  .article-card__more { margin-top: var(--space-4); text-decoration: underline; text-underline-offset: 0.25em; }
+  .article-card__more { margin-top: var(--space-4); font-size: 12px; letter-spacing: 1px; }
 {% endstylesheet %}

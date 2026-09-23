@@ -1,14 +1,44 @@
 {
   "sections": {
+    "banner-top": {
+      "type": "image-with-text",
+      "settings": {
+        "layout": "overlay",
+        "overlay_height": "band",
+        "full_width": true,
+        "hide_without_image": true,
+        "overlay_opacity": 20,
+        "spacing_top": "none",
+        "spacing_bottom": "none"
+      }
+    },
     "main": {
       "type": "main-page",
       "settings": {
-        "content_width": "sm",
-        "title_align": "left"
+        "show_breadcrumb": false,
+        "content_width": "lg",
+        "title_align": "left",
+        "color_scheme": "light",
+        "spacing_top": "full",
+        "spacing_bottom": "full"
+      }
+    },
+    "banner-bottom": {
+      "type": "image-with-text",
+      "settings": {
+        "layout": "overlay",
+        "overlay_height": "band",
+        "full_width": true,
+        "hide_without_image": true,
+        "overlay_opacity": 20,
+        "spacing_top": "none",
+        "spacing_bottom": "none"
       }
     }
   },
   "order": [
-    "main"
+    "banner-top",
+    "main",
+    "banner-bottom"
   ]
 }

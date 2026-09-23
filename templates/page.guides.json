@@ -1,56 +1,63 @@
 {
   "sections": {
-    "intro": {
-      "type": "featured-text",
+    "hero": {
+      "type": "image-with-text",
       "settings": {
+        "layout": "overlay",
         "heading": "Demleme rehberleri",
+        "heading_level": "h1",
         "text": "<p>Evde ya da işte, her demleme yöntemi için adım adım rehberlerimizle en iyi fincanı elde edin.</p>",
-        "content_width": "sm",
+        "overlay_height": "tall",
+        "text_align": "center",
+        "vertical_align": "center",
+        "overlay_opacity": 20,
+        "full_width": true,
+        "spacing_top": "none",
         "spacing_bottom": "none"
       }
     },
     "guide-1": {
       "type": "image-with-text",
       "settings": {
-        "layout": "image-left",
-        "heading": "Espresso demleme rehberi",
+        "layout": "image-right",
+        "overline": "Demleme rehberi",
+        "heading": "Espresso",
         "text": "<p>Doğru öğütüm, doz ve ekstraksiyon süresiyle evde espresso makinenizden en iyi sonucu nasıl alacağınızı anlatıyoruz.</p>",
-        "button_label": "Devamını oku",
-        "button_link": "#",
         "image_ratio": "landscape",
-        "spacing_top": "half",
+        "full_width": true,
+        "spacing_top": "none",
         "spacing_bottom": "none"
       }
     },
     "guide-2": {
       "type": "image-with-text",
       "settings": {
-        "layout": "image-right",
-        "heading": "Filtre kahve demleme rehberi",
+        "layout": "image-left",
+        "overline": "Demleme rehberi",
+        "heading": "Filtre kahve",
         "text": "<p>V60, Chemex veya French press ile filtre kahvenizi adım adım nasıl demleyeceğinizi öğrenin.</p>",
-        "button_label": "Devamını oku",
-        "button_link": "#",
         "image_ratio": "landscape",
-        "spacing_top": "half",
+        "full_width": true,
+        "spacing_top": "none",
         "spacing_bottom": "none"
       }
     },
     "guide-3": {
       "type": "image-with-text",
       "settings": {
-        "layout": "image-left",
-        "heading": "Soğuk demleme (cold brew) rehberi",
+        "layout": "image-right",
+        "overline": "Demleme rehberi",
+        "heading": "Soğuk demleme",
         "text": "<p>Yaz aylarının favorisi cold brew'u evde nasıl hazırlayacağınızı ve saklayacağınızı anlatıyoruz.</p>",
-        "button_label": "Devamını oku",
-        "button_link": "#",
         "image_ratio": "landscape",
-        "spacing_top": "half",
-        "spacing_bottom": "full"
+        "full_width": true,
+        "spacing_top": "none",
+        "spacing_bottom": "none"
       }
     }
   },
   "order": [
-    "intro",
+    "hero",
     "guide-1",
     "guide-2",
     "guide-3"

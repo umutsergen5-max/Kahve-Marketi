@@ -14,10 +14,19 @@
   if section.index <= 1
     assign loading = 'eager'
   endif
+  assign show_block = true
+  if section.settings.hide_without_image and img == blank and request.design_mode == false
+    assign show_block = false
+  endif
+  assign is_split = false
+  if layout != 'overlay' and section.settings.full_width
+    assign is_split = true
+  endif
 -%}
+{%- if show_block -%}
 
 <section
-  class="image-text image-text--{{ layout }} image-text--text-{{ section.settings.text_color }} image-text--align-{{ section.settings.text_align }} image-text--valign-{{ section.settings.vertical_align }} scheme-{{ section.settings.color_scheme }}{% unless section.settings.full_width and layout == 'overlay' %} section{% endunless %}"
+  class="image-text image-text--{{ layout }} image-text--text-{{ section.settings.text_color }} image-text--align-{{ section.settings.text_align }} image-text--valign-{{ section.settings.vertical_align }} scheme-{{ section.settings.color_scheme }}{% unless section.settings.full_width and layout == 'overlay' %} section{% endunless %}{% if is_split %} image-text--split{% endif %}"
   data-spacing-top="{{ section.settings.spacing_top }}"
   data-spacing-bottom="{{ section.settings.spacing_bottom }}"
 >
@@ -66,6 +75,7 @@
     </div>
   {%- endif -%}
 </section>
+{%- endif -%}
 
 {% stylesheet %}
   .image-text { position: relative; }
@@ -82,11 +92,17 @@
   .image-text__media--small  { min-height: 260px; }
   .image-text__media--medium { min-height: 360px; }
   .image-text__media--large  { min-height: 460px; }
+  .image-text__media--band   { min-height: 250px; }
+  .image-text__media--tall   { min-height: 340px; }
   @media (min-width: 768px) {
     .image-text__media--small  { min-height: clamp(280px, 30vw, 420px); }
     .image-text__media--medium { min-height: clamp(360px, 42vw, 600px); }
     .image-text__media--large  { min-height: clamp(440px, 56vw, 760px); }
+    .image-text__media--band   { min-height: 350px; }
+    .image-text__media--tall   { min-height: 550px; }
   }
+  .image-text--overlay .image-text__content .image-text__inner { max-width: 400px; }
+  .image-text--overlay .image-text__text { font-size: 14px; line-height: 1.5; }
   .image-text__overlay { position: absolute; inset: 0; background: #000; pointer-events: none; }
   .image-text--overlay .image-text__content { position: relative; z-index: 1; display: flex; padding: var(--space-32) var(--section-x); }
   .image-text--valign-top .image-text__content    { align-items: flex-start; }
@@ -100,6 +116,17 @@
   .image-text--overlay { --scheme-focus: #fff; --scheme-button-bg: #fff; --scheme-button-text: var(--color-background-dark); }
   .image-text--overlay.image-text--text-dark { color: var(--color-background-dark); --scheme-focus: var(--color-background-dark); --scheme-button-bg: var(--color-background-dark); --scheme-button-text: #fff; }
   .image-text--overlay.image-text--text-dark .image-text__overlay { background: #fff; }
+
+  /* Side by side, edge to edge: each half is 550px tall on desktop, text column 500px wide inset 48px from its half. */
+  .image-text--split { padding-inline: 0; }
+  .image-text--split .image-text__media { border-radius: 0; aspect-ratio: 4 / 3; }
+  .image-text--split .image-text__content { padding: var(--space-16) var(--section-x) 0; }
+  @media (min-width: 768px) {
+    .image-text--split { gap: 0; align-items: stretch; }
+    .image-text--split .image-text__media { aspect-ratio: auto; height: 550px; }
+    .image-text--split .image-text__content { display: flex; align-items: center; padding: 0 var(--space-48); }
+    .image-text--split .image-text__inner { max-width: 500px; }
+  }
 
   /* Side by side */
   .image-text--image-left, .image-text--image-right { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-16); align-items: center; }
@@ -192,6 +219,14 @@
         {
           "value": "large",
           "label": "t:sections.image-with-text.settings.overlay_height.options__3.label"
+        },
+        {
+          "value": "band",
+          "label": "t:sections.image-with-text.settings.overlay_height.options__4.label"
+        },
+        {
+          "value": "tall",
+          "label": "t:sections.image-with-text.settings.overlay_height.options__5.label"
         }
       ],
       "default": "medium"
@@ -205,6 +240,13 @@
       "max": 80,
       "step": 5,
       "unit": "%"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_without_image",
+      "label": "t:sections.image-with-text.settings.hide_without_image.label",
+      "info": "t:sections.image-with-text.settings.hide_without_image.info",
+      "default": false
     },
     {
       "type": "header",
@@ -232,6 +274,10 @@
         {
           "value": "h3",
           "label": "t:sections.image-with-text.settings.heading_level.options__2.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.image-with-text.settings.heading_level.options__3.label"
         }
       ],
       "default": "h2"

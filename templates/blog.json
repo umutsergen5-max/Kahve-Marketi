@@ -2,7 +2,15 @@
   "sections": {
     "main": {
       "type": "main-blog",
-      "settings": {}
+      "settings": {
+        "heading_align": "center",
+        "show_breadcrumb": false,
+        "layout": "masonry",
+        "columns": 3,
+        "image_ratio": "natural",
+        "spacing_top": "full",
+        "spacing_bottom": "full"
+      }
     }
   },
   "order": [
