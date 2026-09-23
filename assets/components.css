@@ -770,7 +770,7 @@
 .cart-item__title:hover { text-decoration: underline; text-underline-offset: 0.25em; }
 .cart-item__meta, .cart-item__discounts { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-8); margin: 0; padding: 0; list-style: none; }
 .cart-item__price { display: flex; gap: var(--space-8); margin: 0; }
-.cart-item__controls { display: flex; align-items: center; gap: var(--space-16); margin-top: var(--space-8); }
+.cart-item__controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-16); margin-top: var(--space-8); }
 .cart-item__remove { padding: var(--space-8) 0; }
 .cart-totals { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-16); margin: 0; }
 .cart-totals__value { font-size: var(--fs-block); font-family: var(--font-heading-family); letter-spacing: var(--ls-heading); }
