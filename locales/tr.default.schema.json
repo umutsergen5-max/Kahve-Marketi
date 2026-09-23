@@ -774,6 +774,29 @@
           "options__3": {
             "label": "Tam"
           }
+        },
+        "layout": {
+          "label": "Yerleşim",
+          "info": "Mozaik: sabit yükseklikli satırlarda farklı boyutlarda kutular.",
+          "options__1": {
+            "label": "Eşit ızgara"
+          },
+          "options__2": {
+            "label": "Mozaik"
+          }
+        },
+        "row_height": {
+          "label": "Satır yüksekliği",
+          "info": "Yalnızca mozaik yerleşimde kullanılır."
+        },
+        "cta_style": {
+          "label": "Bağlantı görünümü",
+          "options__1": {
+            "label": "Düğme"
+          },
+          "options__2": {
+            "label": "Alt çizgili yazı"
+          }
         }
       },
       "blocks": {
@@ -855,6 +878,16 @@
             },
             "mobile_full_width": {
               "label": "Mobilde tam satır kapla"
+            },
+            "row_span": {
+              "label": "Kapladığı satır",
+              "info": "Yalnızca mozaik yerleşimde.",
+              "options__1": {
+                "label": "1 satır"
+              },
+              "options__2": {
+                "label": "2 satır"
+              }
             }
           }
         }
@@ -903,6 +936,9 @@
           },
           "options__3": {
             "label": "Yatay"
+          },
+          "options__4": {
+            "label": "Kompakt (7:8)"
           }
         },
         "show_thumbnails": {
@@ -989,6 +1025,9 @@
           "options__3": {
             "label": "Tam"
           }
+        },
+        "overline": {
+          "label": "Üst başlık (ürün adının üstünde)"
         }
       }
     },
@@ -1059,6 +1098,9 @@
           },
           "options__4": {
             "label": "Yatay"
+          },
+          "options__5": {
+            "label": "Uzun (2:3)"
           }
         },
         "card_align": {
@@ -4403,6 +4445,90 @@
             "label": "Vurgu 3"
           }
         }
+      }
+    },
+    "image-banner": {
+      "name": "Görsel banner",
+      "settings": {
+        "header__media": {
+          "content": "Görsel"
+        },
+        "image": {
+          "label": "Görsel"
+        },
+        "image_mobile": {
+          "label": "Mobil görsel (isteğe bağlı)"
+        },
+        "height": {
+          "label": "Yükseklik (masaüstü)",
+          "options__1": {
+            "label": "Küçük"
+          },
+          "options__2": {
+            "label": "Orta"
+          },
+          "options__3": {
+            "label": "Büyük"
+          }
+        },
+        "overlay_opacity": {
+          "label": "Karartma"
+        },
+        "header__content": {
+          "content": "İçerik"
+        },
+        "overline": {
+          "label": "Üst başlık"
+        },
+        "heading": {
+          "label": "Başlık"
+        },
+        "text": {
+          "label": "Metin"
+        },
+        "button_label": {
+          "label": "Bağlantı yazısı"
+        },
+        "link": {
+          "label": "Bağlantı",
+          "info": "Ayarlanırsa banner'ın tamamı tıklanabilir olur."
+        },
+        "cta_style": {
+          "label": "Bağlantı görünümü",
+          "options__1": {
+            "label": "Düğme"
+          },
+          "options__2": {
+            "label": "Alt çizgili yazı"
+          }
+        },
+        "header__style": {
+          "content": "Görünüm"
+        },
+        "vertical_align": {
+          "label": "Dikey hizalama",
+          "options__1": {
+            "label": "Üst"
+          },
+          "options__2": {
+            "label": "Orta"
+          },
+          "options__3": {
+            "label": "Alt"
+          }
+        },
+        "text_color": {
+          "label": "Yazı rengi",
+          "options__1": {
+            "label": "Açık"
+          },
+          "options__2": {
+            "label": "Koyu"
+          }
+        }
+      },
+      "presets": {
+        "name": "Görsel banner"
       }
     }
   }

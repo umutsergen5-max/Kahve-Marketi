@@ -30,41 +30,53 @@
         "tile-1": {
           "type": "tile",
           "settings": {
-            "overline": "Kafelerimiz",
             "heading": "Konumlarımız",
-            "text": "Sizi ağırladığımız yerleri keşfedin.",
             "button_label": "Hemen bul",
-            "link": "/pages/konumlarimiz"
+            "link": "/pages/konumlarimiz",
+            "column_span": "2",
+            "row_span": "2",
+            "text_align": "center",
+            "vertical_align": "center",
+            "overlay_opacity": 25
           }
         },
         "tile-2": {
           "type": "tile",
           "settings": {
-            "overline": "Hikayemiz",
-            "heading": "Bizi tanıyın",
-            "text": "Kavurma sürecimiz ve markamız hakkında daha fazla bilgi edinin.",
-            "button_label": "Hakkımızda",
-            "link": "/pages/hakkimizda"
+            "heading": "Kahvelerimiz",
+            "button_label": "Hemen keşfet",
+            "link": "/collections/all",
+            "column_span": "2",
+            "row_span": "1",
+            "text_align": "center",
+            "vertical_align": "center",
+            "overlay_opacity": 25
           }
         },
         "tile-3": {
           "type": "tile",
           "settings": {
-            "overline": "Sezonun kahveleri",
-            "heading": "Kahvelerimiz",
-            "text": "Taze kavrulmuş, özenle seçilmiş kahve çeşitlerimize göz atın.",
-            "button_label": "Hemen keşfet",
-            "link": "/collections/all"
+            "heading": "Bizi tanıyın",
+            "button_label": "Hakkımızda",
+            "link": "/pages/hakkimizda",
+            "column_span": "1",
+            "row_span": "1",
+            "text_align": "center",
+            "vertical_align": "center",
+            "overlay_opacity": 25
           }
         },
         "tile-4": {
           "type": "tile",
           "settings": {
-            "overline": "İşletmeler için",
             "heading": "Toptan Alım",
-            "text": "Kafe ve işletmeniz için toptan kahve tedariki.",
             "button_label": "Hemen üye ol",
-            "link": "/pages/toptan-alim-basvurusu"
+            "link": "/pages/toptan-alim-basvurusu",
+            "column_span": "1",
+            "row_span": "1",
+            "text_align": "center",
+            "vertical_align": "center",
+            "overlay_opacity": 25
           }
         }
       },
@@ -75,16 +87,26 @@
         "tile-4"
       ],
       "settings": {
-        "columns": 2,
-        "columns_mobile": "1",
-        "image_ratio": "landscape"
+        "columns": 4,
+        "columns_mobile": "2",
+        "layout": "mosaic",
+        "row_height": 350,
+        "cta_style": "link",
+        "full_width": true,
+        "gap": "normal"
       }
     },
     "featured-product": {
       "type": "featured-product",
       "settings": {
         "product": "test-colombia-huila",
-        "show_vendor": true
+        "show_vendor": true,
+        "overline": "Öne çıkan kahve",
+        "gallery_ratio": "compact",
+        "media_position": "left",
+        "spacing_top": "half",
+        "spacing_bottom": "half",
+        "show_description": false
       }
     },
     "featured-collection": {
@@ -93,7 +115,11 @@
         "collection": "test-collection",
         "heading": "Öne çıkan kahveler",
         "layout": "grid",
-        "columns": 2
+        "columns": 3,
+        "columns_mobile": "2",
+        "heading_align": "center",
+        "image_ratio": "tall",
+        "card_align": "center"
       }
     },
     "slideshow-cards": {
@@ -204,6 +230,18 @@
         "slides_per_view": 3,
         "color_scheme": "light"
       }
+    },
+    "footer-banner": {
+      "type": "image-banner",
+      "settings": {
+        "overline": "Vengo Roastery",
+        "heading": "Fincandaki hikaye",
+        "button_label": "Bizi tanıyın",
+        "link": "/pages/hakkimizda",
+        "cta_style": "link",
+        "height": "medium",
+        "overlay_opacity": 30
+      }
     }
   },
   "order": [
@@ -213,6 +251,7 @@
     "featured-product",
     "featured-collection",
     "slideshow-cards",
-    "slideshow-overlay"
+    "slideshow-overlay",
+    "footer-banner"
   ]
 }
