@@ -782,3 +782,16 @@
 .main-page .rte h2 { font-family: var(--font-body-family); font-size: 1.5em; font-weight: 700; letter-spacing: normal; line-height: 1; margin-block: 1.25em 0.6em; }
 .main-page .rte h3 { font-family: var(--font-body-family); font-size: 1em; font-weight: 700; letter-spacing: normal; }
 .main-page .rte > :first-child { margin-top: 0; }
+
+/* Shopify renders /policies/* with its own fixed markup (a theme cannot swap that template), so it is styled here to match the text pages. */
+main:has(.shopify-policy__container) { background: var(--color-background-light); }
+.shopify-policy__container { max-width: var(--width-lg); margin: 0 auto; padding: var(--space-32) var(--section-x); }
+@media (min-width: 768px) { .shopify-policy__container { padding-block: var(--space-72, 72px); padding-inline: var(--section-x); } }
+.shopify-policy__title h1 { margin: 0 0 var(--space-32); font-family: var(--font-heading-family); font-weight: 400; font-size: 20px; letter-spacing: var(--ls-heading); text-align: left; text-transform: none; }
+@media (min-width: 768px) { .shopify-policy__title h1 { font-size: 30px; } }
+.shopify-policy__body .rte ul, .shopify-policy__body .rte ol { padding-left: 32px; line-height: 25.5px; }
+.shopify-policy__body .rte h2 { font-family: var(--font-body-family); font-size: 1.5em; font-weight: 700; letter-spacing: normal; line-height: 1; margin-block: 1.25em 0.6em; }
+.shopify-policy__body .rte h3 { font-family: var(--font-body-family); font-size: 1em; font-weight: 700; letter-spacing: normal; }
+
+/* Text-block headings inside content-page sections follow the 20px mobile heading size. */
+@media (max-width: 767px) { .image-text__heading, .main-page__title { font-size: 20px; } }
