@@ -260,6 +260,7 @@
   .collection-grid { --cols: var(--cols-config); --cols-tablet: var(--cols-tablet-config); --gap-row: var(--space-32); --gap-column: var(--space-16); }
   @media (min-width: 768px) { .collection-grid { --gap-column: var(--space-32); } }
   /* Card typography as on the reference: regular body-font name, small bold tracked price. */
+  .collection-grid .product-card__info { padding-bottom: var(--space-12); }
   .collection-grid .product-card__title { font-family: var(--font-body-family); font-weight: 400; font-size: var(--fs-body); letter-spacing: normal; text-transform: none; line-height: var(--lh-body); }
   .collection-grid .product-card__info .price, .collection-grid .product-card__info .price * { font-size: var(--fs-nav); font-weight: var(--font-nav-weight); letter-spacing: 1px; text-transform: uppercase; }
   /* Layout toggle (desktop): "large" = 2 columns; "compact" = the configured column count. */
