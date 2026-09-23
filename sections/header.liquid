@@ -120,20 +120,21 @@
                     aria-controls="{{ panel_id }}"
                     aria-label="{{ 'accessibility.open_submenu' | t: title: link.title }}"
                   >
-                    {% render 'icon', name: 'chevron-down', size: 14 %}
+                    {% render 'icon', name: 'chevron-down', size: 10 %}
                   </button>
                 {%- endif -%}
               </div>
 
               {%- if link.links.size > 0 -%}
                 <div class="nav__panel{% if is_mega %} nav__panel--mega{% endif %}" id="{{ panel_id }}" data-nav-panel>
+                  <div class="nav__panel-inner">
                   {%- if is_mega -%}
                     <div class="nav__mega" style="--mega-cols: {{ column_count }}">
                       {%- if has_flat -%}
                         <ul class="nav__column" role="list">
                           {%- for child in link.links -%}
                             {%- if child.links.size == 0 -%}
-                              <li><a class="nav__sublink text-nav" href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
+                              <li><a class="nav__sublink nav__sublink--l2 text-subnav" href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
                             {%- endif -%}
                           {%- endfor -%}
                         </ul>
@@ -142,7 +143,7 @@
                       {%- for child in link.links -%}
                         {%- if child.links.size > 0 -%}
                           <div class="nav__column">
-                            <a class="nav__column-title text-nav" href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a>
+                            <a class="nav__column-title nav__sublink--l2 text-subnav" href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a>
                             <ul role="list">
                               {%- for grandchild in child.links -%}
                                 <li><a class="nav__sublink text-subnav" href="{{ grandchild.url }}"{% if grandchild.current %} aria-current="page"{% endif %}>{{ grandchild.title | escape }}</a></li>
@@ -179,10 +180,11 @@
                   {%- else -%}
                     <ul class="nav__dropdown" role="list">
                       {%- for child in link.links -%}
-                        <li><a class="nav__sublink text-subnav" href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
+                        <li><a class="nav__sublink nav__sublink--l2 text-subnav" href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
                       {%- endfor -%}
                     </ul>
                   {%- endif -%}
+                  </div>
                 </div>
               {%- endif -%}
             </li>
@@ -247,7 +249,7 @@
 
   .site-header__logo-link { display: inline-flex; align-items: center; max-width: 100%; text-decoration: none; }
   .site-header__logo-link img { width: var(--logo-width-mobile); max-width: 100%; height: auto; }
-  .site-header__wordmark { display: block; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: clamp(15px, 5vw, var(--fs-featured)); }  /* shrinks on phones so a longer brand name is not truncated */
+  .site-header__wordmark { display: block; padding-block: 0.12em; line-height: 1.25; white-space: nowrap; overflow: visible; font-size: clamp(15px, 5vw, var(--fs-featured)); }  /* descenders (y, g) must not be clipped; shrinks on phones so a longer brand name still fits */
 
   .site-header__cart { position: relative; }
   .site-header__count {
@@ -273,62 +275,80 @@
   .nav__item:not([data-mega="true"]) { position: relative; }
 
   .nav__row { display: flex; align-items: center; gap: var(--space-4); }
-  .nav__link { text-decoration: none; padding: var(--space-4) 0; }
-  .nav__link:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.3em; }
-  .nav__link[aria-current="page"] { text-decoration: underline; text-underline-offset: 0.3em; }
+  .nav__link { position: relative; text-decoration: none; padding: var(--space-4) 0; font-weight: 700; letter-spacing: 1px; white-space: nowrap; }
+  /* Underline slides in from the left under the item that is hovered or open. */
+  .nav__link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--space-16) * -1);
+    height: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s var(--ease-standard);
+    pointer-events: none;
+  }
+  .nav__item:hover > .nav__row .nav__link::after,
+  .nav__item[data-open="true"] > .nav__row .nav__link::after,
+  .nav__link:focus-visible::after,
+  .nav__link[aria-current="page"]::after { transform: scaleX(1); }
 
   .nav__toggle {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
+    width: 16px;
     height: 24px;
     padding: 0;
     border: 0;
     background: none;
     color: inherit;
+    cursor: pointer;
   }
-  .nav__toggle .icon { transition: transform 0.3s var(--ease-out); }
-  .nav__toggle[aria-expanded="true"] .icon { transform: rotate(180deg); }
+  .nav__toggle .icon { transition: transform 0.2s var(--ease-standard); }
+  .nav__toggle[aria-expanded="true"] .icon { transform: scaleY(-1); }
 
+  /* Panel: opens downward by animating its height (0fr -> 1fr). */
   .nav__panel {
     position: absolute;
     top: 100%;
     left: 0;
     z-index: 1;
+    display: grid;
+    grid-template-rows: 0fr;
     min-width: 220px;
     background: var(--color-background);
     color: var(--color-text);
-    border: 1px solid var(--color-border);
-    box-shadow: var(--shadow-bottom);
     visibility: hidden;
-    opacity: 0;
-    transform: translate3d(0, -6px, 0);
-    transition: opacity 0.2s var(--ease-standard), transform 0.2s var(--ease-standard), visibility 0s linear 0.2s;
+    transition: grid-template-rows 0.3s var(--ease-out), visibility 0s linear 0.3s;
   }
+  .nav__panel-inner { min-height: 0; overflow: hidden; }
   .nav__item[data-open="true"] > .nav__panel {
+    grid-template-rows: 1fr;
     visibility: visible;
-    opacity: 1;
-    transform: none;
-    transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out), visibility 0s;
+    box-shadow: var(--shadow-bottom);
+    transition: grid-template-rows 0.3s var(--ease-out), visibility 0s;
   }
 
-  .nav__panel--mega { left: 0; right: 0; min-width: 0; padding: var(--space-32) var(--section-x); border-inline: 0; }
-  .nav__mega { display: grid; grid-template-columns: repeat(var(--mega-cols, 4), minmax(0, 1fr)); gap: var(--space-32); max-width: var(--container-max); margin-inline: auto; }
-  .nav__column { display: flex; flex-direction: column; gap: var(--space-12); margin: 0; padding: 0; list-style: none; }
-  .nav__column > ul { display: flex; flex-direction: column; gap: var(--space-8); margin: 0; padding: 0; list-style: none; }
+  .nav__panel--mega { left: 0; right: 0; min-width: 0; }
+  .nav__mega { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-16) var(--space-64); padding: var(--space-32) var(--section-x); border-bottom: 1px solid var(--color-border-strong); }
+  .nav__column { display: flex; flex-direction: column; gap: var(--space-8); margin: 0; padding: 0; list-style: none; }
+  .nav__column > ul { display: flex; flex-direction: column; gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
   .nav__column-title { text-decoration: none; }
-  .nav__dropdown { display: flex; flex-direction: column; gap: var(--space-12); margin: 0; padding: var(--space-16) var(--space-16); list-style: none; }
+  .nav__dropdown { display: flex; flex-direction: column; gap: var(--space-8); margin: 0; padding: var(--space-16) var(--space-32) var(--space-16) var(--space-16); list-style: none; border: 1px solid var(--color-border-strong); border-top: 0; white-space: nowrap; }
 
   .nav__sublink { display: inline-block; text-decoration: none; padding: 2px 0; }
+  .nav__sublink--l2 { font-weight: 700; }
   .nav__sublink:hover, .nav__column-title:hover { text-decoration: underline; text-underline-offset: 0.3em; }
   .nav__sublink[aria-current="page"], .nav__column-title[aria-current="page"] { text-decoration: underline; text-underline-offset: 0.3em; }
 
   .nav__promo-link { display: flex; flex-direction: column; gap: var(--space-8); text-decoration: none; }
-  .nav__promo { display: flex; flex-direction: column; gap: var(--space-8); min-width: 0; max-width: 280px; }
+  .nav__promo { display: flex; flex-direction: column; gap: var(--space-8); min-width: 0; width: 200px; max-width: 280px; }
 
   @media (prefers-reduced-motion: reduce) {
-    .nav__panel { transform: none; }
+    .nav__panel, .nav__link::after { transition-duration: 0.01s; }
   }
 {% endstylesheet %}
 

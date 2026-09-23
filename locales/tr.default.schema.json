@@ -423,6 +423,28 @@
         },
         "results_limit": {
           "label": "Her tür için sonuç sayısı"
+        },
+        "header__discovery": {
+          "content": "Arama öncesi keşif alanı"
+        },
+        "show_discovery": {
+          "label": "Keşif alanını göster"
+        },
+        "discovery_heading": {
+          "label": "Ürün başlığı"
+        },
+        "discovery_collection": {
+          "label": "Ürünlerin koleksiyonu",
+          "info": "Boş bırakılırsa tüm ürünlerden gösterilir."
+        },
+        "discovery_limit": {
+          "label": "Ürün sayısı"
+        },
+        "show_discovery_collections": {
+          "label": "Koleksiyon bağlantılarını göster"
+        },
+        "header__results": {
+          "content": "Yazarken çıkan sonuçlar"
         }
       }
     },

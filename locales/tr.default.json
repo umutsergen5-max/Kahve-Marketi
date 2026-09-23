@@ -180,7 +180,7 @@
     "note": "Sipariş notu",
     "taxes_included": "Vergiler dahildir.",
     "shipping_at_checkout": "Kargo ücreti ödeme adımında hesaplanır.",
-    "free_shipping_remaining": "Ücretsiz kargo için sepetinize {{ amount }} tutarında ürün daha ekleyin.",
+    "free_shipping_remaining": "Ücretsiz kargo için sepete {{ amount }}'lik ürün ekle",
     "free_shipping_reached": "Ücretsiz kargo kazandınız!",
     "items_count": {
       "one": "{{ count }} ürün",
@@ -230,7 +230,10 @@
     "type_all": "Tümü",
     "results_heading": "Arama sonuçları",
     "no_results_hint": "Yazımı kontrol edin veya daha genel bir terim deneyin.",
-    "prompt": "Aramak istediğiniz kelimeyi yazın."
+    "prompt": "Aramak istediğiniz kelimeyi yazın.",
+    "cancel": "iptal",
+    "popular_products": "Popüler ürünler",
+    "all_products": "Tüm ürünler"
   },
   "customer": {
     "account": "Hesabım",

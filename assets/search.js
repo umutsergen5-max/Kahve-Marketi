@@ -28,10 +28,13 @@
     function setBusy(busy) { results.setAttribute('aria-busy', busy ? 'true' : 'false'); }
     function announce(text) { if (live) live.textContent = text || ''; }
 
+    function setHasResults(has) { root.setAttribute('data-has-results', has ? 'true' : 'false'); }
+
     function reset() {
       if (controller) controller.abort();
       lastQuery = '';
       results.innerHTML = '';
+      setHasResults(false);
       setBusy(false);
       announce('');
     }
@@ -43,6 +46,7 @@
       p.textContent = root.getAttribute('data-error') || '';
       results.innerHTML = '';
       results.appendChild(p);
+      setHasResults(true);
     }
 
     function search(term) {
@@ -69,6 +73,7 @@
           tpl.innerHTML = html;
           var payload = tpl.content.querySelector('[data-predictive-results]');
           results.innerHTML = payload ? payload.innerHTML : '';
+          setHasResults(!!payload);
           announce(payload ? payload.getAttribute('data-announce') : '');
           setBusy(false);
         })

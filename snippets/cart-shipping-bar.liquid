@@ -1,6 +1,7 @@
 {%- comment -%}
   Free-shipping progress: message + progress bar, driven by settings.free_shipping_threshold
   (in the shop currency's major unit). Renders nothing when no threshold is set.
+  The remaining amount is calculated from the live cart total, rounded up to a whole unit.
   Shared by the cart drawer and the cart page.
 {%- endcomment -%}
 {%- liquid
@@ -10,8 +11,13 @@
   if threshold > 0
     assign remaining = threshold | minus: cart.total_price
     if remaining > 0
-      assign remaining_money = remaining | money
-      assign shipping_message = 'cart.free_shipping_remaining' | t: amount: remaining_money
+      assign currency_label = cart.currency.iso_code
+      if currency_label == 'TRY'
+        assign currency_label = 'TL'
+      endif
+      assign remaining_units = remaining | divided_by: 100.0 | ceil
+      assign remaining_amount = remaining_units | append: ' ' | append: currency_label
+      assign shipping_message = 'cart.free_shipping_remaining' | t: amount: remaining_amount
       assign percent = cart.total_price | times: 100.0 | divided_by: threshold | round
     else
       assign shipping_message = 'cart.free_shipping_reached' | t
@@ -21,7 +27,7 @@
 -%}
 {%- if threshold > 0 -%}
   <div class="cart-shipping">
-    <p class="cart-shipping__message text-small">{{ shipping_message }}</p>
+    <p class="cart-shipping__message">{{ shipping_message }}</p>
     <div class="cart-shipping__bar" role="progressbar" aria-label="{{ 'cart.free_shipping_progress' | t }}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ percent }}">
       <span class="cart-shipping__fill" style="width: {{ percent }}%"></span>
     </div>

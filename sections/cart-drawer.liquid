@@ -34,14 +34,14 @@
         <div class="drawer__body cart-drawer__body">
           <div class="message message--error" role="alert" data-cart-error hidden></div>
 
-          {% render 'cart-shipping-bar' %}
-
           {%- if cart.item_count == 0 -%}
             <div class="cart-empty">
               <p class="cart-empty__text">{{ 'cart.empty' | t }}</p>
               <a class="button" href="{{ routes.all_products_collection_url }}">{{ 'cart.continue_shopping' | t }}</a>
             </div>
           {%- else -%}
+            {% render 'cart-shipping-bar' %}
+
             <ul class="cart-items" role="list">
               {%- for item in cart.items -%}
                 <li class="cart-item" data-key="{{ item.key }}" data-title="{{ item.product.title | escape }}">
@@ -149,8 +149,13 @@
   }
   .cart-drawer__body { display: flex; flex-direction: column; gap: var(--space-16); }
   .cart-drawer__footer { display: flex; flex-direction: column; gap: var(--space-8); }
-  .cart-drawer__notice { margin: 0; }
+  .cart-drawer__notice { margin: 0; text-align: center; }
   .cart-drawer__note { margin-top: var(--space-8); }
+  .cart-drawer .drawer__header { padding-block: var(--space-16); border-bottom: 0; }
+  .cart-drawer .drawer__title { flex: 1; padding-left: 44px; text-align: center; }
+  .cart-drawer__body { border-top: 1px solid var(--color-border); }
+  .cart-drawer__footer { gap: var(--space-8); background: var(--color-background); background: color-mix(in srgb, var(--color-background) 88%, transparent); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+  .cart-drawer__footer .cart-totals { justify-content: center; }
 
 
 

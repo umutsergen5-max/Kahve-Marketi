@@ -24,6 +24,16 @@
   if types == blank
     assign types = 'product'
   endif
+
+  assign discovery_collection = section.settings.discovery_collection
+  if discovery_collection == blank
+    assign discovery_collection = collections.all
+  endif
+  assign discovery_products = discovery_collection.products
+  assign discovery_heading = section.settings.discovery_heading
+  if discovery_heading == blank
+    assign discovery_heading = 'search.popular_products' | t
+  endif
 -%}
 
 <aside
@@ -44,70 +54,118 @@
 >
   <div class="search-drawer__inner">
     <form class="search-drawer__form" action="{{ routes.search_url }}" method="get" role="search">
-      <label class="visually-hidden" for="search-drawer-input">{{ 'search.label' | t }}</label>
-      <span class="search-drawer__icon" aria-hidden="true">{% render 'icon', name: 'search', size: 22 %}</span>
-      <input
-        class="search-drawer__input"
-        id="search-drawer-input"
-        type="search"
-        name="q"
-        value=""
-        placeholder="{{ 'search.placeholder' | t }}"
-        autocomplete="off"
-        autocapitalize="off"
-        spellcheck="false"
-        enterkeyhint="search"
-        aria-describedby="search-drawer-live"
-        data-search-input
-        data-drawer-focus
-      >
-      <input type="hidden" name="options[prefix]" value="last">
-      <button class="icon-button search-drawer__clear" type="button" data-search-clear hidden aria-label="{{ 'search.clear' | t }}">
-        {% render 'icon', name: 'close', size: 18 %}
-      </button>
-      <button class="icon-button" type="submit" aria-label="{{ 'search.submit' | t }}">
-        {% render 'icon', name: 'arrow-right', size: 22 %}
-      </button>
-      <button class="icon-button" type="button" data-drawer-close aria-label="{{ 'general.close' | t }}">
-        {% render 'icon', name: 'close', size: 22 %}
-      </button>
+      <div class="search-drawer__bar">
+        <label class="visually-hidden" for="search-drawer-input">{{ 'search.label' | t }}</label>
+        <span class="search-drawer__icon" aria-hidden="true">{% render 'icon', name: 'search', size: 20 %}</span>
+        <input
+          class="search-drawer__input"
+          id="search-drawer-input"
+          type="search"
+          name="q"
+          value=""
+          placeholder="{{ 'search.placeholder' | t }}"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+          enterkeyhint="search"
+          aria-describedby="search-drawer-live"
+          data-search-input
+          data-drawer-focus
+        >
+        <input type="hidden" name="options[prefix]" value="last">
+        <button class="search-drawer__clear" type="button" data-search-clear hidden aria-label="{{ 'search.clear' | t }}">
+          {% render 'icon', name: 'close', size: 16 %}
+        </button>
+        <button class="visually-hidden" type="submit">{{ 'search.submit' | t }}</button>
+      </div>
+      <button class="search-drawer__cancel text-nav" type="button" data-drawer-close>{{ 'search.cancel' | t }}</button>
     </form>
 
     <div class="search-drawer__results" data-search-results aria-busy="false"></div>
+
+    {%- if section.settings.show_discovery -%}
+      <div class="search-drawer__discovery" data-search-discovery>
+        {%- if section.settings.show_discovery_collections -%}
+          {%- liquid
+            assign shown_collections = 0
+          -%}
+          <nav class="search-drawer__collections" aria-labelledby="search-discovery-collections">
+            <h2 class="search-drawer__heading text-nav" id="search-discovery-collections">{{ 'search.collections' | t }}</h2>
+            <ul class="search-drawer__collection-list" role="list">
+              {%- for collection in collections -%}
+                {%- if collection.handle != 'frontpage' and collection.products_count > 0 and shown_collections < 6 -%}
+                  {%- assign shown_collections = shown_collections | plus: 1 -%}
+                  <li><a class="search-drawer__collection-link text-small" href="{{ collection.url }}">{{ collection.title | escape }}</a></li>
+                {%- endif -%}
+              {%- endfor -%}
+              <li><a class="search-drawer__collection-link text-small" href="{{ routes.all_products_collection_url }}">{{ 'search.all_products' | t }}</a></li>
+            </ul>
+          </nav>
+        {%- endif -%}
+
+        {%- if discovery_products.size > 0 -%}
+          <section class="search-drawer__products" aria-labelledby="search-discovery-products">
+            <h2 class="search-drawer__heading text-nav" id="search-discovery-products">{{ discovery_heading | escape }}</h2>
+            <div class="grid search-drawer__grid" style="--cols: 4; --cols-tablet: 3; --cols-mobile: 2; --gap-row: var(--space-32); --gap-column: var(--space-16);">
+              {%- for product in discovery_products limit: section.settings.discovery_limit -%}
+                {% render 'product-card',
+                  product: product,
+                  show_secondary_image: false,
+                  show_quick_add: false,
+                  sale_badge: 'none',
+                  heading_tag: 'h3',
+                  sizes: '(min-width: 1024px) 20vw, 40vw'
+                %}
+              {%- endfor -%}
+            </div>
+          </section>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
     <p class="visually-hidden" id="search-drawer-live" role="status" aria-live="polite" data-search-live></p>
   </div>
 </aside>
 
 {% stylesheet %}
-  .search-drawer { max-height: 90vh; max-height: 90dvh; }
-  .search-drawer__inner { display: flex; flex-direction: column; min-height: 0; padding: var(--space-8) var(--section-x) var(--space-16); max-width: var(--container-max); margin-inline: auto; width: 100%; }
-  .search-drawer__form { display: flex; align-items: center; gap: var(--space-4); border-bottom: 1px solid var(--color-border-strong); }
-  .search-drawer__icon { display: inline-flex; padding-inline: var(--space-4); color: var(--color-text-muted); }
+  .search-drawer { max-height: 90vh; max-height: 90dvh; overflow-y: auto; scrollbar-width: none; }
+  .search-drawer::-webkit-scrollbar { display: none; }
+  .search-drawer__inner { display: flex; flex-direction: column; gap: var(--space-32); width: 100%; max-width: var(--container-max); margin-inline: auto; padding: var(--space-16) var(--section-x) var(--space-32); }
+  @media (min-width: 768px) { .search-drawer__inner { padding-block: var(--space-48); } }
+
+  .search-drawer__form { display: flex; align-items: center; justify-content: space-between; gap: var(--space-16); }
+  .search-drawer__bar { display: flex; align-items: center; gap: var(--space-8); width: 100%; padding: 6px; border-radius: var(--space-8); background: var(--color-gray); }
+  @media (min-width: 768px) { .search-drawer__bar { width: calc(20% + var(--space-32)); min-width: 280px; } }
+  .search-drawer__icon { display: inline-flex; align-items: center; flex: none; width: 24px; height: 24px; color: var(--color-text); }
   .search-drawer__input {
     flex: 1;
     min-width: 0;
-    height: 56px;
-    padding: 0 var(--space-8);
+    height: 24px;
+    margin: 0;
+    padding: 0;
     border: 0;
     background: transparent;
     color: var(--color-text);
     font-family: var(--font-body-family);
-    font-size: max(16px, var(--fs-featured));
+    font-size: 16px;
     -webkit-appearance: none;
     appearance: none;
   }
   .search-drawer__input::placeholder { color: var(--color-text-muted); opacity: 1; }
   .search-drawer__input:focus-visible { outline: none; }
-  .search-drawer__form:focus-within { border-bottom-color: var(--color-background-dark); }
-  .search-drawer__input::-webkit-search-cancel-button { display: none; }
+  .search-drawer__bar:focus-within { box-shadow: 0 0 0 1px var(--color-border-strong); }
+  .search-drawer__input::-webkit-search-cancel-button, .search-drawer__input::-webkit-search-decoration { display: none; }
+  .search-drawer__clear { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 28px; height: 28px; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }
+  .search-drawer__clear[hidden] { display: none; }
+  .search-drawer__cancel { flex: none; min-height: 44px; padding: 0 var(--space-4); border: 0; background: none; color: inherit; cursor: pointer; text-transform: uppercase; }
+  .search-drawer__cancel:hover { text-decoration: underline; text-underline-offset: 0.3em; }
 
-  .search-drawer__results { position: relative; overflow-y: auto; min-height: 0; margin-top: var(--space-16); }
-  .search-drawer__results:empty { margin-top: 0; }
+  .search-drawer__results { position: relative; min-height: 0; }
+  .search-drawer__results:empty { display: none; }
   .search-drawer__results[aria-busy="true"] { opacity: 0.5; }
   .search-drawer__results[aria-busy="true"]::after {
     content: "";
     position: absolute;
-    top: var(--space-16);
+    top: var(--space-8);
     left: 50%;
     width: 20px;
     height: 20px;
@@ -117,6 +175,17 @@
     border-radius: 50%;
     animation: theme-spin 0.7s linear infinite;
   }
+  .search-drawer[data-has-results="true"] .search-drawer__discovery { display: none; }
+
+  .search-drawer__discovery { display: flex; flex-direction: column; gap: var(--space-32); }
+  @media (min-width: 768px) { .search-drawer__discovery { flex-direction: row; align-items: flex-start; gap: var(--space-32); } }
+  .search-drawer__heading { margin: 0 0 var(--space-16); }
+  .search-drawer__collections { flex: none; }
+  @media (min-width: 768px) { .search-drawer__collections { width: 20%; min-width: 180px; } }
+  .search-drawer__collection-list { display: flex; flex-direction: column; gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
+  .search-drawer__collection-link { display: inline-flex; align-items: center; min-height: 32px; text-decoration: none; font-weight: 700; }
+  .search-drawer__collection-link:hover { text-decoration: underline; text-underline-offset: 0.25em; }
+  .search-drawer__products { flex: 1; min-width: 0; width: 100%; }
 {% endstylesheet %}
 
 {% schema %}
@@ -156,6 +225,46 @@
       "id": "show_pages",
       "label": "t:sections.search-drawer.settings.show_pages.label",
       "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:sections.search-drawer.settings.header__discovery.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discovery",
+      "label": "t:sections.search-drawer.settings.show_discovery.label",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "discovery_heading",
+      "label": "t:sections.search-drawer.settings.discovery_heading.label"
+    },
+    {
+      "type": "collection",
+      "id": "discovery_collection",
+      "label": "t:sections.search-drawer.settings.discovery_collection.label",
+      "info": "t:sections.search-drawer.settings.discovery_collection.info"
+    },
+    {
+      "type": "range",
+      "id": "discovery_limit",
+      "label": "t:sections.search-drawer.settings.discovery_limit.label",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discovery_collections",
+      "label": "t:sections.search-drawer.settings.show_discovery_collections.label",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "t:sections.search-drawer.settings.header__results.content"
     },
     {
       "type": "range",
