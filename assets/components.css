@@ -72,7 +72,7 @@
   font-weight: var(--font-nav-weight);
   font-size: var(--fs-button);
   line-height: 1;
-  letter-spacing: 1px;
+  letter-spacing: normal;
   text-align: center;
   text-decoration: none;
   text-transform: var(--tt-ui);

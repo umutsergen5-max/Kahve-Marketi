@@ -159,9 +159,9 @@ h4, h5, h6 { font-size: var(--fs-body); }
   text-transform: var(--tt-ui);
   line-height: var(--lh-heading);
 }
-.text-nav    { font-size: var(--fs-nav);    letter-spacing: 0.02em; }
-.text-subnav { font-size: var(--fs-subnav); letter-spacing: 0.04em; }
-.overline    { font-size: var(--fs-overline); letter-spacing: 0.08em; }
+.text-nav    { font-size: var(--fs-nav);    letter-spacing: 1px; }
+.text-subnav { font-size: var(--fs-subnav); letter-spacing: 1px; }
+.overline    { font-size: var(--fs-overline); letter-spacing: 1.5px; }
 
 .text-muted  { color: var(--scheme-text-muted); }
 .text-center { text-align: center; }

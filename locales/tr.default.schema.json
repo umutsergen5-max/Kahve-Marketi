@@ -289,7 +289,8 @@
           "name": "Duyuru",
           "settings": {
             "text": {
-              "label": "Metin"
+              "label": "Metin",
+              "info": "{threshold} yazarsanız tema ayarlarındaki ücretsiz kargo tutarı otomatik eklenir."
             },
             "link": {
               "label": "Bağlantı (isteğe bağlı)"

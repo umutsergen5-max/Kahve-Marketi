@@ -40,7 +40,7 @@
 
 {% stylesheet %}
   .price { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-4) var(--space-8); margin: 0; }
-  .price__current { font-family: var(--font-heading-family); letter-spacing: var(--ls-heading); }
+  .price__current { font-family: var(--font-body-family); font-weight: var(--font-nav-weight); letter-spacing: 1px; text-transform: uppercase; }
   .price__compare { color: var(--scheme-text-muted); text-decoration: line-through; }
   .price--sale .price__current { color: var(--color-alert); }
   .scheme-dark .price--sale .price__current, .scheme-accent-1 .price--sale .price__current { color: #ffb4ab; }

@@ -16,6 +16,16 @@
     endif
   endfor
 
+  assign threshold_token = '{' | append: 'threshold' | append: '}'
+  assign threshold_label = ''
+  if settings.free_shipping_threshold > 0
+    assign threshold_currency = cart.currency.iso_code
+    if threshold_currency == 'TRY'
+      assign threshold_currency = 'TL'
+    endif
+    assign threshold_label = settings.free_shipping_threshold | append: ' ' | append: threshold_currency
+  endif
+
   assign copies = 1
   if section.settings.scroll
     assign copies = 2
@@ -40,9 +50,9 @@
               {%- if block.settings.text != blank -%}
                 <p class="announcement__item text-nav" {{ block.shopify_attributes }}>
                   {%- if block.settings.link != blank -%}
-                    <a href="{{ block.settings.link }}">{{ block.settings.text | escape }}</a>
+                    <a href="{{ block.settings.link }}">{{ block.settings.text | replace: threshold_token, threshold_label | escape }}</a>
                   {%- else -%}
-                    {{ block.settings.text | escape }}
+                    {{ block.settings.text | replace: threshold_token, threshold_label | escape }}
                   {%- endif -%}
                 </p>
               {%- endif -%}
@@ -88,7 +98,7 @@
     justify-content: center;
     gap: var(--space-4) var(--space-32);
   }
-  .announcement__item { margin: 0; text-align: center; }
+  .announcement__item { margin: 0; text-align: center; font-size: 12px; line-height: var(--lh-body); letter-spacing: 1px; text-transform: none; }
   .announcement__item a { text-decoration: none; }
   @media (hover: hover) {
     .announcement__item a:hover { text-decoration: underline; }
@@ -219,7 +229,8 @@
         {
           "type": "text",
           "id": "text",
-          "label": "t:sections.announcement-bar.blocks.message.settings.text.label"
+          "label": "t:sections.announcement-bar.blocks.message.settings.text.label",
+          "info": "t:sections.announcement-bar.blocks.message.settings.text.info"
         },
         {
           "type": "url",
