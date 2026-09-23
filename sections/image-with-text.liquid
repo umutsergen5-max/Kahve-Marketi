@@ -119,10 +119,11 @@
 
   /* Side by side, edge to edge: each half is 550px tall on desktop, text column 500px wide inset 48px from its half. */
   .image-text--split { padding-inline: 0; }
+  .image-text__overline { letter-spacing: 1.5px; }
   .image-text--split .image-text__media { border-radius: 0; aspect-ratio: 4 / 3; }
   .image-text--split .image-text__content { padding: var(--space-16) var(--section-x) 0; }
   @media (min-width: 768px) {
-    .image-text--split { gap: 0; align-items: stretch; }
+    .image-text.image-text--split { gap: 0; align-items: stretch; }
     .image-text--split .image-text__media { aspect-ratio: auto; height: 550px; }
     .image-text--split .image-text__content { display: flex; align-items: center; padding: 0 var(--space-48); }
     .image-text--split .image-text__inner { max-width: 500px; }

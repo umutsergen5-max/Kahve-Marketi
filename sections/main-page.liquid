@@ -43,7 +43,7 @@
 
   {%- if section.settings.show_title -%}
     <header class="main-page__header text-{{ section.settings.title_align }}">
-      <h1 class="main-page__title heading heading--banner">{{ page.title | escape }}</h1>
+      <h1 class="main-page__title heading heading--featured">{{ page.title | escape }}</h1>
     </header>
   {%- else -%}
     <h1 class="visually-hidden">{{ page.title | escape }}</h1>
