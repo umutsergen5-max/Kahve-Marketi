@@ -53,9 +53,11 @@
             {%- when 'about' -%}
               <div class="site-footer__block site-footer__block--about" {{ block.shopify_attributes }}>
                 <div class="site-footer__inner" style="--logo-width: {{ block.settings.logo_width }}px;">
-                  <div class="site-footer__logo{% if block.settings.image == blank %} site-footer__logo--empty{% endif %}">
+                  <div class="site-footer__logo">
                     {%- if block.settings.image != blank -%}
                       {% render 'image', image: block.settings.image, widths: '120, 240, 360, 480', sizes: '(min-width: 768px) 240px, 50vw', alt: brand %}
+                    {%- else -%}
+                      <img class="site-footer__logo-img" src="{{ 'vengo-logo-white.png' | asset_url }}" width="600" height="516" alt="{{ brand | escape }}" loading="lazy">
                     {%- endif -%}
                   </div>
                   {%- if block.settings.text != blank -%}
@@ -121,7 +123,7 @@
 
   /* Brand/logo position: reserved square until a logo image is chosen. */
   .site-footer__logo { width: var(--logo-width, 120px); max-width: 100%; }
-  .site-footer__logo--empty { aspect-ratio: 1 / 1; border: 1px dashed var(--scheme-border); border-radius: var(--radius-image); }
+  .site-footer__logo-img { display: block; width: 100%; height: auto; }
   .site-footer__about-text { color: var(--scheme-text-muted); max-width: 400px; }
   .site-footer__about-text > * { margin: 0; }
 

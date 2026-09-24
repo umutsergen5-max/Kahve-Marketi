@@ -39,6 +39,7 @@
     .site-header__burger { display: none; }
     .site-header__logo { justify-self: start; max-width: none; }
     .site-header__logo-link img { width: var(--logo-width); }
+    .site-header__logo-link img.site-header__logo-img { width: auto; height: 44px; }
     .site-header__nav { display: block; grid-area: nav; min-width: 0; }
     .site-header__account { display: inline-flex; }
   }
@@ -66,7 +67,7 @@
         {%- if settings.logo != blank -%}
           {% render 'image', image: settings.logo, widths: '200, 400, 600, 800', sizes: '(min-width: 768px) 260px, 212px', loading: 'eager', fetchpriority: 'high', alt: brand %}
         {%- else -%}
-          <span class="site-header__wordmark heading heading--featured">{{ brand | escape }}</span>
+          <img class="site-header__logo-img" src="{{ 'vengo-logo.png' | asset_url }}" width="600" height="516" alt="{{ brand | escape }}" loading="eager" fetchpriority="high">
         {%- endif -%}
       </a>
     </div>
@@ -249,6 +250,8 @@
 
   .site-header__logo-link { display: inline-flex; align-items: center; max-width: 100%; text-decoration: none; }
   .site-header__logo-link img { width: var(--logo-width-mobile); max-width: 100%; height: auto; }
+  /* Bundled mark (no logo chosen in theme settings): sized by height so the header keeps its spacing. */
+  .site-header__logo-link img.site-header__logo-img { width: auto; height: 36px; }
   .site-header__wordmark { display: block; padding-block: 0.12em; line-height: 1.25; white-space: nowrap; overflow: visible; font-size: clamp(15px, 5vw, var(--fs-featured)); }  /* descenders (y, g) must not be clipped; shrinks on phones so a longer brand name still fits */
 
   .site-header__cart { position: relative; }
