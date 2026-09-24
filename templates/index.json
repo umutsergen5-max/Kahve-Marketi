@@ -1,8 +1,24 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
       "type": "hero",
       "settings": {
+        "image": "shopify://shop_images/ad867286598a5ebaca5523d43988db7aec0e670e-2000x3000.jpg",
+        "image_alt": "",
+        "autoplay": true,
+        "loop": true,
+        "show_controls": false,
+        "height": "large",
+        "mobile_height": "medium",
         "heading": "Özenle kavrulmuş, taze kahve",
         "heading_level": "h1",
         "text": "Yeşil çekirdekleri küçük partiler halinde kavuruyor, her fincanda tutarlı bir kahve deneyimi sunuyoruz.",
@@ -12,8 +28,8 @@
         "button_2_link": "/pages/hakkimizda",
         "text_align": "center",
         "vertical_align": "center",
-        "height": "large",
-        "mobile_height": "medium"
+        "text_color": "light",
+        "overlay_opacity": 30
       }
     },
     "brand-video": {
@@ -21,7 +37,15 @@
       "settings": {
         "overline": "Kavurma atölyemiz",
         "heading": "Vengo Roastery'i tanıyın",
-        "text": "<p>Yeşil çekirdekten fincana uzanan kavurma sürecimize kısaca göz atın.</p>"
+        "heading_level": "h2",
+        "text": "<p>Yeşil çekirdekten fincana uzanan kavurma sürecimize kısaca göz atın.</p>",
+        "aspect_ratio": "wide",
+        "caption": "",
+        "text_align": "center",
+        "content_width": "lg",
+        "color_scheme": "default",
+        "spacing_top": "full",
+        "spacing_bottom": "full"
       }
     },
     "image-grid": {
@@ -30,53 +54,69 @@
         "tile-1": {
           "type": "tile",
           "settings": {
+            "overline": "",
             "heading": "Konumlarımız",
-            "button_label": "Hemen bul",
+            "text": "",
             "link": "/pages/konumlarimiz",
-            "column_span": "2",
-            "row_span": "2",
+            "button_label": "Hemen bul",
+            "overlay_opacity": 25,
             "text_align": "center",
             "vertical_align": "center",
-            "overlay_opacity": 25
+            "text_color": "light",
+            "column_span": "2",
+            "row_span": "2",
+            "mobile_full_width": false
           }
         },
         "tile-2": {
           "type": "tile",
           "settings": {
+            "overline": "",
             "heading": "Kahvelerimiz",
-            "button_label": "Hemen keşfet",
+            "text": "",
             "link": "/collections/all",
-            "column_span": "2",
-            "row_span": "1",
+            "button_label": "Hemen keşfet",
+            "overlay_opacity": 25,
             "text_align": "center",
             "vertical_align": "center",
-            "overlay_opacity": 25
+            "text_color": "light",
+            "column_span": "2",
+            "row_span": "1",
+            "mobile_full_width": false
           }
         },
         "tile-3": {
           "type": "tile",
           "settings": {
+            "overline": "",
             "heading": "Bizi tanıyın",
-            "button_label": "Hakkımızda",
+            "text": "",
             "link": "/pages/hakkimizda",
-            "column_span": "1",
-            "row_span": "1",
+            "button_label": "Hakkımızda",
+            "overlay_opacity": 25,
             "text_align": "center",
             "vertical_align": "center",
-            "overlay_opacity": 25
+            "text_color": "light",
+            "column_span": "1",
+            "row_span": "1",
+            "mobile_full_width": false
           }
         },
         "tile-4": {
           "type": "tile",
           "settings": {
+            "overline": "",
             "heading": "Toptan Alım",
-            "button_label": "Hemen üye ol",
+            "text": "",
             "link": "/pages/toptan-alim-basvurusu",
-            "column_span": "1",
-            "row_span": "1",
+            "button_label": "Hemen üye ol",
+            "overlay_opacity": 25,
             "text_align": "center",
             "vertical_align": "center",
-            "overlay_opacity": 25
+            "text_color": "light",
+            "column_span": "1",
+            "row_span": "1",
+            "mobile_full_width": false
           }
         }
       },
@@ -87,26 +127,40 @@
         "tile-4"
       ],
       "settings": {
-        "columns": 4,
-        "columns_mobile": "2",
+        "heading": "",
         "layout": "mosaic",
         "row_height": 350,
         "cta_style": "link",
+        "columns": 4,
+        "columns_mobile": "2",
+        "image_ratio": "landscape",
+        "gap": "normal",
         "full_width": true,
-        "gap": "normal"
+        "color_scheme": "default",
+        "spacing_top": "full",
+        "spacing_bottom": "full"
       }
     },
     "featured-product": {
       "type": "featured-product",
       "settings": {
         "product": "test-colombia-huila",
-        "show_vendor": true,
-        "overline": "Öne çıkan kahve",
-        "gallery_ratio": "compact",
         "media_position": "left",
+        "media_size": "medium",
+        "gallery_ratio": "compact",
+        "show_thumbnails": true,
+        "enable_zoom": true,
+        "overline": "Öne çıkan kahve",
+        "show_vendor": true,
+        "show_description": false,
+        "description_words": 30,
+        "show_quantity": true,
+        "option_style": "pills",
+        "show_dynamic_checkout": false,
+        "show_view_details": true,
+        "color_scheme": "default",
         "spacing_top": "half",
-        "spacing_bottom": "half",
-        "show_description": false
+        "spacing_bottom": "half"
       }
     },
     "featured-collection": {
@@ -114,45 +168,20 @@
       "settings": {
         "collection": "test-collection",
         "heading": "Öne çıkan kahveler",
+        "heading_align": "center",
+        "description": "",
+        "products_to_show": 8,
         "layout": "grid",
         "columns": 3,
         "columns_mobile": "2",
-        "heading_align": "center",
         "image_ratio": "tall",
-        "card_align": "center"
-      }
-    },
-    "footer-banner": {
-      "type": "image-banner",
-      "blocks": {
-        "slide-1": {
-          "type": "slide",
-          "settings": {
-            "overline": "Vengo Roastery",
-            "heading": "Fincandaki hikaye",
-            "button_label": "Bizi tanıyın",
-            "link": "/pages/hakkimizda",
-            "overlay_opacity": 30
-          }
-        },
-        "slide-2": {
-          "type": "slide",
-          "settings": {
-            "overline": "İşletmeler için",
-            "heading": "Toptan kahve",
-            "button_label": "Başvuru yapın",
-            "link": "/pages/toptan-alim-basvurusu",
-            "overlay_opacity": 30
-          }
-        }
-      },
-      "block_order": [
-        "slide-1",
-        "slide-2"
-      ],
-      "settings": {
-        "columns": 2,
-        "cta_style": "link"
+        "card_align": "center",
+        "show_secondary_image": true,
+        "show_quick_add": true,
+        "show_view_all": true,
+        "color_scheme": "default",
+        "spacing_top": "full",
+        "spacing_bottom": "full"
       }
     },
     "gallery": {
@@ -160,35 +189,51 @@
       "blocks": {
         "g1": {
           "type": "image",
-          "settings": {}
+          "settings": {
+            "link": ""
+          }
         },
         "g2": {
           "type": "image",
-          "settings": {}
+          "settings": {
+            "link": ""
+          }
         },
         "g3": {
           "type": "image",
-          "settings": {}
+          "settings": {
+            "link": ""
+          }
         },
         "g4": {
           "type": "image",
-          "settings": {}
+          "settings": {
+            "link": ""
+          }
         },
         "g5": {
           "type": "image",
-          "settings": {}
+          "settings": {
+            "link": ""
+          }
         },
         "g6": {
           "type": "image",
-          "settings": {}
+          "settings": {
+            "link": ""
+          }
         },
         "g7": {
           "type": "image",
-          "settings": {}
+          "settings": {
+            "link": ""
+          }
         },
         "g8": {
           "type": "image",
-          "settings": {}
+          "settings": {
+            "link": ""
+          }
         }
       },
       "block_order": [
@@ -205,7 +250,47 @@
         "heading": "galeri",
         "columns": 4,
         "columns_mobile": "2",
-        "color_scheme": "accent-2"
+        "color_scheme": "accent-2",
+        "spacing_top": "full",
+        "spacing_bottom": "full"
+      }
+    },
+    "footer-banner": {
+      "type": "image-banner",
+      "blocks": {
+        "slide-1": {
+          "type": "slide",
+          "settings": {
+            "overline": "Vengo Roastery",
+            "heading": "Fincandaki hikaye",
+            "text": "",
+            "button_label": "Bizi tanıyın",
+            "link": "/pages/hakkimizda",
+            "overlay_opacity": 30,
+            "text_color": "light"
+          }
+        },
+        "slide-2": {
+          "type": "slide",
+          "settings": {
+            "overline": "İşletmeler için",
+            "heading": "Toptan kahve",
+            "text": "",
+            "button_label": "Başvuru yapın",
+            "link": "/pages/toptan-alim-basvurusu",
+            "overlay_opacity": 30,
+            "text_color": "light"
+          }
+        }
+      },
+      "block_order": [
+        "slide-1",
+        "slide-2"
+      ],
+      "settings": {
+        "columns": 2,
+        "cta_style": "link",
+        "height": "standard"
       }
     }
   },
