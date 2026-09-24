@@ -33,6 +33,13 @@
         "label": "t:settings_schema.colors.settings.color_accent_3.label"
       },
       {
+        "type": "color",
+        "id": "color_announcement",
+        "default": "#b65859",
+        "label": "t:settings_schema.colors.settings.color_announcement.label",
+        "info": "t:settings_schema.colors.settings.color_announcement.info"
+      },
+      {
         "type": "header",
         "content": "t:settings_schema.colors.settings.header__surfaces.content"
       },

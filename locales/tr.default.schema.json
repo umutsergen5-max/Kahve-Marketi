@@ -15,6 +15,10 @@
         "color_accent_3": {
           "label": "Vurgu rengi 3"
         },
+        "color_announcement": {
+          "label": "Duyuru çubuğu rengi",
+          "info": "Duyuru çubuğunun arka planı ve mobil tarayıcı durum çubuğu rengi."
+        },
         "header__surfaces": {
           "content": "Metin ve arka planlar"
         },

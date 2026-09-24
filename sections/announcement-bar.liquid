@@ -51,7 +51,7 @@
     data-speed="{{ section.settings.speed }}"
     role="region"
     aria-label="{{ 'accessibility.announcements' | t }}"
-    style="{% if section.settings.background_color != blank %}--scheme-bg: {{ section.settings.background_color }}; {% endif %}{% if section.settings.text_color != blank %}--scheme-text: {{ section.settings.text_color }}; --scheme-focus: {{ section.settings.text_color }};{% endif %}"
+    style="--scheme-bg: {{ section.settings.background_color | default: settings.color_announcement }}; {% if section.settings.text_color != blank %}--scheme-text: {{ section.settings.text_color }}; --scheme-focus: {{ section.settings.text_color }};{% endif %}"
   >
     <div class="announcement__viewport">
       <div class="announcement__track" data-announcement-track>
@@ -196,7 +196,7 @@
       "type": "select",
       "id": "color_scheme",
       "label": "t:sections.announcement-bar.settings.color_scheme.label",
-      "default": "accent-1",
+      "default": "dark",
       "options": [
         { "value": "accent-1", "label": "t:sections.announcement-bar.settings.color_scheme.options__1.label" },
         { "value": "accent-2", "label": "t:sections.announcement-bar.settings.color_scheme.options__2.label" },

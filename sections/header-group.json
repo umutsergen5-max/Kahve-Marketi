@@ -17,8 +17,7 @@
       ],
       "settings": {
         "enabled": true,
-        "color_scheme": "accent-1",
-        "background_color": "#4a372f",
+        "color_scheme": "dark",
         "scroll": true,
         "speed": 3
       }
