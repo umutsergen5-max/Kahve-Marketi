@@ -323,7 +323,8 @@
   @media (max-width: 767px) { .main-product__title { font-size: 20px; } }
   .main-product__price-block { align-items: center; margin-bottom: var(--space-16); gap: 0; }
   .main-product__price-row { justify-content: center; }
-  .main-product__price-row .price { font-size: 20px; }
+  .main-product__price-row .price { font-size: 16px; }
+  @media (min-width: 768px) { .main-product__price-row .price { font-size: 20px; } }
   .main-product__price-row .price__current, .main-product__price-row .price__compare { font-family: var(--font-body-family); font-weight: var(--font-nav-weight); letter-spacing: 1px; text-transform: uppercase; }
   .main-product__price-row .price__compare { font-weight: 400; }
   .main-product__unit, .main-product__tax { font-size: 12px; line-height: var(--lh-body); color: var(--scheme-text); }

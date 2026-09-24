@@ -169,8 +169,8 @@
   text-transform: var(--tt-ui);
   letter-spacing: 1px;
 }
-.field__hint  { font-size: calc(var(--fs-body) * 0.87); color: var(--scheme-text-muted); }
-.field__error { font-size: calc(var(--fs-body) * 0.87); color: var(--color-alert); }
+.field__hint  { font-size: 12px; color: var(--scheme-text-muted); }
+.field__error { font-size: 12px; color: var(--color-alert); }
 
 .input,
 .select,

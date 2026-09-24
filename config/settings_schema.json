@@ -154,7 +154,7 @@
       {
         "type": "range",
         "id": "size_banner",
-        "default": 44,
+        "default": 30,
         "min": 28,
         "max": 80,
         "step": 1,

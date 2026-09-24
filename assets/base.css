@@ -148,7 +148,7 @@ h4, h5, h6 { font-size: var(--fs-body); }
 
 .text-body { font-size: var(--fs-body); line-height: var(--lh-body); }
 .text-featured { font-size: var(--fs-featured-body); line-height: var(--lh-body); }
-.text-small { font-size: calc(var(--fs-body) * 0.87); line-height: var(--lh-body); }
+.text-small { font-size: 12px; line-height: var(--lh-body); }
 
 /* Navigation / UI type: body family, bold, optionally uppercase */
 .text-nav,
