@@ -19,7 +19,8 @@
         "enabled": true,
         "color_scheme": "accent-1",
         "background_color": "#4a372f",
-        "scroll": false
+        "scroll": true,
+        "speed": 3
       }
     },
     "header": {

@@ -26,6 +26,17 @@
     assign threshold_label = settings.free_shipping_threshold | append: ' ' | append: threshold_currency
   endif
 
+  assign message_count = 0
+  for block in section.blocks
+    if block.settings.text != blank
+      assign message_count = message_count | plus: 1
+    endif
+  endfor
+  assign repeats = 1
+  if section.settings.scroll and message_count > 0
+    assign repeats = 10 | divided_by: message_count | plus: 1
+  endif
+
   assign copies = 1
   if section.settings.scroll
     assign copies = 2
@@ -46,16 +57,18 @@
       <div class="announcement__track" data-announcement-track>
         {%- for i in (1..copies) -%}
           <div class="announcement__group"{% if i == 2 %} data-clone aria-hidden="true" inert{% endif %}>
-            {%- for block in section.blocks -%}
-              {%- if block.settings.text != blank -%}
-                <p class="announcement__item text-nav" {{ block.shopify_attributes }}>
-                  {%- if block.settings.link != blank -%}
-                    <a href="{{ block.settings.link }}">{{ block.settings.text | replace: threshold_token, threshold_label | escape }}</a>
-                  {%- else -%}
-                    {{ block.settings.text | replace: threshold_token, threshold_label | escape }}
-                  {%- endif -%}
-                </p>
-              {%- endif -%}
+            {%- for repeat in (1..repeats) -%}
+              {%- for block in section.blocks -%}
+                {%- if block.settings.text != blank -%}
+                  <p class="announcement__item text-nav"{% if repeat > 1 %} aria-hidden="true"{% endif %} {% if repeat == 1 %}{{ block.shopify_attributes }}{% endif %}>
+                    {%- if block.settings.link != blank -%}
+                      <a href="{{ block.settings.link }}"{% if repeat > 1 %} tabindex="-1"{% endif %}>{{ block.settings.text | replace: threshold_token, threshold_label | escape }}</a>
+                    {%- else -%}
+                      {{ block.settings.text | replace: threshold_token, threshold_label | escape }}
+                    {%- endif -%}
+                  </p>
+                {%- endif -%}
+              {%- endfor -%}
             {%- endfor -%}
           </div>
         {%- endfor -%}
