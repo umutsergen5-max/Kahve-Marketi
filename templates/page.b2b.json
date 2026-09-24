@@ -1,18 +1,36 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
       "type": "image-with-text",
       "settings": {
         "layout": "overlay",
+        "image": "shopify://shop_images/Varlik_1-100.jpg",
+        "image_alt": "",
+        "image_ratio": "landscape",
+        "overlay_height": "band",
+        "overlay_opacity": 20,
+        "hide_without_image": false,
         "overline": "Toptan alım",
         "heading": "İşletmenizde de Vengo Roastery",
         "heading_level": "h2",
         "text": "<p>Toptan alım fiyatlarından ve birebir servisten yararlanın.</p>",
-        "overlay_height": "band",
+        "button_label": "",
+        "button_link": "",
+        "open_new_tab": false,
         "text_align": "left",
         "vertical_align": "center",
-        "overlay_opacity": 20,
+        "text_color": "light",
         "full_width": true,
+        "color_scheme": "default",
         "spacing_top": "none",
         "spacing_bottom": "none"
       }
@@ -21,8 +39,12 @@
       "type": "main-page",
       "settings": {
         "show_breadcrumb": false,
-        "content_width": "lg",
+        "show_title": true,
         "title_align": "left",
+        "image_alt": "",
+        "image_ratio": "landscape",
+        "content_width": "lg",
+        "policy": "none",
         "color_scheme": "light",
         "spacing_top": "full",
         "spacing_bottom": "none"
@@ -31,9 +53,14 @@
     "intro": {
       "type": "featured-text",
       "settings": {
+        "overline": "",
         "heading": "Kahve tutkusunu paylaşan iş ortakları arıyoruz",
         "heading_level": "h2",
         "text": "<p>Birlikte çalıştığımız işletmeleri müşteri olarak değil, çözüm ortağı olarak görüyoruz. Mekanınızın gereksinimlerini birlikte belirliyor; altyapı kurulumundan kahve eğitimine, düzenli taze kavrulmuş kahve teslimatından fikir alışverişine kadar destek oluyoruz.</p>",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "primary",
+        "open_new_tab": false,
         "text_align": "left",
         "content_width": "lg",
         "color_scheme": "light",
@@ -76,7 +103,15 @@
       ],
       "settings": {
         "heading": "Sunduğumuz hizmetler",
-        "color_scheme": "default"
+        "text": "",
+        "header_align": "left",
+        "layout": "grid",
+        "columns": 3,
+        "align": "left",
+        "numbered": false,
+        "color_scheme": "default",
+        "spacing_top": "full",
+        "spacing_bottom": "full"
       }
     },
     "apply": {
@@ -84,9 +119,15 @@
       "settings": {
         "heading": "Başvuru formu",
         "text": "<p>Formu doldurun, size dönüş yapalım.</p>",
-        "show_company": true,
         "show_phone": true,
-        "color_scheme": "light"
+        "show_company": true,
+        "extra_label": "",
+        "show_message": true,
+        "button_label": "",
+        "success_message": "",
+        "color_scheme": "light",
+        "spacing_top": "full",
+        "spacing_bottom": "full"
       }
     }
   },
