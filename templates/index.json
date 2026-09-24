@@ -190,18 +190,21 @@
         "g1": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/storm-barista-attitude_tecnica_passione_orgoglio1.jpg",
             "link": ""
           }
         },
         "g2": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/storm-barista-attitude_components1.jpg",
             "link": ""
           }
         },
         "g3": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/storm-barista-attitude_piedini_regolabili1.jpg",
             "link": ""
           }
         },
@@ -261,6 +264,7 @@
         "slide-1": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/storm-barista-attitude_innovazione_praticita-1-1080x1350.jpg",
             "overline": "Vengo Roastery",
             "heading": "Fincandaki hikaye",
             "text": "",
@@ -273,6 +277,7 @@
         "slide-2": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/Varlik_1-100.jpg",
             "overline": "İşletmeler için",
             "heading": "Toptan kahve",
             "text": "",

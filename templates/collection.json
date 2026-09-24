@@ -1,15 +1,31 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "header": {
       "type": "collection-header",
       "settings": {
-        "layout": "banner",
+        "show_breadcrumb": false,
         "show_product_count": false,
         "show_description": false,
-        "overlay_opacity": 20,
+        "show_image": true,
+        "fallback_image": "shopify://shop_images/Storm3Group_jpg.webp",
+        "layout": "banner",
+        "height": "large",
         "text_align": "center",
         "vertical_align": "center",
-        "text_color": "light"
+        "text_color": "light",
+        "overlay_opacity": 20,
+        "color_scheme": "default",
+        "spacing_top": "full",
+        "spacing_bottom": "half"
       }
     },
     "main": {
@@ -17,10 +33,17 @@
       "settings": {
         "columns": 4,
         "columns_mobile": "1",
+        "products_per_page": 24,
         "image_ratio": "tall",
         "card_align": "center",
+        "show_secondary_image": true,
+        "show_quick_add": true,
+        "enable_filtering": true,
+        "enable_sorting": true,
+        "enable_layout_toggle": true,
         "show_product_count": false,
         "browse_menu": "kategoriler",
+        "color_scheme": "default",
         "spacing_top": "none",
         "spacing_bottom": "full"
       }
@@ -30,9 +53,10 @@
       "settings": {
         "heading": "son bakılanlar",
         "heading_align": "center",
+        "max_products": 4,
         "columns": 4,
         "columns_mobile": "1",
-        "max_products": 4,
+        "color_scheme": "light",
         "spacing_top": "full",
         "spacing_bottom": "full"
       }
@@ -43,11 +67,13 @@
         "slide-1": {
           "type": "slide",
           "settings": {
+            "overline": "",
             "heading": "Vengo Roastery kafelerimizde buluşalım",
             "text": "Taze kavrulmuş kahvelerimizi fincanda deneyimlemek için kafelerimize uğrayın.",
             "button_label": "Kafelerimiz",
             "link": "/pages/konumlarimiz",
-            "overlay_opacity": 35
+            "overlay_opacity": 35,
+            "text_color": "light"
           }
         }
       },
