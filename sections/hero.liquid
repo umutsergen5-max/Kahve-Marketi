@@ -128,16 +128,16 @@
           <div class="hero__buttons">
             {%- if section.settings.button_label != blank -%}
               {%- if section.settings.button_link != blank -%}
-                <a class="button button--light" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+                <a class="hero__link" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
               {%- else -%}
-                <span class="button button--light">{{ section.settings.button_label | escape }}</span>
+                <span class="hero__link">{{ section.settings.button_label | escape }}</span>
               {%- endif -%}
             {%- endif -%}
             {%- if section.settings.button_2_label != blank -%}
               {%- if section.settings.button_2_link != blank -%}
-                <a class="button button--secondary hero__button-secondary" href="{{ section.settings.button_2_link }}">{{ section.settings.button_2_label | escape }}</a>
+                <a class="hero__link" href="{{ section.settings.button_2_link }}">{{ section.settings.button_2_label | escape }}</a>
               {%- else -%}
-                <span class="button button--secondary hero__button-secondary">{{ section.settings.button_2_label | escape }}</span>
+                <span class="hero__link">{{ section.settings.button_2_label | escape }}</span>
               {%- endif -%}
             {%- endif -%}
           </div>
@@ -196,7 +196,12 @@
   .hero__content { position: relative; z-index: 3; display: flex; padding: var(--space-48) var(--section-x); pointer-events: none; }
   .hero__inner { display: flex; flex-direction: column; gap: var(--space-16); max-width: 46rem; pointer-events: auto; }
   .hero__heading, .hero__text { margin: 0; }
-  .hero__buttons { display: flex; flex-wrap: wrap; gap: var(--space-8) var(--space-16); margin-top: var(--space-8); }
+  .hero__buttons { display: flex; flex-wrap: wrap; gap: var(--space-8) var(--space-32); margin-top: var(--space-8); }
+  /* Plain underlined text links (no box, fill or border), the same treatment as the other calls to action. */
+  .hero__link { display: inline-block; padding-bottom: 3px; font-family: var(--font-body-family); font-weight: var(--font-nav-weight); font-size: var(--fs-nav); letter-spacing: 1px; line-height: 1; text-transform: var(--tt-ui); color: inherit; text-decoration: none; background: linear-gradient(currentColor, currentColor) left bottom / 100% 1px no-repeat; }
+  @keyframes hero-link-line { from { background-size: 0 1px; } to { background-size: 100% 1px; } }
+  @media (hover: hover) { .hero__link:hover { animation: hero-link-line 0.4s var(--ease-standard); } }
+  .hero__link:focus-visible { outline: 2px solid var(--scheme-focus); outline-offset: 4px; }
 
   .hero--valign-top .hero__content    { align-items: flex-start; }
   .hero--valign-center .hero__content { align-items: center; }
@@ -209,10 +214,7 @@
 
   .hero--text-dark { color: var(--color-background-dark); --scheme-focus: var(--color-background-dark); }
   .hero--text-dark .hero__overlay { background: #fff; }
-  .hero--text-dark .button--light { --button-bg: var(--color-background-dark); --button-text: #fff; --button-border: var(--color-background-dark); }
-  .hero--text-dark .hero__button-secondary { --button-text: var(--color-background-dark); }
   .hero--text-light { --scheme-focus: #fff; }
-  .hero--text-light .hero__button-secondary { --button-text: #fff; }
 
   .hero__toggle { position: absolute; right: var(--space-8); bottom: var(--space-8); z-index: 4; width: 44px; height: 44px; border-radius: 50%; background: rgba(0, 0, 0, 0.5); color: #fff; }
   .hero__toggle-play { display: none; }
