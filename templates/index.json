@@ -268,19 +268,6 @@
     "footer-banner": {
       "type": "image-banner",
       "blocks": {
-        "slide-1": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/storm-barista-attitude_innovazione_praticita-1-1080x1350.jpg",
-            "overline": "Vengo Roastery",
-            "heading": "Fincandaki hikaye",
-            "text": "",
-            "button_label": "Bizi tanıyın",
-            "link": "/pages/hakkimizda",
-            "overlay_opacity": 30,
-            "text_color": "light"
-          }
-        },
         "slide-2": {
           "type": "slide",
           "settings": {
@@ -296,7 +283,6 @@
         }
       },
       "block_order": [
-        "slide-1",
         "slide-2"
       ],
       "settings": {
