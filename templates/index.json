@@ -59,101 +59,31 @@
         "spacing_bottom": "none"
       }
     },
-    "image-grid": {
-      "type": "grid-overlay",
-      "blocks": {
-        "tile-1": {
-          "type": "tile",
-          "settings": {
-            "image": "shopify://shop_images/instagram_image_1.jpg",
-            "overline": "",
-            "heading": "Konumlarımız",
-            "text": "",
-            "link": "/pages/konumlarimiz",
-            "button_label": "Hemen bul",
-            "overlay_opacity": 25,
-            "text_align": "center",
-            "vertical_align": "center",
-            "text_color": "light",
-            "column_span": "2",
-            "row_span": "2",
-            "mobile_full_width": false
-          }
-        },
-        "tile-2": {
-          "type": "tile",
-          "settings": {
-            "image": "shopify://shop_images/astoria_ab.avif",
-            "overline": "",
-            "heading": "Kahvelerimiz",
-            "text": "",
-            "link": "/collections/all",
-            "button_label": "Hemen keşfet",
-            "overlay_opacity": 25,
-            "text_align": "center",
-            "vertical_align": "center",
-            "text_color": "light",
-            "column_span": "2",
-            "row_span": "1",
-            "mobile_full_width": false
-          }
-        },
-        "tile-3": {
-          "type": "tile",
-          "settings": {
-            "image": "shopify://shop_images/igram.site-instagram-video-1790342670892.jpg",
-            "overline": "",
-            "heading": "Bizi tanıyın",
-            "text": "",
-            "link": "/pages/hakkimizda",
-            "button_label": "Hakkımızda",
-            "overlay_opacity": 25,
-            "text_align": "center",
-            "vertical_align": "center",
-            "text_color": "light",
-            "column_span": "1",
-            "row_span": "1",
-            "mobile_full_width": false
-          }
-        },
-        "tile-4": {
-          "type": "tile",
-          "settings": {
-            "image": "shopify://shop_images/Varlik_1-100.jpg",
-            "overline": "",
-            "heading": "Toptan Alım",
-            "text": "",
-            "link": "/pages/toptan-alim-basvurusu",
-            "button_label": "Hemen üye ol",
-            "overlay_opacity": 25,
-            "text_align": "center",
-            "vertical_align": "center",
-            "text_color": "light",
-            "column_span": "1",
-            "row_span": "1",
-            "mobile_full_width": false
-          }
-        }
-      },
-      "block_order": [
-        "tile-1",
-        "tile-2",
-        "tile-3",
-        "tile-4"
-      ],
+    "image_with_text_B67ygb": {
+      "type": "image-with-text",
+      "name": "t:sections.image-with-text.presets.name",
       "settings": {
-        "heading": "",
-        "layout": "mosaic",
-        "row_height": 350,
-        "cta_style": "link",
-        "columns": 4,
-        "columns_mobile": "2",
+        "layout": "overlay",
+        "image": "shopify://shop_images/igram.site-instagram-video-1790354766123.jpg",
+        "image_alt": "",
         "image_ratio": "landscape",
-        "gap": "normal",
+        "overlay_height": "medium",
+        "overlay_opacity": 0,
+        "hide_without_image": false,
+        "overline": "tatlandıralım!",
+        "heading": "Şurupları Keşfet",
+        "heading_level": "h1",
+        "text": "",
+        "button_label": "göz at",
+        "button_link": "shopify://collections/suruplar",
+        "open_new_tab": false,
+        "text_align": "center",
+        "vertical_align": "center",
+        "text_color": "light",
         "full_width": true,
         "color_scheme": "default",
-        "spacing_top": "full",
-        "spacing_bottom": "full"
+        "spacing_top": "none",
+        "spacing_bottom": "none"
       }
     },
     "featured-product": {
@@ -314,7 +244,7 @@
   "order": [
     "hero",
     "image_with_text_qxLHNc",
-    "image-grid",
+    "image_with_text_B67ygb",
     "featured-product",
     "featured-collection",
     "gallery",
