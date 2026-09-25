@@ -13,6 +13,7 @@
       "type": "image-with-text",
       "settings": {
         "layout": "overlay",
+        "image": "shopify://shop_images/igram.site-instagram-video-1790342887111.jpg",
         "image_alt": "",
         "image_ratio": "landscape",
         "overlay_height": "tall",
@@ -64,6 +65,7 @@
       "type": "image-with-text",
       "settings": {
         "layout": "image-left",
+        "image": "shopify://shop_images/igram.site-instagram-video-1790342825893.jpg",
         "image_alt": "",
         "image_ratio": "landscape",
         "overlay_height": "medium",
@@ -89,6 +91,7 @@
       "type": "image-with-text",
       "settings": {
         "layout": "image-right",
+        "image": "shopify://shop_images/igram.site-instagram-video-1790343254540.jpg",
         "image_alt": "",
         "image_ratio": "landscape",
         "overlay_height": "medium",
