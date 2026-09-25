@@ -269,26 +269,32 @@
         "spacing_bottom": "full"
       }
     },
+    "hero_Kr6i6Y": {
+      "type": "hero",
+      "name": "t:sections.hero.presets.name",
+      "settings": {
+        "image_alt": "",
+        "video": "shopify://files/videos/astoriaa vidoe.mp4",
+        "autoplay": true,
+        "loop": true,
+        "show_controls": false,
+        "height": "large",
+        "mobile_height": "medium",
+        "heading": "",
+        "heading_level": "h2",
+        "text": "",
+        "button_label": "",
+        "button_link": "",
+        "button_2_label": "",
+        "button_2_link": "",
+        "text_align": "center",
+        "vertical_align": "center",
+        "text_color": "light",
+        "overlay_opacity": 30
+      }
+    },
     "footer-banner": {
       "type": "image-banner",
-      "blocks": {
-        "slide-2": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/Varlik_1-100.jpg",
-            "overline": "İşletmeler için",
-            "heading": "Toptan kahve",
-            "text": "",
-            "button_label": "Başvuru yapın",
-            "link": "/pages/toptan-alim-basvurusu",
-            "overlay_opacity": 30,
-            "text_color": "light"
-          }
-        }
-      },
-      "block_order": [
-        "slide-2"
-      ],
       "settings": {
         "columns": 2,
         "cta_style": "link",
@@ -303,6 +309,7 @@
     "featured-product",
     "featured-collection",
     "gallery",
+    "hero_Kr6i6Y",
     "footer-banner"
   ]
 }
