@@ -12,7 +12,6 @@
     "hero": {
       "type": "hero",
       "settings": {
-        "image": "shopify://shop_images/ad867286598a5ebaca5523d43988db7aec0e670e-2000x3000.jpg",
         "image_alt": "",
         "video": "shopify://files/videos/sstoria machines video.mp4",
         "autoplay": true,
@@ -57,7 +56,7 @@
         "tile-1": {
           "type": "tile",
           "settings": {
-            "image": "shopify://shop_images/ad867286598a5ebaca5523d43988db7aec0e670e-2000x3000.jpg",
+            "image": "shopify://shop_images/instagram_image_1.jpg",
             "overline": "",
             "heading": "Konumlarımız",
             "text": "",
@@ -211,7 +210,7 @@
         "g3": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/storm-barista-attitude_piedini_regolabili1.jpg",
+            "image": "shopify://shop_images/igram.site-instagram-video-1790342823614.jpg",
             "link": ""
           }
         },
@@ -225,24 +224,28 @@
         "g5": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/igram.site-instagram-video-1790342872677.jpg",
             "link": ""
           }
         },
         "g6": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/igram.site-instagram-video-1790342880078.jpg",
             "link": ""
           }
         },
         "g7": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/igram.site-instagram-video-1790342669410.jpg",
             "link": ""
           }
         },
         "g8": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/igram.site-instagram-video-1790342670892.jpg",
             "link": ""
           }
         }
