@@ -76,23 +76,10 @@
             "overlay_opacity": 30,
             "text_color": "light"
           }
-        },
-        "slide-1": {
-          "type": "slide",
-          "settings": {
-            "overline": "",
-            "heading": "Vengo Roastery kafelerimizde buluşalım",
-            "text": "Taze kavrulmuş kahvelerimizi fincanda deneyimlemek için kafelerimize uğrayın.",
-            "button_label": "Kafelerimiz",
-            "link": "/pages/konumlarimiz",
-            "overlay_opacity": 35,
-            "text_color": "light"
-          }
         }
       },
       "block_order": [
-        "slide_mtxeLA",
-        "slide-1"
+        "slide_mtxeLA"
       ],
       "settings": {
         "columns": 1,
