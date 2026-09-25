@@ -64,6 +64,19 @@
     "banner": {
       "type": "image-banner",
       "blocks": {
+        "slide_mtxeLA": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/storm-barista-attitude_components1.jpg",
+            "overline": "",
+            "heading": "",
+            "text": "",
+            "button_label": "",
+            "link": "",
+            "overlay_opacity": 30,
+            "text_color": "light"
+          }
+        },
         "slide-1": {
           "type": "slide",
           "settings": {
@@ -78,6 +91,7 @@
         }
       },
       "block_order": [
+        "slide_mtxeLA",
         "slide-1"
       ],
       "settings": {
