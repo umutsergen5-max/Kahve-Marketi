@@ -1,17 +1,35 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
       "type": "image-with-text",
       "settings": {
         "layout": "overlay",
+        "image_alt": "",
+        "image_ratio": "landscape",
+        "overlay_height": "tall",
+        "overlay_opacity": 20,
+        "hide_without_image": false,
+        "overline": "",
         "heading": "Demleme rehberleri",
         "heading_level": "h1",
         "text": "<p>Evde ya da işte, her demleme yöntemi için adım adım rehberlerimizle en iyi fincanı elde edin.</p>",
-        "overlay_height": "tall",
+        "button_label": "",
+        "button_link": "",
+        "open_new_tab": false,
         "text_align": "center",
         "vertical_align": "center",
-        "overlay_opacity": 20,
+        "text_color": "light",
         "full_width": true,
+        "color_scheme": "default",
         "spacing_top": "none",
         "spacing_bottom": "none"
       }
@@ -20,11 +38,24 @@
       "type": "image-with-text",
       "settings": {
         "layout": "image-right",
+        "image": "shopify://shop_images/Coffee-Truck-Astoria.jpg",
+        "image_alt": "",
+        "image_ratio": "landscape",
+        "overlay_height": "medium",
+        "overlay_opacity": 30,
+        "hide_without_image": false,
         "overline": "Demleme rehberi",
         "heading": "Espresso",
+        "heading_level": "h2",
         "text": "<p>Doğru öğütüm, doz ve ekstraksiyon süresiyle evde espresso makinenizden en iyi sonucu nasıl alacağınızı anlatıyoruz.</p>",
-        "image_ratio": "landscape",
+        "button_label": "",
+        "button_link": "",
+        "open_new_tab": false,
+        "text_align": "left",
+        "vertical_align": "bottom",
+        "text_color": "light",
         "full_width": true,
+        "color_scheme": "default",
         "spacing_top": "none",
         "spacing_bottom": "none"
       }
@@ -33,11 +64,23 @@
       "type": "image-with-text",
       "settings": {
         "layout": "image-left",
+        "image_alt": "",
+        "image_ratio": "landscape",
+        "overlay_height": "medium",
+        "overlay_opacity": 30,
+        "hide_without_image": false,
         "overline": "Demleme rehberi",
         "heading": "Filtre kahve",
+        "heading_level": "h2",
         "text": "<p>V60, Chemex veya French press ile filtre kahvenizi adım adım nasıl demleyeceğinizi öğrenin.</p>",
-        "image_ratio": "landscape",
+        "button_label": "",
+        "button_link": "",
+        "open_new_tab": false,
+        "text_align": "left",
+        "vertical_align": "bottom",
+        "text_color": "light",
         "full_width": true,
+        "color_scheme": "default",
         "spacing_top": "none",
         "spacing_bottom": "none"
       }
@@ -46,11 +89,23 @@
       "type": "image-with-text",
       "settings": {
         "layout": "image-right",
+        "image_alt": "",
+        "image_ratio": "landscape",
+        "overlay_height": "medium",
+        "overlay_opacity": 30,
+        "hide_without_image": false,
         "overline": "Demleme rehberi",
         "heading": "Soğuk demleme",
+        "heading_level": "h2",
         "text": "<p>Yaz aylarının favorisi cold brew'u evde nasıl hazırlayacağınızı ve saklayacağınızı anlatıyoruz.</p>",
-        "image_ratio": "landscape",
+        "button_label": "",
+        "button_link": "",
+        "open_new_tab": false,
+        "text_align": "left",
+        "vertical_align": "bottom",
+        "text_color": "light",
         "full_width": true,
+        "color_scheme": "default",
         "spacing_top": "none",
         "spacing_bottom": "none"
       }
