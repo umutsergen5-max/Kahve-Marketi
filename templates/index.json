@@ -32,21 +32,31 @@
         "overlay_opacity": 30
       }
     },
-    "brand-video": {
-      "type": "featured-video",
+    "image_with_text_qxLHNc": {
+      "type": "image-with-text",
+      "name": "t:sections.image-with-text.presets.name",
       "settings": {
-        "overline": "Kavurma atölyemiz",
+        "layout": "overlay",
+        "image": "shopify://shop_images/igram.site-instagram-video-1790343254540.jpg",
+        "image_alt": "Kavurma Atölyemiz",
+        "image_ratio": "landscape",
+        "overlay_height": "medium",
+        "overlay_opacity": 30,
+        "hide_without_image": false,
+        "overline": "Yeşil çekirdekten fincana uzanan kavurma sürecimize kısaca göz atın.",
         "heading": "Vengo Roastery'i tanıyın",
         "heading_level": "h2",
-        "text": "<p>Yeşil çekirdekten fincana uzanan kavurma sürecimize kısaca göz atın.</p>",
-        "cover_image": "shopify://shop_images/astoria_ab.avif",
-        "aspect_ratio": "wide",
-        "caption": "",
-        "text_align": "center",
-        "content_width": "lg",
+        "text": "",
+        "button_label": "Vitrine göz at",
+        "button_link": "shopify://collections",
+        "open_new_tab": false,
+        "text_align": "left",
+        "vertical_align": "bottom",
+        "text_color": "light",
+        "full_width": true,
         "color_scheme": "default",
-        "spacing_top": "full",
-        "spacing_bottom": "full"
+        "spacing_top": "none",
+        "spacing_bottom": "none"
       }
     },
     "image-grid": {
@@ -303,7 +313,7 @@
   },
   "order": [
     "hero",
-    "brand-video",
+    "image_with_text_qxLHNc",
     "image-grid",
     "featured-product",
     "featured-collection",
