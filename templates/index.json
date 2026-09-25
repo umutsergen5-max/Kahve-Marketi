@@ -218,6 +218,7 @@
         "g4": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/Astoria_Espresso_Machine_Comparison.jpg",
             "link": ""
           }
         },
