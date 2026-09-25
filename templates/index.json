@@ -259,7 +259,7 @@
       "settings": {
         "heading": "galeri",
         "columns": 4,
-        "columns_mobile": "2",
+        "columns_mobile": "3",
         "color_scheme": "accent-2",
         "spacing_top": "full",
         "spacing_bottom": "full"
