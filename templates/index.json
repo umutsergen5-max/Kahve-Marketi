@@ -40,6 +40,7 @@
         "heading": "Vengo Roastery'i tanıyın",
         "heading_level": "h2",
         "text": "<p>Yeşil çekirdekten fincana uzanan kavurma sürecimize kısaca göz atın.</p>",
+        "video": "shopify://files/videos/astoriaa vidoe.mp4",
         "aspect_ratio": "wide",
         "caption": "",
         "text_align": "center",
@@ -55,6 +56,7 @@
         "tile-1": {
           "type": "tile",
           "settings": {
+            "image": "shopify://shop_images/ad867286598a5ebaca5523d43988db7aec0e670e-2000x3000.jpg",
             "overline": "",
             "heading": "Konumlarımız",
             "text": "",
@@ -72,6 +74,7 @@
         "tile-2": {
           "type": "tile",
           "settings": {
+            "image": "shopify://shop_images/astoria_ab.avif",
             "overline": "",
             "heading": "Kahvelerimiz",
             "text": "",
@@ -89,6 +92,7 @@
         "tile-3": {
           "type": "tile",
           "settings": {
+            "image": "shopify://shop_images/storm-barista-attitude_controllo_totale_erogazione.jpg",
             "overline": "",
             "heading": "Bizi tanıyın",
             "text": "",
@@ -106,6 +110,7 @@
         "tile-4": {
           "type": "tile",
           "settings": {
+            "image": "shopify://shop_images/Varlik_1-100.jpg",
             "overline": "",
             "heading": "Toptan Alım",
             "text": "",

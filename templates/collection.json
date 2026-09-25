@@ -16,7 +16,7 @@
         "show_product_count": false,
         "show_description": false,
         "show_image": true,
-        "fallback_image": "shopify://shop_images/Storm3Group_jpg.webp",
+        "fallback_image": "shopify://shop_images/astoria_ab.avif",
         "layout": "banner",
         "height": "large",
         "text_align": "center",
