@@ -32,8 +32,129 @@
         "overlay_opacity": 30
       }
     },
+    "grid_overlay_cBihVA": {
+      "type": "grid-overlay",
+      "blocks": {
+        "tile_i8AWxD": {
+          "type": "tile",
+          "settings": {
+            "image": "shopify://shop_images/ad867286598a5ebaca5523d43988db7aec0e670e-2000x3000.jpg",
+            "overline": "",
+            "heading": "Kahveler",
+            "text": "",
+            "link": "shopify://collections/kahveler",
+            "button_label": "Keşfet",
+            "overlay_opacity": 30,
+            "text_align": "center",
+            "vertical_align": "center",
+            "text_color": "light",
+            "column_span": "1",
+            "row_span": "1",
+            "mobile_full_width": false
+          }
+        },
+        "tile_xNjqxy": {
+          "type": "tile",
+          "settings": {
+            "image": "shopify://shop_images/astoria_ab.avif",
+            "overline": "",
+            "heading": "Bizi Tanıyın",
+            "text": "",
+            "link": "",
+            "button_label": "Hakkımızda",
+            "overlay_opacity": 30,
+            "text_align": "center",
+            "vertical_align": "center",
+            "text_color": "light",
+            "column_span": "1",
+            "row_span": "1",
+            "mobile_full_width": false
+          }
+        },
+        "tile_X7dDHF": {
+          "type": "tile",
+          "settings": {
+            "image": "shopify://shop_images/igram.site-instagram-video-1790354536333.jpg",
+            "overline": "",
+            "heading": "Şurupları Keşfet",
+            "text": "",
+            "link": "shopify://collections/suruplar",
+            "button_label": "göz at",
+            "overlay_opacity": 30,
+            "text_align": "center",
+            "vertical_align": "center",
+            "text_color": "light",
+            "column_span": "1",
+            "row_span": "1",
+            "mobile_full_width": false
+          }
+        },
+        "tile_FxRft4": {
+          "type": "tile",
+          "settings": {
+            "image": "shopify://shop_images/Varlik_1-100.jpg",
+            "overline": "",
+            "heading": "Toptan alım",
+            "text": "",
+            "link": "shopify://pages/toptan-alim-basvurusu",
+            "button_label": "üye ol",
+            "overlay_opacity": 30,
+            "text_align": "center",
+            "vertical_align": "center",
+            "text_color": "light",
+            "column_span": "1",
+            "row_span": "1",
+            "mobile_full_width": false
+          }
+        }
+      },
+      "block_order": [
+        "tile_i8AWxD",
+        "tile_xNjqxy",
+        "tile_X7dDHF",
+        "tile_FxRft4"
+      ],
+      "name": "t:sections.grid-overlay.presets.name",
+      "settings": {
+        "heading": "",
+        "layout": "even",
+        "row_height": 350,
+        "cta_style": "button",
+        "columns": 2,
+        "columns_mobile": "1",
+        "image_ratio": "landscape",
+        "gap": "normal",
+        "full_width": false,
+        "color_scheme": "default",
+        "spacing_top": "full",
+        "spacing_bottom": "full"
+      }
+    },
+    "featured-product": {
+      "type": "featured-product",
+      "settings": {
+        "product": "test-colombia-huila",
+        "media_position": "left",
+        "media_size": "medium",
+        "gallery_ratio": "compact",
+        "show_thumbnails": true,
+        "enable_zoom": true,
+        "overline": "Öne çıkan kahve",
+        "show_vendor": true,
+        "show_description": false,
+        "description_words": 30,
+        "show_quantity": true,
+        "option_style": "pills",
+        "show_dynamic_checkout": false,
+        "show_view_details": true,
+        "color_scheme": "default",
+        "spacing_top": "half",
+        "spacing_bottom": "half"
+      }
+    },
     "image_with_text_qxLHNc": {
       "type": "image-with-text",
+      "disabled": true,
       "name": "t:sections.image-with-text.presets.name",
       "settings": {
         "layout": "overlay",
@@ -77,35 +198,13 @@
         "button_label": "göz at",
         "button_link": "shopify://collections/suruplar",
         "open_new_tab": false,
-        "text_align": "center",
-        "vertical_align": "center",
+        "text_align": "left",
+        "vertical_align": "bottom",
         "text_color": "light",
         "full_width": true,
         "color_scheme": "default",
         "spacing_top": "none",
         "spacing_bottom": "none"
-      }
-    },
-    "featured-product": {
-      "type": "featured-product",
-      "settings": {
-        "product": "test-colombia-huila",
-        "media_position": "left",
-        "media_size": "medium",
-        "gallery_ratio": "compact",
-        "show_thumbnails": true,
-        "enable_zoom": true,
-        "overline": "Öne çıkan kahve",
-        "show_vendor": true,
-        "show_description": false,
-        "description_words": 30,
-        "show_quantity": true,
-        "option_style": "pills",
-        "show_dynamic_checkout": false,
-        "show_view_details": true,
-        "color_scheme": "default",
-        "spacing_top": "half",
-        "spacing_bottom": "half"
       }
     },
     "featured-collection": {
@@ -243,9 +342,10 @@
   },
   "order": [
     "hero",
+    "grid_overlay_cBihVA",
+    "featured-product",
     "image_with_text_qxLHNc",
     "image_with_text_B67ygb",
-    "featured-product",
     "featured-collection",
     "gallery",
     "hero_Kr6i6Y",
