@@ -180,6 +180,27 @@
         "spacing_bottom": "none"
       }
     },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "collection": "kahve-ekipmanlari",
+        "heading": "Kahve Ekipmanları",
+        "heading_align": "center",
+        "description": "",
+        "products_to_show": 8,
+        "layout": "grid",
+        "columns": 3,
+        "columns_mobile": "2",
+        "image_ratio": "tall",
+        "card_align": "center",
+        "show_secondary_image": true,
+        "show_quick_add": true,
+        "show_view_all": true,
+        "color_scheme": "default",
+        "spacing_top": "full",
+        "spacing_bottom": "full"
+      }
+    },
     "image_with_text_B67ygb": {
       "type": "image-with-text",
       "name": "t:sections.image-with-text.presets.name",
@@ -205,27 +226,6 @@
         "color_scheme": "default",
         "spacing_top": "none",
         "spacing_bottom": "none"
-      }
-    },
-    "featured-collection": {
-      "type": "featured-collection",
-      "settings": {
-        "collection": "test-collection",
-        "heading": "Öne çıkan kahveler",
-        "heading_align": "center",
-        "description": "",
-        "products_to_show": 8,
-        "layout": "grid",
-        "columns": 3,
-        "columns_mobile": "2",
-        "image_ratio": "tall",
-        "card_align": "center",
-        "show_secondary_image": true,
-        "show_quick_add": true,
-        "show_view_all": true,
-        "color_scheme": "default",
-        "spacing_top": "full",
-        "spacing_bottom": "full"
       }
     },
     "gallery": {
@@ -345,8 +345,8 @@
     "grid_overlay_cBihVA",
     "featured-product",
     "image_with_text_qxLHNc",
-    "image_with_text_B67ygb",
     "featured-collection",
+    "image_with_text_B67ygb",
     "gallery",
     "hero_Kr6i6Y",
     "footer-banner"
